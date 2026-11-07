@@ -53,6 +53,10 @@ Enrollment, unlock, sessions, access control, and the audit chain — server and
 - **D-21:** Expo Router gates: `(gate)/welcome` (scan invite or first-time setup) → `enroll/pin` → `(app)` tabs after unlock; `unlock` screen when key locked. Screens: Welcome, Scan Invite (expo-camera, `useRef` scan lock), Set PIN, Unlock, Home (my role + fingerprint + roster), Invite (role picker → full-screen QR + countdown), Members (revoke, propose admin change, approve), Lockdown toggle (admins), Audit feed (admins, raw list). Big buttons, group-text feel, high contrast; UI-SPEC from gsd-ui-phase governs visuals.
 - **D-22:** Phase 1 spike screen moves to a dev-only route `/dev/spike`; spike tables stay in the module (inert) until the Phase 5 schema freeze.
 
+### Carried from Phase 1 code review (01-REVIEW.md)
+- **D-23 (WR-05):** Every Phase 2 signed message MUST bind a server-issued single-use nonce AND the caller identity (and action/args digest where relevant) — the spike format's replayable triple is NOT a model for sensitive reducers.
+- **D-24 (WR-04):** If the server rejects a saved Spacetime token on connect, the client clears it from SecureStore and reconnects fresh instead of retrying forever.
+
 ### Claude's Discretion
 - File split within `server/src/` (recommend `roles.ts`, `audit.ts`, `guard.ts`, `enroll.ts`, `session.ts`, `admin.ts`, `views.ts`), component structure, exact copy text.
 
