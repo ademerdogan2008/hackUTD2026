@@ -425,11 +425,11 @@ Indicator logic: "Live" iff `isActive && ready`; otherwise "Reconnecting...". `g
 | A6 | A fresh DB name is free on Maincloud | D-08 | Use suffix fallback |
 | A7 | Expo Go store build for SDK 58 is installed on the user's phone and supports tunnel/LAN | Device test | Cannot run device criteria |
 
-## Open Questions
+## Open Questions (RESOLVED)
 
-1. **Does the `.env` token belong to the same account already logged in locally?** Recommendation: checkpoint before first `publish`; the orchestrator should not run `login show --token`.
-2. **TS ~5.9.3 vs template ~6.0.3** - keep locked 5.9.3; accept `expo install --check` warning.
-3. **Push-procedure spike (D-13)** - not researched here beyond STACK.md; skip unless time.
+1. **Does the `.env` token belong to the same account already logged in locally?** RESOLVED: No — user confirmed it is a different account. All authenticated calls use isolated `spacetime --config-path .spacetime/cli.toml`; the global login is never touched (checksum-verified).
+2. **TS ~5.9.3 vs template ~6.0.3** - RESOLVED: keep locked 5.9.3; accept `expo install --check` warning.
+3. **Push-procedure spike (D-13)** - RESOLVED: deferred to Phase 3.
 
 ## Environment Availability
 
