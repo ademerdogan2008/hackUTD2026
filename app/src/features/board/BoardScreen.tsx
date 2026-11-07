@@ -72,9 +72,25 @@ export default function BoardScreen() {
     );
   };
 
+  const clocksFirst = counsel && myClocks.some((c) => c.status !== 'filed');
+
+  const clocksSection = (
+    <>
+      <T variant="heading">Legal deadline clocks</T>
+      {!counsel ? (
+        <T tone="muted">Legal clocks are visible to Counsel and the Incident Lead.</T>
+      ) : myClocks.length === 0 ? (
+        <T tone="muted">No clocks running. Marking a PII system Stolen starts them.</T>
+      ) : (
+        <Card>{myClocks.map(clockRow)}</Card>
+      )}
+    </>
+  );
+
   return (
     <Screen title="Board" headerRight={<ConnectionBadge />}>
       {err ? <T tone="danger">{err}</T> : null}
+      {clocksFirst ? clocksSection : null}
       <T variant="heading">Systems</T>
       {sortedAssets.length === 0 ? <T tone="muted">No systems loaded.</T> : null}
       {sortedAssets.map((a) => {
@@ -92,14 +108,7 @@ export default function BoardScreen() {
         );
       })}
 
-      <T variant="heading">Legal deadline clocks</T>
-      {!counsel ? (
-        <T tone="muted">Legal clocks are visible to Counsel and the Incident Lead.</T>
-      ) : myClocks.length === 0 ? (
-        <T tone="muted">No clocks running. Marking a PII system Stolen starts them.</T>
-      ) : (
-        <Card>{myClocks.map(clockRow)}</Card>
-      )}
+      {clocksFirst ? null : clocksSection}
 
       <Modal visible={!!picking} transparent animationType="slide" onRequestClose={() => setPicking(null)}>
         <Pressable style={{ flex: 1, backgroundColor: color.scrim, justifyContent: 'flex-end' }} onPress={() => setPicking(null)}>

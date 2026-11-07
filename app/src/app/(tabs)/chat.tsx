@@ -5,7 +5,7 @@ import { ConnectionBadge } from '../../components/ConnectionBadge';
 import { Bubble, type ChatMsg } from '../../features/chat/Bubble';
 import { reducers, tables } from '../../module_bindings';
 import { canSeeCounsel, useMe, useMemberNames } from '../../state/hooks';
-import { Button, EmptyState, Screen, SegmentedControl, color, radius, space, type } from '../../ui';
+import { Button, EmptyState, Screen, SegmentedControl, T, color, radius, space, type } from '../../ui';
 
 type Channel = 'all' | 'counsel';
 
@@ -58,11 +58,14 @@ export default function ChatTab() {
           <SegmentedControl
             segments={[
               { value: 'all', label: 'All' },
-              { value: 'counsel', label: 'Counsel — privileged' },
+              { value: 'counsel', label: 'Counsel 🔒' },
             ]}
             value={active}
             onChange={setChannel}
           />
+        ) : null}
+        {active === 'counsel' ? (
+          <T variant="label" tone="muted" numberOfLines={1}>Privileged & confidential — visible to Counsel, Lead, Admin only</T>
         ) : null}
         <FlatList
           ref={list}
