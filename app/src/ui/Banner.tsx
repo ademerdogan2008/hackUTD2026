@@ -4,7 +4,8 @@ import { color, radius, space, type, variantColor } from './theme';
 
 export type BannerVariant = 'info' | 'success' | 'warning' | 'danger';
 
-export function Banner({ text, variant = 'info', actionLabel, onAction }: { text: string; variant?: BannerVariant; actionLabel?: string; onAction?: () => void }) {
+export function Banner({ text, variant: v, tone, actionLabel, onAction }: { text: string; variant?: BannerVariant; tone?: BannerVariant; actionLabel?: string; onAction?: () => void }) {
+  const variant: BannerVariant = v ?? tone ?? 'info';
   return (
     <View
       style={styles.wrap}
@@ -16,7 +17,7 @@ export function Banner({ text, variant = 'info', actionLabel, onAction }: { text
         <Text style={type.body} maxFontSizeMultiplier={1.5}>
           {text}
         </Text>
-        {actionLabel && onAction ? <Button label={actionLabel} onPress={onAction} variant="ghost" fullWidth={false} /> : null}
+        {actionLabel && onAction ? <Button title={actionLabel} onPress={onAction} variant="ghost" fullWidth={false} /> : null}
       </View>
     </View>
   );

@@ -2,7 +2,8 @@ import { StyleSheet, Text, View } from 'react-native';
 import { ROLE_LABEL_FALLBACK } from './roles';
 import { color, radius, space, type, variantColor, type Variant } from './theme';
 
-export function Badge({ label, variant = 'neutral', dot }: { label: string; variant?: Variant; dot?: boolean }) {
+export function Badge({ label, variant: v, tone, dot }: { label: string; variant?: Variant; tone?: Variant; dot?: boolean }) {
+  const variant: Variant = v ?? tone ?? 'neutral';
   const c = variant === 'neutral' ? color.text : variantColor[variant];
   return (
     <View style={[styles.pill, { borderColor: variant === 'neutral' ? color.border : c }]} accessibilityLabel={label}>

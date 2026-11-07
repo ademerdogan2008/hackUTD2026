@@ -6,6 +6,7 @@ const LOCK_AFTER_MS = 60_000;
 
 interface UnlockState {
   unlocked: boolean;
+  locked: boolean;
   /** Verify PIN; unlocks on success. */
   unlock: (pin: string) => Promise<boolean>;
   /** Mark unlocked without verifying (right after the PIN was just set). */
@@ -13,7 +14,7 @@ interface UnlockState {
   lock: () => void;
 }
 
-const Ctx = createContext<UnlockState>({ unlocked: false, unlock: async () => false, markUnlocked: () => {}, lock: () => {} });
+const Ctx = createContext<UnlockState>({ unlocked: false, locked: true, unlock: async () => false, markUnlocked: () => {}, lock: () => {} });
 
 export function UnlockProvider({ children }: { children: ReactNode }) {
   const [unlocked, setUnlocked] = useState(false);
@@ -39,7 +40,7 @@ export function UnlockProvider({ children }: { children: ReactNode }) {
   const markUnlocked = useCallback(() => setUnlocked(true), []);
   const lock = useCallback(() => setUnlocked(false), []);
 
-  const value = useMemo(() => ({ unlocked, unlock, markUnlocked, lock }), [unlocked, unlock, markUnlocked, lock]);
+  const value = useMemo(() => ({ unlocked, locked: !unlocked, unlock, markUnlocked, lock }), [unlocked, unlock, markUnlocked, lock]);
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>;
 }
 

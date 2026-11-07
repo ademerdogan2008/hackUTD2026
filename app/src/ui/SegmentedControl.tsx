@@ -6,10 +6,10 @@ export interface Segment<T extends string> {
   label: string;
 }
 
-export function SegmentedControl<T extends string>({ segments, value, onChange }: { segments: Segment<T>[]; value: T; onChange: (v: T) => void }) {
+export function SegmentedControl<T extends string>({ segments, options, value, onChange }: { segments?: Segment<T>[]; options?: { value: string; label: string }[]; value: string; onChange: (v: any) => void }) {
   return (
     <View style={styles.wrap} accessibilityRole="tablist">
-      {segments.map((s) => {
+      {((segments ?? options ?? []) as Segment<T>[]).map((s) => {
         const sel = s.value === value;
         return (
           <Pressable

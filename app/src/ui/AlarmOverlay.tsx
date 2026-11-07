@@ -8,12 +8,14 @@ export interface AlarmOverlayProps {
   visible: boolean;
   title?: string;
   subtitle?: string;
+  body?: string;
   actionLabel?: string;
   onAction: () => void;
 }
 
 /** Full-screen red alarm. Pulses and vibrates on native until dismissed. */
-export function AlarmOverlay({ visible, title = 'INCIDENT ACTIVE', subtitle, actionLabel = 'Open incident', onAction }: AlarmOverlayProps) {
+export function AlarmOverlay({ visible, title = 'INCIDENT ACTIVE', subtitle: sub, body, actionLabel = 'Open incident', onAction }: AlarmOverlayProps) {
+  const subtitle = body ?? sub;
   const pulse = useRef(new Animated.Value(1)).current;
 
   useEffect(() => {
@@ -48,7 +50,7 @@ export function AlarmOverlay({ visible, title = 'INCIDENT ACTIVE', subtitle, act
           {subtitle ? <Text style={[type.body, { color: color.onDanger, textAlign: 'center' }]}>{subtitle}</Text> : null}
         </View>
         <View style={styles.bar}>
-          <Button label={actionLabel} onPress={onAction} variant="primary" />
+          <Button title={actionLabel} onPress={onAction} variant="primary" />
         </View>
       </View>
     </Modal>

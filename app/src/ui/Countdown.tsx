@@ -3,7 +3,8 @@ import { StyleSheet, Text, View } from 'react-native';
 import { color, mono, type } from './theme';
 
 /** expiresAt: epoch millis. */
-export function Countdown({ expiresAt, onExpire }: { expiresAt: number; onExpire?: () => void }) {
+export function Countdown({ until, expiresAt: exp, onExpire }: { until?: Date; expiresAt?: number; onExpire?: () => void }) {
+  const expiresAt = until ? until.getTime() : (exp ?? 0);
   const [now, setNow] = useState(Date.now());
   useEffect(() => {
     const t = setInterval(() => setNow(Date.now()), 1000);

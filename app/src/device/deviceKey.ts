@@ -30,3 +30,11 @@ export async function hasDeviceKey(): Promise<boolean> {
 export async function clearDeviceKey(): Promise<void> {
   await removeItem(KEY);
 }
+
+export async function getDeviceSecretKey(): Promise<Uint8Array> {
+  return (await getOrCreateDeviceKey()).secretKey;
+}
+
+export async function getPublicKeyHex(): Promise<string> {
+  return (await getOrCreateDeviceKey()).publicKeyHex;
+}

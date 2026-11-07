@@ -2,9 +2,9 @@ import { StyleSheet, Text, View, useWindowDimensions } from 'react-native';
 import QRCode from 'react-native-qrcode-svg';
 import { color, radius, space, type } from './theme';
 
-export function QRPanel({ value, expired, label }: { value: string; expired?: boolean; label?: string }) {
+export function QRPanel({ value, expired, label, size: sizeProp }: { value: string; expired?: boolean; label?: string; size?: number }) {
   const { width } = useWindowDimensions();
-  const size = Math.min(width - 2 * space.md, 340);
+  const size = sizeProp ?? Math.min(width - 2 * space.md, 340);
   const inner = size - 2 * space.md;
   return (
     <View

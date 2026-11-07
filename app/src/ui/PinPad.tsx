@@ -1,18 +1,22 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { haptics } from './haptics';
 import { color, radius, space, type } from './theme';
 
 export interface PinPadProps {
   length?: number;
-  value: string;
-  onChange: (v: string) => void;
-  onComplete?: (v: string) => void;
+  value?: string;
+  onChange?: (v: string) => void;
+  onComplete: (v: string) => void;
   disabled?: boolean;
   error?: string | null;
+  title?: string;
 }
 
-export function PinPad({ length = 6, value, onChange, onComplete, disabled, error }: PinPadProps) {
+export function PinPad({ length = 6, value: valueProp, onChange: onChangeProp, onComplete, disabled, error, title }: PinPadProps) {
+  const [inner, setInner] = useState('');
+  const value = valueProp ?? inner;
+  const onChange = onChangeProp ?? setInner;
   // Clear dots shortly after an error is shown.
   useEffect(() => {
     if (!error || !value) return;
@@ -25,7 +29,7 @@ export function PinPad({ length = 6, value, onChange, onComplete, disabled, erro
     haptics.tick();
     const next = value + d;
     onChange(next);
-    if (next.length === length) onComplete?.(next);
+    if (next.length === length) onComplete(next);
   };
   const back = () => {
     if (!disabled) onChange(value.slice(0, -1));
@@ -39,6 +43,7 @@ export function PinPad({ length = 6, value, onChange, onComplete, disabled, erro
 
   return (
     <View style={styles.wrap}>
+      {title ? <Text style={type.heading}>{title}</Text> : null}
       <View style={styles.dots} accessibilityLabel={`${value.length} of ${length} digits entered`} accessibilityLiveRegion="polite">
         {Array.from({ length }, (_, i) => (
           <View key={i} style={[styles.dot, i < value.length ? { backgroundColor: error ? color.dangerText : color.text, borderColor: error ? color.dangerText : color.text } : { borderColor: error ? color.dangerText : color.border }]} />

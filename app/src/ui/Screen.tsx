@@ -8,10 +8,12 @@ export interface ScreenProps {
   footer?: React.ReactNode;
   banner?: React.ReactNode;
   headerRight?: React.ReactNode;
+  right?: React.ReactNode;
   children?: React.ReactNode;
 }
 
-export function Screen({ title, scroll = true, footer, banner, headerRight, children }: ScreenProps) {
+export function Screen({ title, scroll = true, footer, banner, headerRight: hr, right, children }: ScreenProps) {
+  const headerRight = right ?? hr;
   return (
     <SafeAreaView style={styles.root} edges={['top', 'left', 'right']}>
       {title || headerRight ? (

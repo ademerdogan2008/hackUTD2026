@@ -41,3 +41,5 @@ export const variantColor: Record<Variant, string> = {
   warning: color.warning,
   danger: color.danger,
 };
+
+export const colors = { ...color, surface2: color.surfaceRaised };

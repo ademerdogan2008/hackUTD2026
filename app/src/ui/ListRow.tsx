@@ -6,6 +6,7 @@ export interface ListRowProps {
   subtitle?: string;
   leading?: React.ReactNode;
   trailing?: React.ReactNode;
+  right?: React.ReactNode;
   initials?: boolean;
   onPress?: () => void;
   accessibilityLabel?: string;
@@ -20,7 +21,7 @@ export function Avatar({ name }: { name: string }) {
   );
 }
 
-export function ListRow({ title, subtitle, leading, trailing, initials, onPress, accessibilityLabel }: ListRowProps) {
+export function ListRow({ title, subtitle, leading, trailing, right, initials, onPress, accessibilityLabel }: ListRowProps) {
   const body = (pressed: boolean) => (
     <View style={[styles.row, pressed && { backgroundColor: color.surfaceRaised }]}>
       {initials ? <Avatar name={title} /> : leading}
@@ -34,7 +35,7 @@ export function ListRow({ title, subtitle, leading, trailing, initials, onPress,
           </Text>
         ) : null}
       </View>
-      {trailing}
+      {trailing ?? right}
     </View>
   );
   if (!onPress) return body(false);

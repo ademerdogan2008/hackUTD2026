@@ -10,7 +10,7 @@ export function EmptyState({ title, body, glyph = '○', actionLabel, onAction }
       </Text>
       <Text style={[type.heading, { textAlign: 'center' }]}>{title}</Text>
       {body ? <Text style={[type.body, { color: color.textMuted, textAlign: 'center' }]}>{body}</Text> : null}
-      {actionLabel && onAction ? <Button label={actionLabel} onPress={onAction} variant="ghost" fullWidth={false} /> : null}
+      {actionLabel && onAction ? <Button title={actionLabel} onPress={onAction} variant="ghost" fullWidth={false} /> : null}
     </View>
   );
 }

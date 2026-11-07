@@ -13,3 +13,4 @@ export * from './SegmentedControl';
 export * from './Screen';
 export * from './Field';
 export * from './AlarmOverlay';
+export * from './T';

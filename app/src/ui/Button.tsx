@@ -4,7 +4,9 @@ import { color, radius, space, type } from './theme';
 export type ButtonVariant = 'primary' | 'secondary' | 'danger' | 'ghost';
 
 export interface ButtonProps {
-  label: string;
+  title?: string;
+  label?: string;
+  accessibilityLabel?: string;
   onPress: () => void;
   variant?: ButtonVariant;
   loading?: boolean;
@@ -22,7 +24,8 @@ const fg: Record<ButtonVariant, string> = {
   ghost: color.text,
 };
 
-export function Button({ label, onPress, variant = 'primary', loading, disabled, icon, fullWidth = true, testID, style }: ButtonProps) {
+export function Button({ title, label: labelProp, accessibilityLabel, onPress, variant = 'primary', loading, disabled, icon, fullWidth = true, testID, style }: ButtonProps) {
+  const label = title ?? labelProp ?? '';
   const off = disabled || loading;
   return (
     <Pressable
@@ -31,7 +34,7 @@ export function Button({ label, onPress, variant = 'primary', loading, disabled,
         if (!off) onPress();
       }}
       accessibilityRole="button"
-      accessibilityLabel={label}
+      accessibilityLabel={accessibilityLabel ?? label}
       accessibilityState={{ disabled: !!off, busy: !!loading }}
       style={({ pressed }) => [
         styles.base,
