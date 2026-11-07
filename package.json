@@ -16,6 +16,9 @@
     "typecheck": "npm exec -w @redphone/shared -- tsc --noEmit && npm exec -w @redphone/server -- tsc --noEmit && npm exec -w @redphone/app -- tsc --noEmit",
     "publish:dev": "bash scripts/publish.sh dev",
     "publish:demo": "bash scripts/publish.sh demo",
-    "smoke": "vitest run --root . scripts/smoke"
+    "smoke": "vitest run --root . scripts/smoke",
+    "start": "cd app && npx expo start",
+    "start:demo": "cd app && EXPO_PUBLIC_SPACETIME_DB=red-phone-6h786 npx expo start --tunnel",
+    "web": "cd app && npx expo start --web"
   }
 }
