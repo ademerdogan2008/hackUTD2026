@@ -1,0 +1,14 @@
+{
+  "name": "redphone",
+  "private": true,
+  "engines": { "node": ">=24.22.1" },
+  "workspaces": ["server", "shared", "app"],
+  "scripts": {
+    "build": "spacetime build --module-path server && npm exec -w @redphone/app -- tsc --noEmit",
+    "gen": "spacetime generate --lang typescript --out-dir app/src/module_bindings --module-path server -y",
+    "test": "npm test -w @redphone/shared && npm test -w @redphone/server",
+    "typecheck": "npm exec -w @redphone/shared -- tsc --noEmit && npm exec -w @redphone/server -- tsc --noEmit && npm exec -w @redphone/app -- tsc --noEmit",
+    "publish:dev": "bash scripts/publish.sh dev",
+    "publish:demo": "bash scripts/publish.sh demo"
+  }
+}

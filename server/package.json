@@ -1,0 +1,14 @@
+{
+  "name": "@redphone/server",
+  "private": true,
+  "type": "module",
+  "version": "0.0.0",
+  "scripts": { "test": "vitest run" },
+  "dependencies": {
+    "spacetimedb": "2.14.1",
+    "@noble/curves": "2.4.0",
+    "@noble/hashes": "2.4.0",
+    "@redphone/shared": "*"
+  },
+  "devDependencies": { "typescript": "~5.9.3", "vitest": "^3.2.4" }
+}
