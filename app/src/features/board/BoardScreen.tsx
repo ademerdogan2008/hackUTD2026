@@ -40,6 +40,7 @@ export default function BoardScreen() {
   useEffect(() => {
     const t = setInterval(() => setNow(Date.now()), 15000);
     return () => clearInterval(t);
+  }, []);
 
 
   const run = async (fn: () => Promise<unknown>) => {
