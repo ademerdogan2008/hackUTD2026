@@ -31,7 +31,14 @@ Decimal phases appear between their surrounding integers in numeric order.
   3. A physical phone in Expo Go connects to Maincloud with compression off, shows more than 100 live rows from a per-sender view, and resumes live updates after the app is backgrounded and foregrounded
   4. The app shows a "Live" / "Reconnecting" indicator that flips correctly when the connection drops and returns
   5. A signature made on the phone verifies inside the published module against the shared test vector (and in vitest)
-**Plans**: TBD
+**Plans:** 5 plans
+
+Plans:
+- [ ] 01-01-PLAN.md — Pinned npm-workspaces monorepo + trimmed Expo SDK 58 app, single lockfile (wave 1)
+- [ ] 01-02-PLAN.md — Shared Ed25519 contract/test vector + spike module (rows, per-sender view, verify) + bindings, TDD (wave 2)
+- [ ] 01-03-PLAN.md — Isolated-config publish to Maincloud dev + demo with token checkpoint (wave 3)
+- [ ] 01-04-PLAN.md — Expo Go client: live rows, Live/Reconnecting badge, sign & verify (wave 3)
+- [ ] 01-05-PLAN.md — Full gate + physical-phone verification + hygiene sweep (wave 4)
 **UI hint**: yes
 
 **Notes for planning:**
@@ -104,7 +111,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Foundation & Real-Phone Spike | 0/TBD | Not started | - |
+| 1. Foundation & Real-Phone Spike | 0/5 | Not started | - |
 | 2. Trust Core | 0/TBD | Not started | - |
 | 3. Alert, Push & Comms | 0/TBD | Not started | - |
 | 4. Playbook, Tasks & Status Board | 0/TBD | Not started | - |
