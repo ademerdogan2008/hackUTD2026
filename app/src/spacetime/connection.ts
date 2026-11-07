@@ -1,11 +1,11 @@
-import * as SecureStore from 'expo-secure-store';
+import { getItem, setItem } from '../device/storage';
 import { DbConnection } from '../module_bindings';
 
 export const TOKEN_KEY = 'rp.spacetime_token';
 
 export async function loadSavedToken(): Promise<string | undefined> {
   try {
-    const t = await SecureStore.getItemAsync(TOKEN_KEY);
+    const t = await getItem(TOKEN_KEY);
     return t ?? undefined;
   } catch {
     // SecureStore is native-only (e.g. unavailable on web); fall back to a fresh identity.
@@ -32,9 +32,7 @@ export function makeBuilder(
     .withCompression('none')
     .withAutomaticReconnect()
     .onConnect((_conn, identity, token) => {
-      SecureStore.setItemAsync(TOKEN_KEY, token, {
-        keychainAccessible: SecureStore.WHEN_UNLOCKED_THIS_DEVICE_ONLY,
-      }).catch(() => {
+      setItem(TOKEN_KEY, token).catch(() => {
         // Token persistence is best-effort; never let storage errors break the connection.
       });
       handlers.onConnected(identity.toHexString());

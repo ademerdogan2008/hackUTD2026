@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Red Phone — Tabletop Demo</title>
+  <style>
+    :root { --bg: #05070a; --text: #f5f7fa; --muted: #9aa4b2; --red: #d92d20; --border: #232a33; }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; height: 100%; background: var(--bg); color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+    header { display: flex; align-items: baseline; gap: 16px; padding: 14px 20px 6px; }
+    header h1 { margin: 0; font-size: 20px; letter-spacing: .02em; }
+    header h1 span { color: var(--red); }
+    header p { margin: 0; color: var(--muted); font-size: 14px; }
+    .grid { display: flex; gap: 18px; padding: 10px 20px 20px; justify-content: center; flex-wrap: wrap; }
+    .phone { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+    .label { font-size: 13px; color: var(--muted); text-transform: uppercase; letter-spacing: .08em; }
+    .label b { color: var(--text); }
+    .frame { width: 360px; height: calc(100vh - 110px); max-height: 780px; min-height: 560px;
+      border: 1px solid var(--border); border-radius: 28px; overflow: hidden; background: #0b0d10;
+      box-shadow: 0 0 0 6px #11151b; }
+    iframe { width: 100%; height: 100%; border: 0; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>RED <span>PHONE</span> — tabletop</h1>
+    <p>Each panel is a separate person with its own device key and Spacetime identity. Invite with the code shown under the QR; paste it into another panel's Join screen.</p>
+  </header>
+  <main class="grid" id="grid"></main>
+  <script>
+    // ?people=admin,lead,it,counsel picks panels; ?fresh=1 gives every panel a new identity.
+    const params = new URLSearchParams(location.search);
+    const people = (params.get('people') || 'admin,lead,it,counsel').split(',').map(s => s.trim()).filter(Boolean).slice(0, 6);
+    const fresh = params.get('fresh') ? '-' + Math.random().toString(36).slice(2, 7) : '';
+    const titles = { admin: 'Admin', lead: 'Incident Lead', it: 'IT / Security', counsel: 'Counsel', comms: 'Comms', executive: 'Executive' };
+    const grid = document.getElementById('grid');
+    for (const p of people) {
+      // The Admin panel reuses this browser's default identity (the one that set up the first admin).
+      const src = p === 'admin' && !fresh ? '/' : `/?as=${encodeURIComponent(p + fresh)}`;
+      const el = document.createElement('div');
+      el.className = 'phone';
+      el.innerHTML = `<div class="label"><b>${titles[p] || p}</b></div><div class="frame"><iframe title="${titles[p] || p}" src="${src}"></iframe></div>`;
+      grid.appendChild(el);
+    }
+  </script>
+</body>
+</html>
