@@ -11,8 +11,8 @@ case "$TARGET" in
   *) echo "usage: publish.sh dev|demo" >&2; exit 2 ;;
 esac
 
-RP_DB_DEV=redphone-hackutd26-dev
-RP_DB_DEMO=redphone-hackutd26-demo
+RP_DB_DEV=red-phone-6h786-dev
+RP_DB_DEMO=red-phone-6h786
 if [ -f ./.env ]; then
   RP_DB_DEV_ENV="$(sed -n 's/^RP_DB_DEV=//p' .env | head -1)"
   RP_DB_DEMO_ENV="$(sed -n 's/^RP_DB_DEMO=//p' .env | head -1)"
