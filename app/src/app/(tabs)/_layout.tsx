@@ -1,5 +1,6 @@
 import { Tabs } from 'expo-router';
 import { Text } from 'react-native';
+import { GlobalAlarm } from '../../features/incident/GlobalAlarm';
 import { color, type } from '../../ui';
 
 const glyph = (g: string) =>
@@ -9,6 +10,8 @@ const glyph = (g: string) =>
 
 export default function TabsLayout() {
   return (
+    <>
+    <GlobalAlarm />
     <Tabs
       screenOptions={{
         headerShown: false,
@@ -25,5 +28,6 @@ export default function TabsLayout() {
       <Tabs.Screen name="chat" options={{ title: 'Chat', tabBarIcon: glyph('✉') }} />
       <Tabs.Screen name="team" options={{ title: 'Team', tabBarIcon: glyph('☺') }} />
     </Tabs>
+    </>
   );
 }
