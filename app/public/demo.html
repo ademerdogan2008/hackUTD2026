@@ -34,6 +34,9 @@
     const params = new URLSearchParams(location.search);
     const people = (params.get('people') || 'admin,lead,it,counsel').split(',').map(s => s.trim()).filter(Boolean).slice(0, 6);
     const fresh = params.get('fresh') ? '-' + Math.random().toString(36).slice(2, 7) : '';
+    // ?db=red-phone-… pins the database for every panel in this tab (read by the app's config).
+    const db = params.get('db');
+    if (db && /^red-phone-[a-z0-9-]{1,40}$/.test(db)) sessionStorage.setItem('rp.db', db);
     const titles = { admin: 'Admin', lead: 'Incident Lead', it: 'IT / Security', counsel: 'Counsel', comms: 'Comms', executive: 'Executive' };
     const grid = document.getElementById('grid');
     for (const p of people) {
