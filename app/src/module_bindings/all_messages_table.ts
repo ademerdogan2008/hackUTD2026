@@ -11,7 +11,11 @@ import {
 } from "spacetimedb";
 
 export default __t.row({
-  owner: __t.identity().primaryKey(),
-  ok: __t.bool(),
-  checkedAt: __t.timestamp().name("checked_at"),
+  id: __t.u64().primaryKey(),
+  incidentId: __t.u64().name("incident_id"),
+  channel: __t.string(),
+  author: __t.identity(),
+  authorName: __t.string().name("author_name"),
+  body: __t.string(),
+  at: __t.timestamp(),
 });

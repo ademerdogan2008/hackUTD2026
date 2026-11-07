@@ -11,7 +11,5 @@ import {
 } from "spacetimedb";
 
 export default {
-  pubkeyHex: __t.string(),
-  message: __t.string(),
-  sigHex: __t.string(),
+  status: __t.string(),
 };

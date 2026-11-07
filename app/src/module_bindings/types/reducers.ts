@@ -6,13 +6,35 @@
 import { type Infer as __Infer } from "spacetimedb";
 
 // Import all reducer arg schemas
-import SpikeClearReducer from "../spike_clear_reducer";
-import SpikeSeedReducer from "../spike_seed_reducer";
-import SpikeTouchReducer from "../spike_touch_reducer";
-import SpikeVerifyReducer from "../spike_verify_reducer";
+import AcceptTaskReducer from "../accept_task_reducer";
+import AdvanceIncidentReducer from "../advance_incident_reducer";
+import BootstrapAdminReducer from "../bootstrap_admin_reducer";
+import CheckInReducer from "../check_in_reducer";
+import CompleteTaskReducer from "../complete_task_reducer";
+import ConfirmAlertReducer from "../confirm_alert_reducer";
+import CreateInviteReducer from "../create_invite_reducer";
+import DismissAlertReducer from "../dismiss_alert_reducer";
+import MarkClockFiledReducer from "../mark_clock_filed_reducer";
+import RaiseAlertReducer from "../raise_alert_reducer";
+import RedeemInviteReducer from "../redeem_invite_reducer";
+import ResetDemoReducer from "../reset_demo_reducer";
+import SendMessageReducer from "../send_message_reducer";
+import SetAssetStatusReducer from "../set_asset_status_reducer";
+import SetAttackTypeReducer from "../set_attack_type_reducer";
 
-export type SpikeClearParams = __Infer<typeof SpikeClearReducer>;
-export type SpikeSeedParams = __Infer<typeof SpikeSeedReducer>;
-export type SpikeTouchParams = __Infer<typeof SpikeTouchReducer>;
-export type SpikeVerifyParams = __Infer<typeof SpikeVerifyReducer>;
+export type AcceptTaskParams = __Infer<typeof AcceptTaskReducer>;
+export type AdvanceIncidentParams = __Infer<typeof AdvanceIncidentReducer>;
+export type BootstrapAdminParams = __Infer<typeof BootstrapAdminReducer>;
+export type CheckInParams = __Infer<typeof CheckInReducer>;
+export type CompleteTaskParams = __Infer<typeof CompleteTaskReducer>;
+export type ConfirmAlertParams = __Infer<typeof ConfirmAlertReducer>;
+export type CreateInviteParams = __Infer<typeof CreateInviteReducer>;
+export type DismissAlertParams = __Infer<typeof DismissAlertReducer>;
+export type MarkClockFiledParams = __Infer<typeof MarkClockFiledReducer>;
+export type RaiseAlertParams = __Infer<typeof RaiseAlertReducer>;
+export type RedeemInviteParams = __Infer<typeof RedeemInviteReducer>;
+export type ResetDemoParams = __Infer<typeof ResetDemoReducer>;
+export type SendMessageParams = __Infer<typeof SendMessageReducer>;
+export type SetAssetStatusParams = __Infer<typeof SetAssetStatusReducer>;
+export type SetAttackTypeParams = __Infer<typeof SetAttackTypeReducer>;
 

@@ -10,24 +10,136 @@ import {
   type Infer as __Infer,
 } from "spacetimedb";
 
-export const MySpikeRows = __t.object("MySpikeRows", {});
-export type MySpikeRows = __Infer<typeof MySpikeRows>;
-
-export const MyVerifyResults = __t.object("MyVerifyResults", {});
-export type MyVerifyResults = __Infer<typeof MyVerifyResults>;
-
-export const SpikeRow = __t.object("SpikeRow", {
+export const AlertReport = __t.object("AlertReport", {
   id: __t.u64(),
-  owner: __t.identity(),
-  n: __t.u32(),
-  createdAt: __t.timestamp(),
+  incidentId: __t.u64(),
+  reporter: __t.identity(),
+  at: __t.timestamp(),
 });
-export type SpikeRow = __Infer<typeof SpikeRow>;
+export type AlertReport = __Infer<typeof AlertReport>;
 
-export const SpikeVerifyResult = __t.object("SpikeVerifyResult", {
-  owner: __t.identity(),
-  ok: __t.bool(),
-  checkedAt: __t.timestamp(),
+export const AllMessages = __t.object("AllMessages", {});
+export type AllMessages = __Infer<typeof AllMessages>;
+
+export const Asset = __t.object("Asset", {
+  id: __t.u64(),
+  name: __t.string(),
+  hasPii: __t.bool(),
+  regions: __t.string(),
+  status: __t.string(),
+  setBy: __t.string(),
+  updatedAt: __t.timestamp(),
 });
-export type SpikeVerifyResult = __Infer<typeof SpikeVerifyResult>;
+export type Asset = __Infer<typeof Asset>;
+
+export const AuditHead = __t.object("AuditHead", {
+  id: __t.u32(),
+  seq: __t.u64(),
+  hash: __t.string(),
+});
+export type AuditHead = __Infer<typeof AuditHead>;
+
+export const AuditLog = __t.object("AuditLog", {
+  seq: __t.u64(),
+  at: __t.timestamp(),
+  actor: __t.identity(),
+  action: __t.string(),
+  dataHash: __t.string(),
+  prevHash: __t.string(),
+  hash: __t.string(),
+});
+export type AuditLog = __Infer<typeof AuditLog>;
+
+export const Checkin = __t.object("Checkin", {
+  id: __t.u64(),
+  incidentId: __t.u64(),
+  member: __t.identity(),
+  state: __t.string(),
+  at: __t.timestamp(),
+});
+export type Checkin = __Infer<typeof Checkin>;
+
+export const Clock = __t.object("Clock", {
+  id: __t.u64(),
+  incidentId: __t.u64(),
+  name: __t.string(),
+  startedAt: __t.timestamp(),
+  deadlineAt: __t.timestamp(),
+  note: __t.string(),
+  status: __t.string(),
+});
+export type Clock = __Infer<typeof Clock>;
+
+export const CounselMessages = __t.object("CounselMessages", {});
+export type CounselMessages = __Infer<typeof CounselMessages>;
+
+export const Incident = __t.object("Incident", {
+  id: __t.u64(),
+  status: __t.string(),
+  attackType: __t.string(),
+  isDrill: __t.bool(),
+  raisedBy: __t.identity(),
+  confirmedBy: __t.string(),
+  createdAt: __t.timestamp(),
+  updatedAt: __t.timestamp(),
+});
+export type Incident = __Infer<typeof Incident>;
+
+export const Invite = __t.object("Invite", {
+  id: __t.u64(),
+  secretHash: __t.string(),
+  role: __t.string(),
+  name: __t.string(),
+  createdBy: __t.identity(),
+  expiresAt: __t.timestamp(),
+  used: __t.bool(),
+});
+export type Invite = __Infer<typeof Invite>;
+
+export const Member = __t.object("Member", {
+  identity: __t.identity(),
+  name: __t.string(),
+  role: __t.string(),
+  pubkeyHex: __t.string(),
+  fingerprint: __t.string(),
+  invitedBy: __t.string(),
+  joinedAt: __t.timestamp(),
+});
+export type Member = __Infer<typeof Member>;
+
+export const Message = __t.object("Message", {
+  id: __t.u64(),
+  incidentId: __t.u64(),
+  channel: __t.string(),
+  author: __t.identity(),
+  authorName: __t.string(),
+  body: __t.string(),
+  at: __t.timestamp(),
+});
+export type Message = __Infer<typeof Message>;
+
+export const PlaybookStep = __t.object("PlaybookStep", {
+  id: __t.u64(),
+  attackType: __t.string(),
+  order: __t.u32(),
+  role: __t.string(),
+  title: __t.string(),
+  detail: __t.string(),
+  dependsOn: __t.u64(),
+});
+export type PlaybookStep = __Infer<typeof PlaybookStep>;
+
+export const Task = __t.object("Task", {
+  id: __t.u64(),
+  incidentId: __t.u64(),
+  stepId: __t.u64(),
+  role: __t.string(),
+  assignedTo: __t.string(),
+  assignedName: __t.string(),
+  status: __t.string(),
+  title: __t.string(),
+  detail: __t.string(),
+  updatedAt: __t.timestamp(),
+});
+export type Task = __Infer<typeof Task>;
 

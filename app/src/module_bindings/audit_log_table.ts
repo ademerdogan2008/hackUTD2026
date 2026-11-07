@@ -11,8 +11,11 @@ import {
 } from "spacetimedb";
 
 export default __t.row({
-  id: __t.u64().primaryKey(),
-  owner: __t.identity(),
-  n: __t.u32(),
-  createdAt: __t.timestamp().name("created_at"),
+  seq: __t.u64().primaryKey(),
+  at: __t.timestamp(),
+  actor: __t.identity(),
+  action: __t.string(),
+  dataHash: __t.string().name("data_hash"),
+  prevHash: __t.string().name("prev_hash"),
+  hash: __t.string(),
 });

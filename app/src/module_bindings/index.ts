@@ -34,43 +34,201 @@ import {
 } from "spacetimedb";
 
 // Import all reducer arg schemas
-import SpikeClearReducer from "./spike_clear_reducer";
-import SpikeSeedReducer from "./spike_seed_reducer";
-import SpikeTouchReducer from "./spike_touch_reducer";
-import SpikeVerifyReducer from "./spike_verify_reducer";
+import AcceptTaskReducer from "./accept_task_reducer";
+import AdvanceIncidentReducer from "./advance_incident_reducer";
+import BootstrapAdminReducer from "./bootstrap_admin_reducer";
+import CheckInReducer from "./check_in_reducer";
+import CompleteTaskReducer from "./complete_task_reducer";
+import ConfirmAlertReducer from "./confirm_alert_reducer";
+import CreateInviteReducer from "./create_invite_reducer";
+import DismissAlertReducer from "./dismiss_alert_reducer";
+import MarkClockFiledReducer from "./mark_clock_filed_reducer";
+import RaiseAlertReducer from "./raise_alert_reducer";
+import RedeemInviteReducer from "./redeem_invite_reducer";
+import ResetDemoReducer from "./reset_demo_reducer";
+import SendMessageReducer from "./send_message_reducer";
+import SetAssetStatusReducer from "./set_asset_status_reducer";
+import SetAttackTypeReducer from "./set_attack_type_reducer";
 
 // Import all procedure arg schemas
 
 // Import all table schema definitions
-import MySpikeRowsRow from "./my_spike_rows_table";
-import MyVerifyResultsRow from "./my_verify_results_table";
+import AlertReportRow from "./alert_report_table";
+import AllMessagesRow from "./all_messages_table";
+import AssetRow from "./asset_table";
+import AuditLogRow from "./audit_log_table";
+import CheckinRow from "./checkin_table";
+import ClockRow from "./clock_table";
+import CounselMessagesRow from "./counsel_messages_table";
+import IncidentRow from "./incident_table";
+import InviteRow from "./invite_table";
+import MemberRow from "./member_table";
+import PlaybookStepRow from "./playbook_step_table";
+import TaskRow from "./task_table";
 
 /** Type-only namespace exports for generated type groups. */
 
 /** The schema information for all tables in this module. This is defined the same was as the tables would have been defined in the server. */
 const tablesSchema = __schema({
-  mySpikeRows: __table({
-    name: 'my_spike_rows',
+  alertReport: __table({
+    name: 'alert_report',
+    indexes: [
+      { accessor: 'id', name: 'alert_report_id_idx_btree', algorithm: 'btree', columns: [
+        'id',
+      ] },
+      { accessor: 'incidentId', name: 'alert_report_incident_id_idx_btree', algorithm: 'btree', columns: [
+        'incidentId',
+      ] },
+    ],
+    constraints: [
+      { name: 'alert_report_id_key', constraint: 'unique', columns: ['id'] },
+    ],
+  }, AlertReportRow),
+  asset: __table({
+    name: 'asset',
+    indexes: [
+      { accessor: 'id', name: 'asset_id_idx_btree', algorithm: 'btree', columns: [
+        'id',
+      ] },
+    ],
+    constraints: [
+      { name: 'asset_id_key', constraint: 'unique', columns: ['id'] },
+    ],
+  }, AssetRow),
+  auditLog: __table({
+    name: 'audit_log',
+    indexes: [
+      { accessor: 'seq', name: 'audit_log_seq_idx_btree', algorithm: 'btree', columns: [
+        'seq',
+      ] },
+    ],
+    constraints: [
+      { name: 'audit_log_seq_key', constraint: 'unique', columns: ['seq'] },
+    ],
+  }, AuditLogRow),
+  checkin: __table({
+    name: 'checkin',
+    indexes: [
+      { accessor: 'id', name: 'checkin_id_idx_btree', algorithm: 'btree', columns: [
+        'id',
+      ] },
+      { accessor: 'incidentId', name: 'checkin_incident_id_idx_btree', algorithm: 'btree', columns: [
+        'incidentId',
+      ] },
+    ],
+    constraints: [
+      { name: 'checkin_id_key', constraint: 'unique', columns: ['id'] },
+    ],
+  }, CheckinRow),
+  clock: __table({
+    name: 'clock',
+    indexes: [
+      { accessor: 'id', name: 'clock_id_idx_btree', algorithm: 'btree', columns: [
+        'id',
+      ] },
+      { accessor: 'incidentId', name: 'clock_incident_id_idx_btree', algorithm: 'btree', columns: [
+        'incidentId',
+      ] },
+    ],
+    constraints: [
+      { name: 'clock_id_key', constraint: 'unique', columns: ['id'] },
+    ],
+  }, ClockRow),
+  incident: __table({
+    name: 'incident',
+    indexes: [
+      { accessor: 'id', name: 'incident_id_idx_btree', algorithm: 'btree', columns: [
+        'id',
+      ] },
+    ],
+    constraints: [
+      { name: 'incident_id_key', constraint: 'unique', columns: ['id'] },
+    ],
+  }, IncidentRow),
+  invite: __table({
+    name: 'invite',
+    indexes: [
+      { accessor: 'id', name: 'invite_id_idx_btree', algorithm: 'btree', columns: [
+        'id',
+      ] },
+      { accessor: 'secretHash', name: 'invite_secret_hash_idx_btree', algorithm: 'btree', columns: [
+        'secretHash',
+      ] },
+    ],
+    constraints: [
+      { name: 'invite_id_key', constraint: 'unique', columns: ['id'] },
+      { name: 'invite_secret_hash_key', constraint: 'unique', columns: ['secretHash'] },
+    ],
+  }, InviteRow),
+  member: __table({
+    name: 'member',
+    indexes: [
+      { accessor: 'identity', name: 'member_identity_idx_btree', algorithm: 'btree', columns: [
+        'identity',
+      ] },
+    ],
+    constraints: [
+      { name: 'member_identity_key', constraint: 'unique', columns: ['identity'] },
+    ],
+  }, MemberRow),
+  playbookStep: __table({
+    name: 'playbook_step',
+    indexes: [
+      { accessor: 'id', name: 'playbook_step_id_idx_btree', algorithm: 'btree', columns: [
+        'id',
+      ] },
+    ],
+    constraints: [
+      { name: 'playbook_step_id_key', constraint: 'unique', columns: ['id'] },
+    ],
+  }, PlaybookStepRow),
+  task: __table({
+    name: 'task',
+    indexes: [
+      { accessor: 'id', name: 'task_id_idx_btree', algorithm: 'btree', columns: [
+        'id',
+      ] },
+      { accessor: 'incidentId', name: 'task_incident_id_idx_btree', algorithm: 'btree', columns: [
+        'incidentId',
+      ] },
+    ],
+    constraints: [
+      { name: 'task_id_key', constraint: 'unique', columns: ['id'] },
+    ],
+  }, TaskRow),
+  allMessages: __table({
+    name: 'all_messages',
     indexes: [
     ],
     constraints: [
     ],
-  }, MySpikeRowsRow),
-  myVerifyResults: __table({
-    name: 'my_verify_results',
+  }, AllMessagesRow),
+  counselMessages: __table({
+    name: 'counsel_messages',
     indexes: [
     ],
     constraints: [
     ],
-  }, MyVerifyResultsRow),
+  }, CounselMessagesRow),
 });
 
 /** The schema information for all reducers in this module. This is defined the same way as the reducers would have been defined in the server, except the body of the reducer is omitted in code generation. */
 const reducersSchema = __reducers(
-  __reducerSchema("spike_clear", SpikeClearReducer),
-  __reducerSchema("spike_seed", SpikeSeedReducer),
-  __reducerSchema("spike_touch", SpikeTouchReducer),
-  __reducerSchema("spike_verify", SpikeVerifyReducer),
+  __reducerSchema("accept_task", AcceptTaskReducer),
+  __reducerSchema("advance_incident", AdvanceIncidentReducer),
+  __reducerSchema("bootstrap_admin", BootstrapAdminReducer),
+  __reducerSchema("check_in", CheckInReducer),
+  __reducerSchema("complete_task", CompleteTaskReducer),
+  __reducerSchema("confirm_alert", ConfirmAlertReducer),
+  __reducerSchema("create_invite", CreateInviteReducer),
+  __reducerSchema("dismiss_alert", DismissAlertReducer),
+  __reducerSchema("mark_clock_filed", MarkClockFiledReducer),
+  __reducerSchema("raise_alert", RaiseAlertReducer),
+  __reducerSchema("redeem_invite", RedeemInviteReducer),
+  __reducerSchema("reset_demo", ResetDemoReducer),
+  __reducerSchema("send_message", SendMessageReducer),
+  __reducerSchema("set_asset_status", SetAssetStatusReducer),
+  __reducerSchema("set_attack_type", SetAttackTypeReducer),
 );
 
 /** The schema information for all procedures in this module. This is defined the same way as the procedures would have been defined in the server. */

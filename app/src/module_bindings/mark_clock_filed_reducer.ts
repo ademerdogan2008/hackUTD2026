@@ -11,5 +11,5 @@ import {
 } from "spacetimedb";
 
 export default {
-  count: __t.u32(),
+  clockId: __t.u64(),
 };
