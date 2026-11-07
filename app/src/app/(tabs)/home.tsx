@@ -10,7 +10,7 @@ import { Badge, Banner, Button, Card, color, haptics, ListRow, radius, Screen, s
 const CHECKINS = [
   { state: 'here', label: "I'm here", tone: color.success },
   { state: 'unavailable', label: 'Unavailable', tone: color.warning },
-  { state: 'device_affected', label: 'Device hit', tone: color.dangerText },
+  { state: 'device_affected', label: 'Device affected', tone: color.dangerText },
 ] as const;
 const CHECKIN_LABEL: Record<string, string> = { here: 'Here', unavailable: 'Unavailable', device_affected: 'Device affected' };
 const NEXT: Record<string, { status: string; label: string }> = {
@@ -137,7 +137,7 @@ function Live({ run, incident, myRole, myHex }: { run: Run; incident: Incident; 
       <View style={[styles.hero, { backgroundColor: hot ? color.danger : color.surface, borderColor: accent }]}>
         <View style={styles.row}>
           {incident.isDrill ? <Badge label="DRILL" variant="warning" /> : null}
-          <Badge label={incident.attackType ? incident.attackType.toUpperCase() : 'TYPE UNSET'} variant={hot ? 'neutral' : 'info'} />
+          <Badge label={incident.attackType ? incident.attackType.toUpperCase() : 'TYPE PENDING'} variant={hot ? 'neutral' : 'info'} />
         </View>
         <Text style={[type.display, { color: hot ? color.onDanger : accent }]} maxFontSizeMultiplier={1.3}>
           {STATUS_TEXT[incident.status] ?? incident.status.toUpperCase()}
@@ -150,7 +150,7 @@ function Live({ run, incident, myRole, myHex }: { run: Run; incident: Incident; 
       {staff && !incident.attackType && incident.status === 'active' ? (
         <Card title="What are we facing?">
           <Button label="Ransomware" onPress={() => run(setType({ attackType: 'ransomware' }))} />
-          {['Phishing / BEC', 'Data breach', 'DDoS'].map((l) => (
+          {['Account takeover / phishing', 'Data theft', 'Wire fraud', 'Unknown'].map((l) => (
             <Button key={l} variant="secondary" disabled label={`${l} (coming soon)`} onPress={() => {}} />
           ))}
         </Card>
@@ -186,7 +186,7 @@ function Live({ run, incident, myRole, myHex }: { run: Run; incident: Incident; 
           <View style={styles.row}>
             <Badge dot label={`${counts.here} here`} variant="success" />
             <Badge dot label={`${counts.unavailable} away`} variant="warning" />
-            <Badge dot label={`${counts.device_affected} hit`} variant="danger" />
+            <Badge dot label={`${counts.device_affected} affected`} variant="danger" />
           </View>
           <View style={styles.list}>
             {members.map((m) => {
