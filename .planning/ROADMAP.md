@@ -12,7 +12,7 @@ Red Phone goes from an empty repo to a 3-minute ransomware tabletop on judges' o
 
 Decimal phases appear between their surrounding integers in numeric order.
 
-- [ ] **Phase 1: Foundation & Real-Phone Spike** - Pinned monorepo, dev + demo databases on Maincloud, and a physical phone proving live sync and on-device Ed25519 signatures verified by the module
+- [x] **Phase 1: Foundation & Real-Phone Spike** - Pinned monorepo, dev + demo databases on Maincloud, and a physical phone proving live sync and on-device Ed25519 signatures verified by the module (completed 2026-11-07)
 - [ ] **Phase 2: Trust Core** - Hash-chained audit, private tables with per-caller views, setup-code Admin bootstrap, in-person QR enrollment, PIN/biometric unlock, signed sessions, revoke and lockdown
 - [ ] **Phase 3: Alert, Push & Comms** - Two-person alert confirmation, full-screen alarm plus content-free push, check-in presence, incident lifecycle, drills, group chat and counsel-only channel
 - [ ] **Phase 4: Playbook, Tasks & Status Board** - Attack type loads the seeded ransomware playbook, role tasks auto-assigned with dependency locks and fallback, live status board that fires playbook steps
@@ -31,14 +31,14 @@ Decimal phases appear between their surrounding integers in numeric order.
   3. A physical phone in Expo Go connects to Maincloud with compression off, shows more than 100 live rows from a per-sender view, and resumes live updates after the app is backgrounded and foregrounded
   4. The app shows a "Live" / "Reconnecting" indicator that flips correctly when the connection drops and returns
   5. A signature made on the phone verifies inside the published module against the shared test vector (and in vitest)
-**Plans:** 4/5 plans executed
+**Plans:** 5/5 plans complete
 
 Plans:
 - [x] 01-01-PLAN.md — Pinned npm-workspaces monorepo + trimmed Expo SDK 58 app, single lockfile (wave 1)
 - [x] 01-02-PLAN.md — Shared Ed25519 contract/test vector + spike module (rows, per-sender view, verify) + bindings, TDD (wave 2)
 - [x] 01-03-PLAN.md — Isolated-config publish to Maincloud dev + demo with token checkpoint (wave 3)
 - [x] 01-04-PLAN.md — Expo Go client: live rows, Live/Reconnecting badge, sign & verify (wave 3)
-- [ ] 01-05-PLAN.md — Full gate + physical-phone verification + hygiene sweep (wave 4)
+- [x] 01-05-PLAN.md — Full gate + physical-phone verification + hygiene sweep (wave 4)
 **UI hint**: yes
 
 **Notes for planning:**
@@ -111,7 +111,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Foundation & Real-Phone Spike | 4/5 | In Progress|  |
+| 1. Foundation & Real-Phone Spike | 5/5 | Complete   | 2026-11-07 |
 | 2. Trust Core | 0/TBD | Not started | - |
 | 3. Alert, Push & Comms | 0/TBD | Not started | - |
 | 4. Playbook, Tasks & Status Board | 0/TBD | Not started | - |
