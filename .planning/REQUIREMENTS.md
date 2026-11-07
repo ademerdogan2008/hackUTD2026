@@ -116,16 +116,67 @@ Deferred. Tracked but not in the current roadmap.
 
 ## Traceability
 
-Filled by roadmap creation.
+Phase mappings from ROADMAP.md (2026-11-07).
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
+| FND-01 | Phase 1 | Pending |
+| FND-02 | Phase 1 | Pending |
+| FND-03 | Phase 1 | Pending |
+| FND-04 | Phase 1 | Pending |
+| FND-05 | Phase 1 | Pending |
+| FND-06 | Phase 1 | Pending |
+| AUD-01 | Phase 2 | Pending |
+| AUD-02 | Phase 2 | Pending |
+| AUD-03 | Phase 5 | Pending |
+| AUD-04 | Phase 2 | Pending |
+| AUD-05 | Phase 2 | Pending |
+| ENR-01 | Phase 2 | Pending |
+| ENR-02 | Phase 2 | Pending |
+| ENR-03 | Phase 2 | Pending |
+| ENR-04 | Phase 2 | Pending |
+| ENR-05 | Phase 2 | Pending |
+| ENR-06 | Phase 2 | Pending |
+| ENR-07 | Phase 2 | Pending |
+| ENR-08 | Phase 2 | Pending |
+| ENR-09 | Phase 2 | Pending |
+| UNL-01 | Phase 2 | Pending |
+| UNL-02 | Phase 2 | Pending |
+| UNL-03 | Phase 2 | Pending |
+| UNL-04 | Phase 2 | Pending |
+| ALR-01 | Phase 3 | Pending |
+| ALR-02 | Phase 3 | Pending |
+| ALR-03 | Phase 3 | Pending |
+| ALR-04 | Phase 3 | Pending |
+| ALR-05 | Phase 3 | Pending |
+| ALR-06 | Phase 3 | Pending |
+| ALR-07 | Phase 3 | Pending |
+| ALR-08 | Phase 3 | Pending |
+| PLY-01 | Phase 4 | Pending |
+| PLY-02 | Phase 4 | Pending |
+| PLY-03 | Phase 4 | Pending |
+| PLY-04 | Phase 4 | Pending |
+| PLY-05 | Phase 4 | Pending |
+| BRD-01 | Phase 4 | Pending |
+| BRD-02 | Phase 4 | Pending |
+| BRD-03 | Phase 4 | Pending |
+| COM-01 | Phase 3 | Pending |
+| COM-02 | Phase 3 | Pending |
+| COM-03 | Phase 3 | Pending |
+| DMO-01 | Phase 5 | Pending |
+| DMO-02 | Phase 5 | Pending |
+| DMO-03 | Phase 5 | Pending |
+| STR-01 | Phase 5 | Pending |
+| STR-02 | Phase 5 | Pending |
+| STR-03 | Phase 5 | Pending |
+| STR-04 | Phase 5 | Pending |
+| STR-05 | Phase 5 | Pending |
 
 **Coverage:**
 - v1 requirements: 51 total
-- Mapped to phases: 0
-- Unmapped: 51 ⚠️
+- Mapped to phases: 51
+- Unmapped: 0
 
 ---
 *Requirements defined: 2026-11-07*
-*Last updated: 2026-11-07 after initialization*
+*Last updated: 2026-11-07 after roadmap creation*
