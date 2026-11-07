@@ -54,11 +54,14 @@ A developer opens the Expo Go app on a physical phone. The phone connects to the
 
 ## Stack Touched in Phase 1
 
-- [ ] Project scaffold: npm workspaces, Expo SDK 58 app, flat module, vitest, tsc (Plan 01)
-- [ ] Routing: one real route `app/src/app/index.tsx` (Plan 04)
-- [ ] Database: a real write (`spike_seed`, `spike_touch`, `spike_verify`) and a real read (views `my_spike_rows`, `my_verify_results`) (Plans 02, 03)
-- [ ] UI: Seed / Touch / Sign & verify buttons wired to reducers, a live list, and a connection badge (Plan 04)
-- [ ] Deployment: published to Maincloud dev and demo databases (Plan 03) and exercised from a physical phone (Plan 05)
+- [x] Project scaffold: npm workspaces, Expo SDK 58 app, flat module, vitest, tsc (Plan 01) -- 01-05: npm test 9/9, typecheck, build, expo export ios+android OK
+- [x] Routing: one real route `app/src/app/index.tsx` (Plan 04) -- 01-05: route rendered in Expo web (headless Chrome)
+- [x] Database: a real write (`spike_seed`, `spike_touch`, `spike_verify`) and a real read (views `my_spike_rows`, `my_verify_results`) (Plans 02, 03) -- 01-05: npm run smoke 6/6 on red-phone-6h786-dev; owner SQL COUNT(*)=150; anonymous my_spike_rows empty, spike_row private
+- [x] UI: Seed / Touch / Sign & verify buttons wired to reducers, a live list, and a connection badge (Plan 04) -- 01-05: Expo web headless Chrome: Live, Rows 0->150, Touch, verify true/false MATCH. Reconnecting badge NOT yet seen on device
+- [x] Deployment: published to Maincloud dev and demo databases (Plan 03) -- 01-05: dev DB exercised headlessly
+- [ ] OUTSTANDING (human-verify): exercise from a physical phone in Expo Go (Hermes, native SecureStore, AppState background/foreground, airplane-mode Reconnecting badge)
+
+Device: NOT RUN (no physical phone/simulator available); web polyfill native=true, sign 10 ms (web)
 
 ## Out of Scope (Deferred to Later Slices)
 
