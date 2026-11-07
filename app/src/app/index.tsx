@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { Button, FlatList, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { ConnectionBadge } from '../components/ConnectionBadge';
+import { VerifyPanel } from '../components/VerifyPanel';
 import { reducers, tables } from '../module_bindings';
 import { useConnectionStatus } from '../spacetime/SpacetimeRoot';
 
@@ -43,6 +44,8 @@ export default function Index() {
         <Button title="Clear my rows" disabled={!isActive} onPress={() => run(() => clear())} />
       </View>
       {error ? <Text style={styles.error}>{error}</Text> : null}
+      {/* VerifyPanel (sign & verify slice) */}
+      <VerifyPanel />
       <FlatList
         data={sorted}
         keyExtractor={(row) => String(row.id)}
