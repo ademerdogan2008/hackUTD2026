@@ -1,6 +1,7 @@
 import { Ionicons } from '@expo/vector-icons';
 import { Tabs } from 'expo-router';
 import { StyleSheet } from 'react-native';
+import { ChatUnreadProvider, useChatUnread } from '../../features/chat/unread';
 import { GlobalAlarm } from '../../features/incident/GlobalAlarm';
 import { color, font } from '../../ui';
 
@@ -13,8 +14,17 @@ const icon = (outline: IconName, filled: IconName) =>
 
 export default function TabsLayout() {
   return (
-    <>
-    <GlobalAlarm />
+    <ChatUnreadProvider>
+      <GlobalAlarm />
+      <TabsNav />
+    </ChatUnreadProvider>
+  );
+}
+
+function TabsNav() {
+  const { unread } = useChatUnread();
+  const badge = unread > 0 ? (unread > 9 ? '9+' : unread) : undefined;
+  return (
     <Tabs
       screenOptions={{
         headerShown: false,
@@ -28,9 +38,23 @@ export default function TabsLayout() {
       <Tabs.Screen name="home" options={{ title: 'Home', tabBarIcon: icon('home-outline', 'home') }} />
       <Tabs.Screen name="tasks" options={{ title: 'Tasks', tabBarIcon: icon('checkmark-circle-outline', 'checkmark-circle') }} />
       <Tabs.Screen name="board" options={{ title: 'Board', tabBarIcon: icon('grid-outline', 'grid') }} />
-      <Tabs.Screen name="chat" options={{ title: 'Chat', tabBarIcon: icon('chatbubble-outline', 'chatbubble') }} />
+      <Tabs.Screen name="chat" options={{ title: 'Chat', tabBarIcon: icon('chatbubble-outline', 'chatbubble'), tabBarBadge: badge, tabBarBadgeStyle: styles.badge }} />
       <Tabs.Screen name="team" options={{ title: 'Team', tabBarIcon: icon('people-outline', 'people') }} />
     </Tabs>
-    </>
   );
 }
+
+const styles = StyleSheet.create({
+  badge: {
+    backgroundColor: color.danger,
+    color: color.onDanger,
+    fontFamily: font.semibold,
+    fontSize: 11,
+    lineHeight: 16,
+    minWidth: 16,
+    height: 16,
+    borderRadius: 8,
+    paddingHorizontal: 4,
+    top: -2,
+  },
+});

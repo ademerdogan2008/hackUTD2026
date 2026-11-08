@@ -1,8 +1,10 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useFocusEffect } from 'expo-router';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { FlatList, KeyboardAvoidingView, Platform, StyleSheet, TextInput, View } from 'react-native';
 import { useReducer, useTable } from 'spacetimedb/react';
 import { ConnectionBadge } from '../../components/ConnectionBadge';
 import { Bubble, type ChatMsg } from '../../features/chat/Bubble';
+import { useChatUnread } from '../../features/chat/unread';
 import { reducers, tables } from '../../module_bindings';
 import { canSeeCounsel, useMe, useMemberNames } from '../../state/hooks';
 import { Button, EmptyState, Screen, SegmentedControl, T, color, radius, space, type } from '../../ui';
@@ -20,6 +22,15 @@ export default function ChatTab() {
   const [text, setText] = useState('');
   const [sending, setSending] = useState(false);
   const list = useRef<FlatList<ChatMsg>>(null);
+  const { setChatFocused } = useChatUnread();
+
+  // Mark messages seen while this tab is focused (badge + toast suppression).
+  useFocusEffect(
+    useCallback(() => {
+      setChatFocused(true);
+      return () => setChatFocused(false);
+    }, [setChatFocused]),
+  );
 
   const active: Channel = showCounsel ? channel : 'all';
   const msgs = useMemo<ChatMsg[]>(() => {
