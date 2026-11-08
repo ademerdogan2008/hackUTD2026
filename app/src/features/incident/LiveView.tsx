@@ -196,7 +196,7 @@ function NextStep({ run }: { run: Run }) {
           {loading ? 'Loading the playbook' : locked ? 'Nothing to do yet' : "You're clear — no open tasks"}
         </Text>
         {locked ? (
-          <Text style={tx.callout} numberOfLines={2}>
+          <Text style={tx.callout}>
             {locked.waitsFor ? `Your next task unlocks when "${locked.waitsFor}" is done.` : 'Your next task unlocks when an earlier step is done.'}
           </Text>
         ) : null}
@@ -228,7 +228,7 @@ function NextStep({ run }: { run: Run }) {
         {next.title}
       </Text>
       {next.detail ? (
-        <Text style={tx.callout} numberOfLines={2} maxFontSizeMultiplier={1.5}>
+        <Text style={tx.body} maxFontSizeMultiplier={1.5}>
           {next.detail}
         </Text>
       ) : null}
