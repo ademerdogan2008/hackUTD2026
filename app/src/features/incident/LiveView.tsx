@@ -1,4 +1,6 @@
+import { useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 import { useReducer, useTable } from 'spacetimedb/react';
 import { useRouter } from 'expo-router';
 import { SEVERITY_LABEL, type Severity } from '@redphone/shared';
@@ -10,6 +12,8 @@ import type { Run } from './IdleView';
 import type { Incident } from './PossibleView';
 import { attackTypeLabel } from '../jev/format';
 import { EvidenceSection } from '../jev/EvidenceSection';
+import { AutomationCard } from '../tasks/AutomationCard';
+import { TaskDetail } from '../tasks/TaskDetail';
 import { Dot, initialsOf, Inset, Row, Section, StatusText, Tag, tertiary, tx } from './parts';
 
 const CHECKINS = [
@@ -167,6 +171,12 @@ function NextStep({ run }: { run: Run }) {
   const { all, mine, next, doneCount, total } = useRankedTasks();
   const accept = useReducer(reducers.acceptTask);
   const complete = useReducer(reducers.completeTask);
+  const runAutomation = useReducer(reducers.runAutomation);
+  const [runs] = useTable(tables.automationRun);
+  // The automation run whose result is on screen, kept until "Next step" is tapped.
+  const [showing, setShowing] = useState<{ taskId: bigint; title: string } | null>(null);
+  const runFor = (id: bigint) => runs.find((r) => r.taskId === id);
+  const shownRun = showing ? runFor(showing.taskId) : undefined;
   const openTasks = () => router.push('/(tabs)/tasks' as never);
   const pct = total > 0 ? doneCount / total : 0;
 
@@ -189,6 +199,10 @@ function NextStep({ run }: { run: Run }) {
       </Text>
     </Pressable>
   );
+
+  if (showing && shownRun?.status === 'succeeded') {
+    return <AutomationCard key={showing.taskId.toString()} title={showing.title} log={shownRun.log} onNext={() => setShowing(null)} />;
+  }
 
   if (!next) {
     const locked = mine.find((t) => t.status === 'locked');
@@ -216,6 +230,12 @@ function NextStep({ run }: { run: Run }) {
     haptics.tick();
     run(accepted ? complete({ taskId: next.id }) : accept({ taskId: next.id }));
   };
+  const canAutomate = runFor(next.id)?.status === 'ready';
+  const automate = () => {
+    haptics.tick();
+    const task = { taskId: next.id, title: next.title };
+    run(runAutomation({ taskId: task.taskId }).then(() => setShowing(task)));
+  };
 
   return (
     <View style={s.card}>
@@ -231,13 +251,15 @@ function NextStep({ run }: { run: Run }) {
       <Text style={s.taskTitle} maxFontSizeMultiplier={1.3}>
         {next.title}
       </Text>
-      {next.detail ? (
-        <Text style={tx.body} maxFontSizeMultiplier={1.5}>
-          {next.detail}
-        </Text>
+      {canAutomate ? (
+        <View style={{ gap: 6 }}>
+          <Button variant="primary" label="Run automatically" icon={<Ionicons name="flash" size={18} color={color.onPrimary} />} onPress={automate} />
+          <Text style={tx.caption} maxFontSizeMultiplier={1.5}>Red Phone does these steps for you. Or follow them by hand below.</Text>
+        </View>
       ) : null}
+      <TaskDetail key={next.id.toString()} detail={next.detail} jev={next.stepId === 0n} checklist />
       {accepted ? <StatusText tone={color.info} label="In progress" /> : null}
-      <Button variant="primary" label={accepted ? 'Mark done' : 'Accept'} onPress={act} />
+      <Button variant={canAutomate ? 'secondary' : 'primary'} label={accepted ? 'Mark done' : 'Accept'} onPress={act} />
       {progress}
       {link(`All tasks (${all.length})`)}
     </View>
