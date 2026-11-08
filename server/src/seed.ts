@@ -24,10 +24,10 @@ const STEPS: [string, string, string, string, string, Severity][] = [
 
 const ASSETS: [string, boolean, string][] = [
   ['Client File Server', true, 'TX'],
-  ['Email', true, 'TX', 'undefined'],
+  ['Email', true, 'TX'],
   ['Billing DB', true, 'TX,EU'],
   ['Document Mgmt', false, ''],
-  ['Backups', false, '', 'undefined'],
+  ['Backups', false, ''],
 ];
 
 /** Idempotent: fills empty tables, and replaces the ransomware playbook if it differs from STEPS. */
