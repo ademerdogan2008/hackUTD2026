@@ -1,17 +1,18 @@
 import { StyleSheet, Text, View, type StyleProp, type ViewStyle } from 'react-native';
+import { Lamp } from './Lamp';
 import { color, radius, space, type, variantColor, variantTint } from './theme';
 
 type CardTone = 'default' | 'danger' | 'warning' | 'success';
 
-/** Flat surface. Tone = faint tint plus a status dot beside the title; never a border. */
+/** Console panel: flat surface, hairline edge. Tone = faint tint, tinted edge, lamp beside the title. */
 export function Card({ title, footer, children, style, tone = 'default' }: { tone?: CardTone; title?: string; footer?: React.ReactNode; children?: React.ReactNode; style?: StyleProp<ViewStyle> }) {
   const toned = tone !== 'default';
   return (
-    <View style={[styles.card, toned && { backgroundColor: variantTint[tone] }, style]}>
+    <View style={[styles.card, toned && { backgroundColor: variantTint[tone], borderColor: `${variantColor[tone]}55` }, style]}>
       {title ? (
         <View style={styles.head}>
-          {toned ? <View style={[styles.dot, { backgroundColor: variantColor[tone] }]} /> : null}
-          <Text style={[type.bodyStrong, { flex: 1 }]} accessibilityRole="header" maxFontSizeMultiplier={1.5}>
+          {toned ? <Lamp tone={variantColor[tone]} size={8} /> : null}
+          <Text style={[type.title, { flex: 1 }]} accessibilityRole="header" maxFontSizeMultiplier={1.5}>
             {title}
           </Text>
         </View>
@@ -23,7 +24,6 @@ export function Card({ title, footer, children, style, tone = 'default' }: { ton
 }
 
 const styles = StyleSheet.create({
-  card: { backgroundColor: color.surface, borderRadius: radius.md, padding: space.md, gap: space.sm },
+  card: { backgroundColor: color.surface, borderRadius: radius.md, borderWidth: 1, borderColor: color.hairline, padding: space.md, gap: space.sm },
   head: { flexDirection: 'row', alignItems: 'center', gap: space.sm },
-  dot: { width: 8, height: 8, borderRadius: 4 },
 });

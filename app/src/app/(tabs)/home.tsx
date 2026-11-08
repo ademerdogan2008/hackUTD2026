@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { ConnectionBadge } from '../../components/ConnectionBadge';
+import { StatusStrip } from '../../components/StatusStrip';
 import { GlobalAlarm } from '../../features/incident/GlobalAlarm';
 import { IdleView } from '../../features/incident/IdleView';
 import { LiveView } from '../../features/incident/LiveView';
@@ -30,7 +30,7 @@ export default function HomeTab() {
   return (
     <Screen
       title="Red Phone"
-      headerRight={<ConnectionBadge />}
+      strip={<StatusStrip />}
       scroll={!fixed}
       banner={error ? <Banner variant="danger" text={error} actionLabel="Dismiss" onAction={() => setError(null)} /> : undefined}
     >

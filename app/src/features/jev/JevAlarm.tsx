@@ -184,7 +184,7 @@ function ReviewSheet({ triage }: { triage: Triage }) {
       <View style={s.scrim}>
         <View style={s.sheet}>
           <ScrollView contentContainerStyle={{ gap: space.sm }}>
-            <Text style={[type.caption, { color: color.warning }]}>JEV NEEDS A HUMAN</Text>
+            <Text style={[type.label, { color: color.warning }]}>Jev needs a human</Text>
             <Text style={type.title}>Jev needs a human · {jevHeadline(triage.probability, triage.incidentType).replace(/^Jev · /, '')}</Text>
             {triage.scope ? <Text style={type.callout}>Scope: {triage.scope}</Text> : null}
             <MachineTag dark />
@@ -208,17 +208,17 @@ function ReviewSheet({ triage }: { triage: Triage }) {
 }
 
 const s = StyleSheet.create({
-  card: { backgroundColor: 'rgba(0,0,0,0.26)', borderRadius: radius.md, padding: space.md, gap: space.sm },
-  headline: { fontFamily: font.display, fontSize: 22, lineHeight: 28, color: color.onDanger },
-  kicker: { fontFamily: font.display, fontSize: 12, letterSpacing: 2, color: color.onDanger, opacity: 0.8 },
+  card: { backgroundColor: 'rgba(0,0,0,0.28)', borderRadius: radius.md, borderWidth: 1, borderColor: 'rgba(255,255,255,0.22)', padding: space.md, gap: space.sm },
+  headline: { fontFamily: font.display, fontSize: 26, lineHeight: 28, letterSpacing: 0.4, color: color.onDanger },
+  kicker: { fontFamily: font.display, fontSize: 13, letterSpacing: 2, color: color.onDanger, opacity: 0.85 },
   line: { fontFamily: font.regular, fontSize: 15, lineHeight: 21, color: color.onDanger },
   taskTitle: { fontFamily: font.semibold, fontSize: 16, lineHeight: 22, color: color.onDanger },
   evRow: { flexDirection: 'row', gap: space.sm, alignItems: 'flex-start' },
-  evNum: { fontFamily: font.semibold, fontSize: 15, lineHeight: 21, color: color.onDanger, opacity: 0.75, minWidth: 18 },
-  tag: { alignSelf: 'flex-start', borderWidth: 1, borderColor: 'rgba(255,255,255,0.6)', borderRadius: radius.pill, paddingVertical: 2, paddingHorizontal: 10 },
+  evNum: { fontFamily: font.mono, fontSize: 14, lineHeight: 21, color: color.onDanger, opacity: 0.75, minWidth: 18 },
+  tag: { alignSelf: 'flex-start', borderWidth: 1, borderColor: 'rgba(255,255,255,0.6)', borderRadius: 4, paddingVertical: 2, paddingHorizontal: 7 },
   tagDark: { borderColor: color.danger },
-  tagText: { fontFamily: font.semibold, fontSize: 12, lineHeight: 16, color: color.onDanger },
+  tagText: { fontFamily: font.displaySemi, fontSize: 12, lineHeight: 16, letterSpacing: 1, textTransform: 'uppercase', color: color.onDanger },
   scrim: { flex: 1, backgroundColor: color.scrim, justifyContent: 'flex-end' },
-  sheet: { backgroundColor: color.surface, padding: space.md, gap: space.sm, borderTopLeftRadius: radius.lg, borderTopRightRadius: radius.lg, paddingBottom: space.xl, maxHeight: '85%' },
+  sheet: { backgroundColor: color.bg, borderTopWidth: 1, borderColor: color.hairline, padding: space.md, gap: space.sm, borderTopLeftRadius: radius.lg, borderTopRightRadius: radius.lg, paddingBottom: space.xl, maxHeight: '85%' },
   later: { alignSelf: 'center', minHeight: 40, justifyContent: 'center' },
 });

@@ -9,11 +9,13 @@ export interface ScreenProps {
   banner?: React.ReactNode;
   headerRight?: React.ReactNode;
   right?: React.ReactNode;
+  /** Full-bleed console strip pinned above the title (tab screens: live incident state). */
+  strip?: React.ReactNode;
   children?: React.ReactNode;
 }
 
 /** Large left-aligned title, optional right accessory, content, optional pinned footer action. */
-export function Screen({ title, scroll = true, footer, banner, headerRight: hr, right, children }: ScreenProps) {
+export function Screen({ title, scroll = true, footer, banner, headerRight: hr, right, strip, children }: ScreenProps) {
   const headerRight = right ?? hr;
   const header =
     title || headerRight ? (
@@ -26,6 +28,7 @@ export function Screen({ title, scroll = true, footer, banner, headerRight: hr, 
     ) : null;
   return (
     <SafeAreaView style={styles.root} edges={['top', 'left', 'right']}>
+      {strip}
       {header}
       {banner ? <View style={styles.gutter}>{banner}</View> : null}
       {scroll ? (
@@ -42,9 +45,9 @@ export function Screen({ title, scroll = true, footer, banner, headerRight: hr, 
 
 const styles = StyleSheet.create({
   root: { flex: 1, backgroundColor: color.bg },
-  header: { flexDirection: 'row', alignItems: 'center', gap: space.md, paddingHorizontal: space.screen, paddingTop: space.md, paddingBottom: space.sm },
+  header: { flexDirection: 'row', alignItems: 'center', gap: space.md, paddingHorizontal: space.screen, paddingTop: space.lg, paddingBottom: space.md },
   right: { flexShrink: 0, alignItems: 'flex-end' },
   gutter: { paddingHorizontal: space.screen, paddingBottom: space.sm },
   content: { paddingHorizontal: space.screen, paddingTop: space.sm, paddingBottom: space.screen, gap: space.section },
-  actionBar: { backgroundColor: color.bg, paddingHorizontal: space.screen, paddingTop: space.sm, paddingBottom: space.md, gap: space.sm },
+  actionBar: { backgroundColor: color.bg, borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: color.hairline, paddingHorizontal: space.screen, paddingTop: space.sm, paddingBottom: space.md, gap: space.sm },
 });

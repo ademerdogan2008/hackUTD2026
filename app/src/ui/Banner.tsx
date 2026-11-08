@@ -35,6 +35,6 @@ export function Banner({ text, variant: v, tone, actionLabel, onAction }: { text
 }
 
 const styles = StyleSheet.create({
-  wrap: { flexDirection: 'row', alignItems: 'flex-start', gap: 10, backgroundColor: color.surface, borderRadius: radius.button, paddingVertical: 12, paddingHorizontal: 14 },
+  wrap: { flexDirection: 'row', alignItems: 'flex-start', gap: 10, backgroundColor: color.surface, borderWidth: 1, borderColor: color.hairline, borderRadius: radius.button, paddingVertical: 12, paddingHorizontal: 14 },
   text: { flex: 1, color: color.text },
 });

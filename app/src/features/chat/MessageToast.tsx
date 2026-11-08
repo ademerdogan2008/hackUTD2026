@@ -64,7 +64,7 @@ export function MessageToast({ msg, onDismiss }: { msg: ToastMsg | null; onDismi
             {roleLabel ? <Text style={styles.role} numberOfLines={1}>{roleLabel}</Text> : null}
             {shown.counsel ? (
               <View style={styles.tag}>
-                <Text style={styles.tagText}>Counsel 🔒</Text>
+                <Text style={styles.tagText}>Counsel</Text>
               </View>
             ) : null}
           </View>

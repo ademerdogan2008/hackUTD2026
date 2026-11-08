@@ -1,5 +1,4 @@
-import { Ionicons } from '@expo/vector-icons';
-import { useEffect, useRef, type ReactNode } from 'react';
+import { useEffect, useRef, useState, type ReactNode } from 'react';
 import { Animated, Modal, Platform, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Button } from './Button';
@@ -17,13 +16,20 @@ export interface AlarmOverlayProps {
   children?: ReactNode;
 }
 
-/** Full-screen red alarm. Pulses and vibrates on native until dismissed. */
-export function AlarmOverlay({ visible, title = 'INCIDENT ACTIVE', subtitle: sub, body, actionLabel = 'Open incident', onAction, children }: AlarmOverlayProps) {
+function clockNow() {
+  const d = new Date();
+  return [d.getHours(), d.getMinutes(), d.getSeconds()].map((n) => String(n).padStart(2, '0')).join(':');
+}
+
+/** Full-screen red takeover. Field pulses and the phone vibrates on native until acknowledged. */
+export function AlarmOverlay({ visible, title = 'Incident active', subtitle: sub, body, actionLabel = 'Open incident', onAction, children }: AlarmOverlayProps) {
   const subtitle = body ?? sub;
   const pulse = useRef(new Animated.Value(1)).current;
+  const [stamp, setStamp] = useState(clockNow);
 
   useEffect(() => {
     if (!visible) return;
+    setStamp(clockNow());
     const loop = Animated.loop(
       Animated.sequence([
         Animated.timing(pulse, { toValue: 0.55, duration: 700, useNativeDriver: Platform.OS !== 'web' }),
@@ -43,46 +49,43 @@ export function AlarmOverlay({ visible, title = 'INCIDENT ACTIVE', subtitle: sub
     };
   }, [visible, pulse]);
 
+  const head = (
+    <>
+      <View style={styles.meta}>
+        <View style={styles.metaLamp} />
+        <Text style={styles.metaText} maxFontSizeMultiplier={1.2}>
+          Red Phone
+        </Text>
+        <Text style={styles.metaClock} maxFontSizeMultiplier={1.2}>
+          {stamp}
+        </Text>
+      </View>
+      <View style={styles.rule} />
+      <Text style={[styles.big, children ? styles.bigCompact : null]} maxFontSizeMultiplier={1.2} accessibilityRole="header">
+        {title}
+      </Text>
+      {subtitle ? (
+        <Text style={styles.sub} maxFontSizeMultiplier={1.5}>
+          {subtitle}
+        </Text>
+      ) : null}
+    </>
+  );
+
   return (
     <Modal visible={visible} animationType="fade" transparent={false} statusBarTranslucent onRequestClose={onAction}>
       <View style={styles.root} accessibilityViewIsModal accessibilityRole="alert" accessibilityLiveRegion="assertive">
-        <Animated.View style={[StyleSheet.absoluteFill, { backgroundColor: '#000000', opacity: pulse.interpolate({ inputRange: [0.55, 1], outputRange: [0.18, 0] }) }]} />
+        <Animated.View style={[StyleSheet.absoluteFill, { backgroundColor: '#000000', opacity: pulse.interpolate({ inputRange: [0.55, 1], outputRange: [0.22, 0] }) }]} />
         <SafeAreaView style={styles.safe} edges={['top', 'bottom', 'left', 'right']}>
           {children ? (
             <ScrollView style={{ flex: 1 }} contentContainerStyle={styles.scroll}>
-              <View style={styles.headRow}>
-                <Ionicons name="warning" size={28} color={color.onDanger} accessibilityElementsHidden />
-                <Text style={[styles.kicker, { marginTop: 0 }]} maxFontSizeMultiplier={1.3}>
-                  RED PHONE
-                </Text>
-              </View>
-              <Text style={[styles.big, { textAlign: 'left' }]} maxFontSizeMultiplier={1.3}>
-                {title}
-              </Text>
-              {subtitle ? (
-                <Text style={[styles.sub, { textAlign: 'left', maxWidth: undefined }]} maxFontSizeMultiplier={1.5}>
-                  {subtitle}
-                </Text>
-              ) : null}
+              {head}
               {children}
             </ScrollView>
           ) : (
-          <View style={styles.center}>
-            <Ionicons name="warning" size={64} color={color.onDanger} accessibilityElementsHidden />
-            <Text style={styles.kicker} maxFontSizeMultiplier={1.3}>
-              RED PHONE
-            </Text>
-            <Text style={styles.big} maxFontSizeMultiplier={1.3}>
-              {title}
-            </Text>
-            {subtitle ? (
-              <Text style={styles.sub} maxFontSizeMultiplier={1.5}>
-                {subtitle}
-              </Text>
-            ) : null}
-          </View>
+            <View style={styles.fill}>{head}</View>
           )}
-          <Button title={actionLabel} onPress={onAction} variant="primary" />
+          <Button title={actionLabel} onPress={onAction} variant="alarm" />
         </SafeAreaView>
       </View>
     </Modal>
@@ -91,11 +94,15 @@ export function AlarmOverlay({ visible, title = 'INCIDENT ACTIVE', subtitle: sub
 
 const styles = StyleSheet.create({
   root: { flex: 1, backgroundColor: color.alarm },
-  safe: { flex: 1, paddingHorizontal: space.screen, paddingBottom: space.lg },
-  scroll: { paddingTop: space.lg, paddingBottom: space.lg, gap: space.md },
-  headRow: { flexDirection: 'row', alignItems: 'center', gap: space.sm },
-  center: { flex: 1, alignItems: 'center', justifyContent: 'center', gap: space.md },
-  kicker: { fontFamily: font.display, fontSize: 13, lineHeight: 16, letterSpacing: 3, color: color.onDanger, opacity: 0.8, marginTop: space.sm },
-  big: { fontFamily: font.display, fontSize: 40, lineHeight: 44, letterSpacing: -0.8, color: color.onDanger, textAlign: 'center' },
-  sub: { ...type.body, color: color.onDanger, opacity: 0.9, textAlign: 'center', maxWidth: 320 },
+  safe: { flex: 1, paddingHorizontal: space.screen + 4, paddingBottom: space.lg, gap: space.md },
+  scroll: { paddingTop: space.md, paddingBottom: space.lg, gap: space.md },
+  fill: { flex: 1, justifyContent: 'center', gap: space.md },
+  meta: { flexDirection: 'row', alignItems: 'center', gap: 8 },
+  metaLamp: { width: 10, height: 10, borderRadius: 5, backgroundColor: '#FFFFFF' },
+  metaText: { flex: 1, fontFamily: font.display, fontSize: 15, lineHeight: 18, letterSpacing: 2.4, textTransform: 'uppercase', color: color.onDanger },
+  metaClock: { fontFamily: font.mono, fontSize: 14, lineHeight: 18, color: color.onDanger, fontVariant: ['tabular-nums'] },
+  rule: { height: 2, backgroundColor: 'rgba(255,255,255,0.85)' },
+  big: { fontFamily: font.display, fontSize: 76, lineHeight: 72, letterSpacing: 0.5, textTransform: 'uppercase', color: color.onDanger, paddingTop: 6 },
+  bigCompact: { fontSize: 56, lineHeight: 54 },
+  sub: { ...type.body, fontSize: 19, lineHeight: 26, fontFamily: font.medium, color: color.onDanger },
 });

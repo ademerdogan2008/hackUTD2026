@@ -1,25 +1,26 @@
-// Small presentational pieces for the Home incident views (DESIGN.md v2).
+// Small presentational pieces for the Home incident views (DESIGN.md v3, ops console).
 import { Children, Fragment, isValidElement } from 'react';
 import { Pressable, StyleSheet, Text, View, type StyleProp, type TextStyle, type ViewStyle } from 'react-native';
-import { color, font } from '../../ui';
+import { color, font, Lamp, radius, Tag as PlateTag } from '../../ui';
 
 export const hairline = color.hairline;
 export const tertiary = color.textTertiary;
 
 export const tx = StyleSheet.create({
-  status: { fontSize: 28, lineHeight: 34, fontFamily: font.display, letterSpacing: -0.5, color: color.text },
-  title: { fontSize: 20, lineHeight: 26, fontFamily: font.display, letterSpacing: -0.3, color: color.text },
+  status: { fontSize: 44, lineHeight: 44, fontFamily: font.display, letterSpacing: 0.4, textTransform: 'uppercase', color: color.text },
+  title: { fontSize: 24, lineHeight: 28, fontFamily: font.display, letterSpacing: 0.6, textTransform: 'uppercase', color: color.text },
   body: { fontSize: 17, lineHeight: 22, fontFamily: font.regular, color: color.text },
   bodyStrong: { fontSize: 17, lineHeight: 22, fontFamily: font.semibold, color: color.text },
-  callout: { fontSize: 15, lineHeight: 20, fontFamily: font.regular, color: color.textMuted },
+  callout: { fontSize: 15, lineHeight: 21, fontFamily: font.regular, color: color.textMuted },
+  label: { fontSize: 13, lineHeight: 16, fontFamily: font.displaySemi, letterSpacing: 1.2, textTransform: 'uppercase', color: color.textMuted },
   caption: { fontSize: 13, lineHeight: 18, fontFamily: font.medium, color: color.textMuted },
 });
 
 export function Dot({ tone, size = 8 }: { tone: string; size?: number }) {
-  return <View style={{ width: size, height: size, borderRadius: size / 2, backgroundColor: tone }} />;
+  return <Lamp tone={tone} size={size} />;
 }
 
-/** 8px dot + label: the one status pattern. */
+/** Lamp + label: the one status pattern. */
 export function StatusText({ tone, label, style }: { tone: string; label: string; style?: StyleProp<TextStyle> }) {
   return (
     <View style={s.inline}>
@@ -33,19 +34,13 @@ export function StatusText({ tone, label, style }: { tone: string; label: string
 
 /** Subtle filled tag (drill, role). */
 export function Tag({ label }: { label: string }) {
-  return (
-    <View style={s.tag}>
-      <Text style={tx.caption} maxFontSizeMultiplier={1.5}>
-        {label}
-      </Text>
-    </View>
-  );
+  return <PlateTag label={label} />;
 }
 
 export function Section({ title, children, style }: { title: string; children?: React.ReactNode; style?: StyleProp<ViewStyle> }) {
   return (
     <View style={[s.section, style]}>
-      <Text style={[tx.caption, s.sectionTitle]} accessibilityRole="header" maxFontSizeMultiplier={1.5}>
+      <Text style={[tx.label, s.sectionTitle]} accessibilityRole="header" maxFontSizeMultiplier={1.5}>
         {title}
       </Text>
       {children}
@@ -120,10 +115,9 @@ export function initialsOf(name: string) {
 
 const s = StyleSheet.create({
   inline: { flexDirection: 'row', alignItems: 'center', gap: 8 },
-  tag: { backgroundColor: color.surfaceRaised, borderRadius: 999, paddingHorizontal: 10, paddingVertical: 3, alignSelf: 'center' },
   section: { gap: 8 },
-  sectionTitle: { paddingHorizontal: 4 },
-  inset: { backgroundColor: color.surface, borderRadius: 16, overflow: 'hidden' },
+  sectionTitle: { paddingHorizontal: 2 },
+  inset: { backgroundColor: color.surface, borderRadius: radius.md, borderWidth: 1, borderColor: color.hairline, overflow: 'hidden' },
   sep: { height: StyleSheet.hairlineWidth, backgroundColor: hairline, marginLeft: 16 },
   row: { minHeight: 52, paddingHorizontal: 16, paddingVertical: 12, flexDirection: 'row', alignItems: 'center', gap: 12 },
 });

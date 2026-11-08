@@ -2,7 +2,7 @@ import { StyleSheet, Text, View } from 'react-native';
 import { useReducer, useTable } from 'spacetimedb/react';
 import { reducers, tables } from '../../module_bindings';
 import { isLeadOrAdmin, useCurrentIncident, useMemberNames } from '../../state/hooks';
-import { Button, color } from '../../ui';
+import { Button, color, font, radius } from '../../ui';
 import type { Run } from './IdleView';
 import { Dot, Tag, tx } from './parts';
 
@@ -26,15 +26,22 @@ export function PossibleView({ run, incident, myRole, myHex }: { run: Run; incid
     <View style={s.fill}>
       <View style={s.block}>
         <View style={s.head}>
-          <Dot tone={color.warning} size={10} />
-          <Text style={[tx.status, { color: color.warning, flexShrink: 1 }]} maxFontSizeMultiplier={1.3}>
+          <Dot tone={color.warning} size={12} />
+          <Text style={[tx.status, { color: color.warning, flexShrink: 1 }]} maxFontSizeMultiplier={1.3} accessibilityRole="header">
             Possible attack
           </Text>
           {incident.isDrill ? <Tag label="Drill" /> : null}
         </View>
-        <Text style={tx.callout} maxFontSizeMultiplier={1.5}>
-          Reported by {raiser} · {mine.length} report{mine.length === 1 ? '' : 's'}
-        </Text>
+        <View style={s.facts}>
+          <View style={s.cell}>
+            <Text style={tx.label}>Reported by</Text>
+            <Text style={tx.bodyStrong} numberOfLines={1}>{raiser}</Text>
+          </View>
+          <View style={[s.cell, s.cellRule]}>
+            <Text style={tx.label}>Reports</Text>
+            <Text style={[tx.bodyStrong, { fontFamily: font.mono }]}>{String(mine.length).padStart(2, '0')}</Text>
+          </View>
+        </View>
       </View>
 
       <View style={s.actions}>
@@ -56,8 +63,11 @@ export function PossibleView({ run, incident, myRole, myHex }: { run: Run; incid
 
 const s = StyleSheet.create({
   fill: { flex: 1, justifyContent: 'space-between', gap: 28 },
-  block: { backgroundColor: color.surface, borderRadius: 16, padding: 20, gap: 8 },
-  head: { flexDirection: 'row', alignItems: 'center', gap: 10 },
+  block: { flex: 1, justifyContent: 'center', gap: 20 },
+  head: { flexDirection: 'row', alignItems: 'center', gap: 12, flexWrap: 'wrap' },
+  facts: { flexDirection: 'row', backgroundColor: color.surface, borderRadius: radius.md, borderWidth: 1, borderColor: color.hairline },
+  cell: { flex: 1, padding: 16, gap: 4 },
+  cellRule: { flex: 0, minWidth: 110, borderLeftWidth: StyleSheet.hairlineWidth, borderLeftColor: color.hairline },
   actions: { gap: 4, paddingBottom: 8 },
   wait: { gap: 4, paddingVertical: 12 },
   centerText: { textAlign: 'center' },

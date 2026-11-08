@@ -7,7 +7,7 @@ import { SEVERITY_LABEL, type Severity } from '@redphone/shared';
 import { reducers, tables } from '../../module_bindings';
 import { isLeadOrAdmin, ROLE_LABEL, useMe } from '../../state/hooks';
 import { useRankedTasks } from '../../state/tasks';
-import { Button, color, font, haptics } from '../../ui';
+import { Button, color, font, haptics, radius } from '../../ui';
 import type { Run } from './IdleView';
 import type { Incident } from './PossibleView';
 import { attackTypeLabel } from '../jev/format';
@@ -61,12 +61,12 @@ export function LiveView({ run, incident, myRole, myHex }: { run: Run; incident:
       <View style={s.header}>
         <View style={s.headRow}>
           <Dot tone={st.tone} size={10} />
-          <Text style={[tx.status, { color: st.tone, flexShrink: 1 }]} maxFontSizeMultiplier={1.3} accessibilityRole="header">
-            {st.label}
-          </Text>
+          <Text style={[tx.label, { color: st.tone === color.danger ? color.dangerText : st.tone }]}>{st.label}</Text>
           {incident.isDrill ? <Tag label="Drill" /> : null}
         </View>
-        <Text style={tx.callout}>{typeLabel(incident.attackType)}</Text>
+        <Text style={[tx.status, { fontSize: 40, lineHeight: 40 }]} maxFontSizeMultiplier={1.3} accessibilityRole="header">
+          {typeLabel(incident.attackType)}
+        </Text>
       </View>
 
       {incident.attackType ? (
@@ -186,8 +186,8 @@ function NextStep({ run }: { run: Run }) {
         <View style={s.track} accessibilityRole="progressbar" accessibilityValue={{ min: 0, max: total, now: doneCount }}>
           <View style={[s.fill, { width: `${Math.round(pct * 100)}%` }]} />
         </View>
-        <Text style={tx.caption} maxFontSizeMultiplier={1.5}>
-          {doneCount} of {total} done
+        <Text style={s.count} maxFontSizeMultiplier={1.5}>
+          {`${String(doneCount).padStart(2, '0')}/${String(total).padStart(2, '0')} done`}
         </Text>
       </View>
     ) : null;
@@ -209,7 +209,7 @@ function NextStep({ run }: { run: Run }) {
     const loading = all.length === 0;
     return (
       <View style={s.card}>
-        <Text style={tx.caption} accessibilityRole="header">Your next step</Text>
+        <Text style={tx.label} accessibilityRole="header">Your next step</Text>
         <Text style={s.taskTitle} maxFontSizeMultiplier={1.3}>
           {loading ? 'Loading the playbook' : locked ? 'Nothing to do yet' : "You're clear — no open tasks"}
         </Text>
@@ -240,10 +240,10 @@ function NextStep({ run }: { run: Run }) {
   return (
     <View style={s.card}>
       <View style={s.cardHead}>
-        <Text style={tx.caption} accessibilityRole="header">Your next step</Text>
+        <Text style={tx.label} accessibilityRole="header">Your next step</Text>
         <View style={s.sev}>
           <Dot tone={tone} />
-          <Text style={[tx.caption, { color: next.severity === 'normal' ? color.textMuted : tone }]} maxFontSizeMultiplier={1.5}>
+          <Text style={[tx.label, { color: next.severity === 'normal' ? color.textMuted : next.severity === 'critical' ? color.dangerText : tone }]} maxFontSizeMultiplier={1.5}>
             {SEVERITY_LABEL[next.severity]}
           </Text>
         </View>
@@ -268,22 +268,23 @@ function NextStep({ run }: { run: Run }) {
 
 const s = StyleSheet.create({
   stack: { gap: 28, paddingBottom: 16 },
-  header: { gap: 6 },
+  header: { gap: 8 },
   headRow: { flexDirection: 'row', alignItems: 'center', gap: 10 },
   roster: { gap: 12 },
   avatars: { flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', gap: 6 },
-  avatar: { width: 32, height: 32, borderRadius: 16, backgroundColor: color.surfaceRaised, borderWidth: 2, borderColor: 'transparent', alignItems: 'center', justifyContent: 'center' },
-  avatarText: { fontSize: 12, fontFamily: font.semibold, color: color.text },
-  segment: { flexDirection: 'row', backgroundColor: color.surface, borderRadius: 14, padding: 4, gap: 4 },
-  option: { flex: 1, minHeight: 44, borderRadius: 11, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 6, paddingVertical: 8 },
-  optionText: { fontSize: 14, lineHeight: 18, fontFamily: font.displaySemi, color: color.text, textAlign: 'center' },
+  avatar: { width: 34, height: 34, borderRadius: radius.sm, backgroundColor: color.surfaceRaised, borderWidth: 2, borderColor: 'transparent', alignItems: 'center', justifyContent: 'center' },
+  avatarText: { fontSize: 13, fontFamily: font.display, letterSpacing: 0.4, color: color.text },
+  segment: { flexDirection: 'row', backgroundColor: color.surface, borderRadius: radius.button, borderWidth: 1, borderColor: color.hairline, padding: 3, gap: 3 },
+  option: { flex: 1, minHeight: 46, borderRadius: radius.sm + 1, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 6, paddingVertical: 8 },
+  optionText: { fontSize: 15, lineHeight: 18, fontFamily: font.display, letterSpacing: 0.8, textTransform: 'uppercase', color: color.text, textAlign: 'center' },
   leadStack: { gap: 12 },
-  card: { backgroundColor: color.surface, borderRadius: 16, padding: 20, gap: 12 },
-  cardHead: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: 12 },
+  card: { backgroundColor: color.surface, borderRadius: radius.md, borderWidth: 1, borderColor: color.hairline, padding: 16, gap: 14 },
+  cardHead: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: 12, paddingBottom: 12, marginHorizontal: -16, paddingHorizontal: 16, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: color.hairline },
   sev: { flexDirection: 'row', alignItems: 'center', gap: 6 },
-  taskTitle: { fontSize: 22, lineHeight: 28, fontFamily: font.display, letterSpacing: -0.4, color: color.text },
+  taskTitle: { fontSize: 28, lineHeight: 30, fontFamily: font.display, letterSpacing: 0.2, color: color.text },
+  count: { fontFamily: font.mono, fontSize: 12, lineHeight: 16, color: color.textMuted },
   progressWrap: { gap: 6 },
-  track: { height: 4, borderRadius: 2, backgroundColor: color.surfaceRaised, overflow: 'hidden' },
-  fill: { height: 4, borderRadius: 2, backgroundColor: color.success },
+  track: { height: 6, borderRadius: 1, backgroundColor: color.surfaceRaised, overflow: 'hidden' },
+  fill: { height: 6, borderRadius: 1, backgroundColor: color.success },
   link: { alignSelf: 'flex-start', minHeight: 32, justifyContent: 'center' },
 });

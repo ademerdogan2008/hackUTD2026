@@ -2,7 +2,7 @@ import { useFocusEffect } from 'expo-router';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { FlatList, KeyboardAvoidingView, Platform, StyleSheet, TextInput, View } from 'react-native';
 import { useReducer, useTable } from 'spacetimedb/react';
-import { ConnectionBadge } from '../../components/ConnectionBadge';
+import { StatusStrip } from '../../components/StatusStrip';
 import { Bubble, type ChatMsg } from '../../features/chat/Bubble';
 import { useChatUnread } from '../../features/chat/unread';
 import { reducers, tables } from '../../module_bindings';
@@ -63,20 +63,20 @@ export default function ChatTab() {
   };
 
   return (
-    <Screen title="Chat" headerRight={<ConnectionBadge />} scroll={false}>
+    <Screen title="Chat" strip={<StatusStrip />} scroll={false}>
       <KeyboardAvoidingView style={{ flex: 1, gap: space.sm }} behavior={Platform.OS === 'ios' ? 'padding' : undefined} keyboardVerticalOffset={Platform.OS === 'ios' ? 90 : 0}>
         {showCounsel ? (
           <SegmentedControl
             segments={[
               { value: 'all', label: 'All' },
-              { value: 'counsel', label: 'Counsel 🔒' },
+              { value: 'counsel', label: 'Counsel' },
             ]}
             value={active}
             onChange={setChannel}
           />
         ) : null}
         {active === 'counsel' ? (
-          <T variant="label" tone="muted" numberOfLines={1}>Privileged & confidential — visible to Counsel, Lead, Admin only</T>
+          <T variant="caption" tone="warning" numberOfLines={1}>Privileged. Visible to Counsel, Lead and Admin only.</T>
         ) : null}
         <FlatList
           ref={list}
@@ -114,8 +114,10 @@ const styles = StyleSheet.create({
     flex: 1,
     minHeight: 54,
     maxHeight: 120,
-    backgroundColor: color.surfaceRaised,
-    borderRadius: 14,
+    backgroundColor: color.surface,
+    borderWidth: 1,
+    borderColor: color.hairline,
+    borderRadius: 10,
     paddingHorizontal: space.md,
     paddingTop: 15,
     paddingBottom: 15,

@@ -79,7 +79,7 @@ const styles = StyleSheet.create({
   dot: { width: 12, height: 12, borderRadius: 6 },
   grid: { gap: space.md },
   gridRow: { flexDirection: 'row', gap: space.lg },
-  key: { width: 72, height: 72, borderRadius: radius.pill, backgroundColor: color.surface, alignItems: 'center', justifyContent: 'center' },
-  digit: { fontSize: 28, lineHeight: 34, fontFamily: font.displaySemi, color: color.text },
+  key: { width: 72, height: 72, borderRadius: radius.md, borderWidth: 1, borderColor: color.hairline, backgroundColor: color.surface, alignItems: 'center', justifyContent: 'center' },
+  digit: { fontSize: 26, lineHeight: 32, fontFamily: font.mono, color: color.text },
   blank: { width: 72, height: 72 },
 });

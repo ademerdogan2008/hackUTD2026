@@ -20,7 +20,7 @@ export function Avatar({ name }: { name: string }) {
   const ini = name.trim().split(/\s+/).slice(0, 2).map((p) => p[0]?.toUpperCase() ?? '').join('');
   return (
     <View style={styles.avatar} accessibilityElementsHidden importantForAccessibility="no-hide-descendants">
-      <Text style={[type.caption, { color: color.text }]}>{ini || '?'}</Text>
+      <Text style={[type.label, { color: color.text, letterSpacing: 0.4 }]}>{ini || '?'}</Text>
     </View>
   );
 }
@@ -62,7 +62,7 @@ export function Group({ title, footer, children, style }: { title?: string; foot
   return (
     <View style={[{ gap: space.sm }, style]}>
       {title ? (
-        <Text style={[type.caption, styles.groupLabel]} accessibilityRole="header">
+        <Text style={[type.label, styles.groupLabel]} accessibilityRole="header">
           {title}
         </Text>
       ) : null}
@@ -86,8 +86,8 @@ const styles = StyleSheet.create({
   grouped: { paddingHorizontal: space.md, paddingVertical: 12 },
   flush: { paddingVertical: 12, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: color.hairline },
   mid: { flex: 1, gap: 2 },
-  avatar: { width: 32, height: 32, borderRadius: 16, backgroundColor: color.surfaceRaised, alignItems: 'center', justifyContent: 'center' },
-  group: { backgroundColor: color.surface, borderRadius: radius.md, overflow: 'hidden' },
+  avatar: { width: 32, height: 32, borderRadius: radius.sm, borderWidth: 1, borderColor: color.hairline, backgroundColor: color.surfaceRaised, alignItems: 'center', justifyContent: 'center' },
+  group: { backgroundColor: color.surface, borderRadius: radius.md, borderWidth: 1, borderColor: color.hairline, overflow: 'hidden' },
   sep: { height: StyleSheet.hairlineWidth, backgroundColor: color.hairline, marginLeft: space.md },
   groupLabel: { paddingHorizontal: space.md },
 });

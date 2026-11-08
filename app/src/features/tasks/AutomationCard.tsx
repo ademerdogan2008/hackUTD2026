@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react';
 import { View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { Badge, Button, Card, color, haptics, space, T } from '../../ui';
+import { Button, Card, color, haptics, space, T } from '../../ui';
 
 const STEP_MS = 650;
 
@@ -30,9 +30,8 @@ export function AutomationCard({ title, log, onNext }: { title: string; log: str
 
   const finished = shown >= done.length;
   return (
-    <Card title="Automation" tone={finished ? 'success' : 'warning'}>
-      <Badge label={finished ? 'Done ✓' : 'Running…'} variant={finished ? 'success' : 'warning'} dot />
-      <T variant="heading">{title}</T>
+    <Card title={finished ? 'Automation complete' : 'Automation running'} tone={finished ? 'success' : 'warning'}>
+      <T variant="bodyStrong">{title}</T>
       <View style={{ gap: space.xs }}>
         {done.slice(0, shown).map((line, i) => (
           <View key={i} style={{ flexDirection: 'row', gap: space.sm, alignItems: 'flex-start' }}>
@@ -40,7 +39,7 @@ export function AutomationCard({ title, log, onNext }: { title: string; log: str
             <T style={{ flex: 1 }}>{line}</T>
           </View>
         ))}
-        {!finished ? <T variant="caption" tone="tertiary">{`Step ${shown + 1} of ${done.length}…`}</T> : null}
+        {!finished ? <T variant="mono" tone="muted">{`step ${String(shown + 1).padStart(2, '0')}/${String(done.length).padStart(2, '0')}`}</T> : null}
       </View>
       {finished && manual.length ? (
         <View style={{ gap: space.xs }}>

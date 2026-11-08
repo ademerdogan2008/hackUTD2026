@@ -6,7 +6,7 @@ export function Field({ label, error, ...rest }: TextInputProps & { label: strin
   const [focus, setFocus] = useState(false);
   return (
     <View style={{ gap: space.xs }}>
-      <Text style={[type.caption, { paddingHorizontal: 4 }]}>{label}</Text>
+      <Text style={[type.label, { paddingHorizontal: 2 }]}>{label}</Text>
       <TextInput
         accessibilityLabel={label}
         placeholderTextColor={color.textTertiary}
@@ -20,7 +20,7 @@ export function Field({ label, error, ...rest }: TextInputProps & { label: strin
           setFocus(false);
           rest.onBlur?.(e);
         }}
-        style={[styles.input, { borderColor: error ? color.dangerText : focus ? 'rgba(255,255,255,0.24)' : 'transparent' }, rest.style]}
+        style={[styles.input, { borderColor: error ? color.dangerText : focus ? color.textSecondary : color.hairline }, rest.style]}
       />
       {error ? <Text style={[type.caption, { color: color.dangerText, paddingHorizontal: 4 }]}>{error}</Text> : null}
     </View>

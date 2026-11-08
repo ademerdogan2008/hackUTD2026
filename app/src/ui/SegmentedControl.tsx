@@ -32,9 +32,9 @@ export function SegmentedControl<T extends string>({ segments, options, value, o
 }
 
 const styles = StyleSheet.create({
-  wrap: { flexDirection: 'row', backgroundColor: color.surface, borderRadius: radius.sm, padding: 2, height: 36 },
-  seg: { flex: 1, alignItems: 'center', justifyContent: 'center', borderRadius: 8, paddingHorizontal: 8 },
+  wrap: { flexDirection: 'row', backgroundColor: color.surface, borderRadius: radius.button, borderWidth: 1, borderColor: color.hairline, padding: 3, height: 40 },
+  seg: { flex: 1, alignItems: 'center', justifyContent: 'center', borderRadius: radius.sm, paddingHorizontal: 8 },
   selected: { backgroundColor: color.control },
-  text: { fontSize: 13, fontFamily: font.medium, color: color.textSecondary },
-  textSel: { color: color.text, fontFamily: font.semibold },
+  text: { fontSize: 14, letterSpacing: 1, textTransform: 'uppercase', fontFamily: font.displaySemi, color: color.textSecondary },
+  textSel: { color: color.text, fontFamily: font.display },
 });

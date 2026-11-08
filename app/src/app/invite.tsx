@@ -138,7 +138,7 @@ function CreateInvite() {
       <QRPanel value={code} expired={expired || used} label="Invite QR code. Show it to the person joining." />
       {used ? (
         <View style={{ alignItems: 'center' }}>
-          <Badge variant="success" label="Joined ✓" />
+          <Badge variant="success" label="Joined" />
         </View>
       ) : (
         <Countdown expiresAt={created.expiresAt} onExpire={() => setExpired(true)} />

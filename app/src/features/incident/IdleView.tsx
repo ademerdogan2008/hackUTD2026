@@ -2,14 +2,16 @@ import { useState } from 'react';
 import { Pressable, StyleSheet, Switch, Text, View } from 'react-native';
 import { useReducer } from 'spacetimedb/react';
 import { reducers } from '../../module_bindings';
+import { useMe } from '../../state/hooks';
 import { color, font, haptics } from '../../ui';
-import { StatusText, tx } from './parts';
+import { Dot, tx } from './parts';
 
 export type Run = (p: Promise<unknown>) => Promise<void>;
 
 /** All clear: calm centered state, big red button pinned to the bottom. */
 export function IdleView({ run }: { run: Run }) {
   const raise = useReducer(reducers.raiseAlert);
+  const { members } = useMe();
   const [drill, setDrill] = useState(false);
   const [busy, setBusy] = useState(false);
   const toggle = () => {
@@ -19,8 +21,21 @@ export function IdleView({ run }: { run: Run }) {
   return (
     <View style={s.fill}>
       <View style={s.center}>
-        <StatusText tone={color.success} label="All clear" style={tx.title} />
+        <View style={s.statusRow}>
+          <Dot tone={color.success} size={12} />
+          <Text style={[tx.status, { color: color.success }]} accessibilityRole="header" maxFontSizeMultiplier={1.3}>
+            All clear
+          </Text>
+        </View>
         <Text style={tx.callout}>No active incident</Text>
+        <View style={s.standby}>
+          <Text style={s.standbyNum} maxFontSizeMultiplier={1.3}>
+            {String(members.length).padStart(2, '0')}
+          </Text>
+          <Text style={[tx.callout, { flex: 1 }]} maxFontSizeMultiplier={1.5}>
+            responders on standby. One tap reaches all of their phones.
+          </Text>
+        </View>
       </View>
 
       <View style={s.bottom}>
@@ -52,6 +67,7 @@ export function IdleView({ run }: { run: Run }) {
           </Text>
           {drill ? <Text style={s.bigTag}>Drill</Text> : null}
         </Pressable>
+        <Text style={[tx.caption, { textAlign: 'center' }]}>{drill ? 'Starts a practice run for the whole team' : 'Alerts your Incident Lead first'}</Text>
       </View>
     </View>
   );
@@ -59,10 +75,13 @@ export function IdleView({ run }: { run: Run }) {
 
 const s = StyleSheet.create({
   fill: { flex: 1 },
-  center: { flex: 1, alignItems: 'center', justifyContent: 'center', gap: 6 },
+  center: { flex: 1, justifyContent: 'center', gap: 8 },
+  statusRow: { flexDirection: 'row', alignItems: 'center', gap: 12 },
+  standby: { flexDirection: 'row', alignItems: 'center', gap: 12, marginTop: 20, paddingTop: 16, borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: color.hairline },
+  standbyNum: { fontFamily: font.mono, fontSize: 28, lineHeight: 32, color: color.text },
   bottom: { gap: 12, paddingBottom: 8 },
-  drillRow: { flexDirection: 'row', alignItems: 'center', gap: 12, paddingHorizontal: 4, minHeight: 48 },
-  big: { height: 64, borderRadius: 18, backgroundColor: color.danger, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 10 },
-  bigText: { fontSize: 18, lineHeight: 22, fontFamily: font.display, letterSpacing: -0.2, color: color.onDanger },
-  bigTag: { fontSize: 13, lineHeight: 18, fontFamily: font.medium, color: color.onDanger, opacity: 0.75 },
+  drillRow: { flexDirection: 'row', alignItems: 'center', gap: 12, paddingHorizontal: 2, minHeight: 48 },
+  big: { height: 76, borderRadius: 12, backgroundColor: color.danger, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 12 },
+  bigText: { fontSize: 26, lineHeight: 30, fontFamily: font.display, letterSpacing: 2, textTransform: 'uppercase', color: color.onDanger },
+  bigTag: { fontSize: 13, lineHeight: 16, fontFamily: font.displaySemi, letterSpacing: 1.2, textTransform: 'uppercase', color: color.onDanger, borderWidth: 1, borderColor: 'rgba(255,255,255,0.7)', borderRadius: 4, paddingHorizontal: 6, paddingVertical: 1 },
 });

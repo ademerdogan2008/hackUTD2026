@@ -32,8 +32,8 @@ function TabsNav() {
         headerShown: false,
         tabBarActiveTintColor: color.text,
         tabBarInactiveTintColor: color.textTertiary,
-        tabBarStyle: { backgroundColor: color.surface, borderTopColor: color.hairline, borderTopWidth: StyleSheet.hairlineWidth, elevation: 0, shadowOpacity: 0 },
-        tabBarLabelStyle: { fontSize: 11, fontFamily: font.display },
+        tabBarStyle: { backgroundColor: color.bg, borderTopColor: color.hairline, borderTopWidth: StyleSheet.hairlineWidth, elevation: 0, shadowOpacity: 0 },
+        tabBarLabelStyle: { fontSize: 12, lineHeight: 14, fontFamily: font.displaySemi, letterSpacing: 1, textTransform: 'uppercase' },
         sceneStyle: { backgroundColor: color.bg },
       }}
     >
@@ -50,8 +50,8 @@ const styles = StyleSheet.create({
   badge: {
     backgroundColor: color.danger,
     color: color.onDanger,
-    fontFamily: font.semibold,
-    fontSize: 11,
+    fontFamily: font.mono,
+    fontSize: 10,
     lineHeight: 16,
     minWidth: 16,
     height: 16,

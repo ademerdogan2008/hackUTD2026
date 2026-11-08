@@ -6,7 +6,7 @@ import { SEVERITY_LABEL, type Severity } from '@redphone/shared';
 import { reducers, tables } from '../../module_bindings';
 import { AutomationCard } from './AutomationCard';
 import { TaskDetail } from './TaskDetail';
-import { ConnectionBadge } from '../../components/ConnectionBadge';
+import { StatusStrip } from '../../components/StatusStrip';
 import { isLeadOrAdmin, ROLE_LABEL, useCurrentIncident, useMe } from '../../state/hooks';
 import { useRankedTasks, type RankedTask } from '../../state/tasks';
 import {
@@ -17,6 +17,7 @@ import {
   EmptyState,
   font,
   haptics,
+  Lamp,
   radius,
   Screen,
   SegmentedControl,
@@ -41,10 +42,10 @@ const STATUS: Record<string, { label: string; variant: Variant }> = {
 
 const SEV_VARIANT: Record<Severity, Variant> = { critical: 'danger', high: 'warning', normal: 'neutral' };
 
-/** Visual scale per severity: critical rows are the largest and carry a muted danger accent bar. */
+/** Visual scale per severity: critical rows are the largest and carry a red lamp. */
 const SEV_SCALE: Record<Severity, { title: TextStyle; accent?: string; padV: number }> = {
-  critical: { title: { fontSize: 18, lineHeight: 24, fontFamily: font.display, letterSpacing: -0.3 }, accent: 'rgba(229,72,77,0.7)', padV: 14 },
-  high: { title: { fontSize: 17, lineHeight: 22, fontFamily: font.semibold }, accent: 'rgba(212,161,58,0.7)', padV: 12 },
+  critical: { title: { fontSize: 20, lineHeight: 24, fontFamily: font.display, letterSpacing: 0.2 }, accent: color.danger, padV: 14 },
+  high: { title: { fontSize: 17, lineHeight: 22, fontFamily: font.semibold }, accent: color.warning, padV: 12 },
   normal: { title: { fontSize: 15, lineHeight: 20, fontFamily: font.medium }, padV: 10 },
 };
 
@@ -119,7 +120,7 @@ export default function TasksScreen() {
   const runFor = (id: bigint) => runs.find((r) => r.taskId === id);
   const shownRun = showing ? runFor(showing.taskId) : undefined;
 
-  const header = { title: 'Tasks', headerRight: <ConnectionBadge /> };
+  const header = { title: 'Tasks', strip: <StatusStrip /> };
   if (!ready || !me) return <Screen {...header}><EmptyState title="Loading" /></Screen>;
   if (!incident) return <Screen {...header}><EmptyState title="No active incident" body="Tasks appear once an incident is active." /></Screen>;
   if (!incident.attackType)
@@ -136,7 +137,7 @@ export default function TasksScreen() {
     const s = STATUS[t.status] ?? { label: t.status, variant: 'neutral' as Variant };
     return (
       <View key={t.id.toString()} style={[styles.row, i > 0 && styles.rowDivider, { paddingVertical: sev.padV }, (locked || isDone) && { opacity: 0.5 }]}>
-        {sev.accent && !isDone ? <View style={[styles.accent, { backgroundColor: sev.accent }]} /> : null}
+        {sev.accent && !isDone ? <View style={{ paddingTop: 4 }}><Lamp tone={sev.accent} size={7} /></View> : null}
         <View style={{ flex: 1, gap: 2 }}>
           <View style={styles.rowHead}>
             <Text style={[{ color: color.text, flex: 1 }, sev.title, isDone && { textDecorationLine: 'line-through' }]} maxFontSizeMultiplier={1.5}>
@@ -145,7 +146,7 @@ export default function TasksScreen() {
             <Badge label={s.label} variant={s.variant} />
           </View>
           {t.stepId === 0n && !isDone ? <TaskDetail detail={t.detail} jev small /> : null}
-          {!isDone && runFor(t.id)?.status === 'ready' ? <T variant="caption" style={{ color: color.success }}>⚡ Can run automatically</T> : null}
+          {!isDone && runFor(t.id)?.status === 'ready' ? <T variant="caption" style={{ color: color.success }}>Can run automatically</T> : null}
           {runFor(t.id)?.status === 'succeeded' ? <T variant="caption" tone="tertiary">{`Automated by ${runFor(t.id)!.ranBy}`}</T> : null}
           {view === 'team' ? (
             <T variant="caption">
@@ -163,10 +164,13 @@ export default function TasksScreen() {
       {showing && shownRun?.status === 'succeeded' ? (
         <AutomationCard key={showing.taskId.toString()} title={showing.title} log={shownRun.log} onNext={() => setShowing(null)} />
       ) : next ? (
-        <Card title="Your next step" tone="warning">
-          <Badge label={SEVERITY_LABEL[next.severity]} variant={SEV_VARIANT[next.severity]} dot />
+        <Card>
+          <View style={styles.cardHead}>
+            <Text style={type.label} accessibilityRole="header">Your next step</Text>
+            <Badge label={SEVERITY_LABEL[next.severity]} variant={SEV_VARIANT[next.severity]} dot />
+          </View>
           {next.stepId === 0n ? <Badge label="From Jev · machine evidence" variant="danger" dot /> : null}
-          <T variant="heading">{next.title}</T>
+          <Text style={styles.taskTitle} maxFontSizeMultiplier={1.3}>{next.title}</Text>
           {!next.assignedTo ? (
             <T variant="caption" tone="muted">{`No ${ROLE_LABEL[next.role] ?? next.role} member has joined yet, so this is yours for now.`}</T>
           ) : null}
@@ -205,7 +209,7 @@ export default function TasksScreen() {
         value={view}
         onChange={(v: View_) => setView(v)}
       />
-      {view === 'mine' && total ? <T variant="caption">{`${doneCount} of ${total} complete`}</T> : null}
+      {view === 'mine' && total ? <T variant="mono" tone="muted" style={{ fontSize: 12 }}>{`${String(doneCount).padStart(2, '0')}/${String(total).padStart(2, '0')} complete`}</T> : null}
 
       {sections.length === 0 && done.length === 0 ? (
         <T tone="muted">{view === 'mine' ? 'None assigned.' : 'No tasks yet.'}</T>
@@ -214,9 +218,9 @@ export default function TasksScreen() {
       {sections.map(({ sev, tasks }) => (
         <View key={sev} style={{ gap: space.sm }}>
           <View style={styles.sectionHead} accessibilityRole="header">
-            <View style={[styles.dot, { backgroundColor: SEV_SCALE[sev].accent ?? color.textTertiary }]} />
-            <Text style={[type.bodyStrong, { fontFamily: font.display }]}>{SEVERITY_LABEL[sev]}</Text>
-            <T variant="caption" tone="tertiary">{tasks.length}</T>
+            <Lamp tone={SEV_SCALE[sev].accent ?? color.textTertiary} size={7} />
+            <Text style={[type.label, { color: color.text }]}>{SEVERITY_LABEL[sev]}</Text>
+            <T variant="mono" tone="tertiary" style={{ fontSize: 12 }}>{String(tasks.length).padStart(2, '0')}</T>
           </View>
           <View style={styles.group}>{tasks.map((t, i) => row(t, i))}</View>
         </View>
@@ -231,7 +235,7 @@ export default function TasksScreen() {
             style={({ pressed }) => [styles.sectionHead, pressed && { opacity: 0.7 }]}
           >
             <Ionicons name={showDone ? 'chevron-down' : 'chevron-forward'} size={18} color={color.textSecondary} />
-            <Text style={[type.bodyStrong, { fontFamily: font.display, color: color.textSecondary }]}>{`Done (${done.length})`}</Text>
+            <Text style={type.label}>{`Done · ${done.length}`}</Text>
           </Pressable>
           {showDone ? <View style={styles.group}>{done.map((t, i) => row(t, i, false))}</View> : null}
         </View>
@@ -241,11 +245,11 @@ export default function TasksScreen() {
 }
 
 const styles = StyleSheet.create({
-  group: { backgroundColor: color.surface, borderRadius: radius.md, paddingHorizontal: space.md, overflow: 'hidden' },
+  group: { backgroundColor: color.surface, borderRadius: radius.md, borderWidth: 1, borderColor: color.hairline, paddingHorizontal: space.md, overflow: 'hidden' },
   row: { flexDirection: 'row', gap: space.sm + 4 },
   rowDivider: { borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: color.hairline },
   rowHead: { flexDirection: 'row', justifyContent: 'space-between', gap: space.sm, alignItems: 'center' },
-  accent: { width: 3, borderRadius: 2, alignSelf: 'stretch' },
-  sectionHead: { flexDirection: 'row', alignItems: 'center', gap: space.sm },
-  dot: { width: 8, height: 8, borderRadius: 4 },
+  sectionHead: { flexDirection: 'row', alignItems: 'center', gap: space.sm, paddingHorizontal: 2 },
+  cardHead: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: space.sm, paddingBottom: 12, marginHorizontal: -space.md, paddingHorizontal: space.md, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: color.hairline },
+  taskTitle: { fontSize: 28, lineHeight: 30, fontFamily: font.display, letterSpacing: 0.2, color: color.text },
 });

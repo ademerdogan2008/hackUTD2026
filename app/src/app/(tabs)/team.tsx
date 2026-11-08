@@ -2,7 +2,7 @@ import { Alert, Platform, View } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useReducer } from 'spacetimedb/react';
 import { ROLES, canInvite, fingerprint, type Role } from '@redphone/shared';
-import { ConnectionBadge } from '../../components/ConnectionBadge';
+import { StatusStrip } from '../../components/StatusStrip';
 import { reducers } from '../../module_bindings';
 import { ROLE_LABEL, useMe, useMemberNames } from '../../state/hooks';
 import { Button, Card, EmptyState, ListRow, RoleBadge, Screen, T } from '../../ui';
@@ -30,7 +30,7 @@ export default function TeamTab() {
   const sorted = [...members].sort((a, b) => (a.joinedAt.microsSinceUnixEpoch < b.joinedAt.microsSinceUnixEpoch ? -1 : 1));
 
   return (
-    <Screen title="Team" headerRight={<ConnectionBadge />}>
+    <Screen title="Team" strip={<StatusStrip />}>
       {me ? (
         <Card title={me.name}>
           <View style={{ flexDirection: 'row' }}>
