@@ -7,7 +7,7 @@ import { Bubble, type ChatMsg } from '../../features/chat/Bubble';
 import { useChatUnread } from '../../features/chat/unread';
 import { reducers, tables } from '../../module_bindings';
 import { canSeeCounsel, useMe, useMemberNames } from '../../state/hooks';
-import { Button, EmptyState, Screen, SegmentedControl, T, color, radius, space, type } from '../../ui';
+import { Button, EmptyState, Screen, SegmentedControl, T, color, space, type } from '../../ui';
 
 type Channel = 'all' | 'counsel';
 
@@ -97,6 +97,7 @@ export default function ChatTab() {
             placeholderTextColor={color.textMuted}
             accessibilityLabel="Message"
             multiline
+            numberOfLines={1}
             onSubmitEditing={send}
           />
           <Button label="Send" onPress={send} loading={sending} disabled={!text.trim()} fullWidth={false} />
@@ -108,5 +109,19 @@ export default function ChatTab() {
 
 const styles = StyleSheet.create({
   composer: { flexDirection: 'row', alignItems: 'flex-end', gap: space.sm },
-  input: { flex: 1, minHeight: 56, maxHeight: 120, backgroundColor: color.surfaceRaised, borderRadius: radius.lg, paddingHorizontal: space.md, color: color.text, ...type.body },
+  // One-line height matches the 54px Send button; equal top/bottom padding centers text and placeholder.
+  input: {
+    flex: 1,
+    minHeight: 54,
+    maxHeight: 120,
+    backgroundColor: color.surfaceRaised,
+    borderRadius: 14,
+    paddingHorizontal: space.md,
+    paddingTop: 15,
+    paddingBottom: 15,
+    color: color.text,
+    ...type.body,
+    lineHeight: 24,
+    textAlignVertical: 'center',
+  },
 });
