@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { Ionicons } from '@expo/vector-icons';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { haptics } from './haptics';
 import { color, radius, space, type } from './theme';
@@ -36,8 +37,8 @@ export function PinPad({ length = 6, value: valueProp, onChange: onChangeProp, o
   };
 
   const Key = ({ d }: { d: string }) => (
-    <Pressable onPress={() => press(d)} accessibilityRole="button" accessibilityLabel={d} style={({ pressed }) => [styles.key, pressed && { opacity: 0.85 }, disabled && { opacity: 0.4 }]}>
-      <Text style={type.heading}>{d}</Text>
+    <Pressable onPress={() => press(d)} accessibilityRole="button" accessibilityLabel={d} style={({ pressed }) => [styles.key, pressed && { backgroundColor: color.control }, disabled && { opacity: 0.4 }]}>
+      <Text style={styles.digit} maxFontSizeMultiplier={1.2}>{d}</Text>
     </Pressable>
   );
 
@@ -46,10 +47,10 @@ export function PinPad({ length = 6, value: valueProp, onChange: onChangeProp, o
       {title ? <Text style={type.heading}>{title}</Text> : null}
       <View style={styles.dots} accessibilityLabel={`${value.length} of ${length} digits entered`} accessibilityLiveRegion="polite">
         {Array.from({ length }, (_, i) => (
-          <View key={i} style={[styles.dot, i < value.length ? { backgroundColor: error ? color.dangerText : color.text, borderColor: error ? color.dangerText : color.text } : { borderColor: error ? color.dangerText : color.border }]} />
+          <View key={i} style={[styles.dot, { backgroundColor: i < value.length ? (error ? color.dangerText : color.text) : color.surfaceRaised }]} />
         ))}
       </View>
-      <Text style={[type.label, { color: color.dangerText, minHeight: 20 }]} accessibilityRole="alert">
+      <Text style={[type.caption, { color: color.dangerText, minHeight: 18 }]} accessibilityRole="alert">
         {error ?? ''}
       </Text>
       <View style={styles.grid}>
@@ -63,8 +64,8 @@ export function PinPad({ length = 6, value: valueProp, onChange: onChangeProp, o
         <View style={styles.gridRow}>
           <View style={styles.blank} />
           <Key d="0" />
-          <Pressable onPress={back} accessibilityRole="button" accessibilityLabel="Delete last digit" style={[styles.blank, { alignItems: 'center', justifyContent: 'center' }, disabled && { opacity: 0.4 }]}>
-            <Text style={type.heading}>{'⌫'}</Text>
+          <Pressable onPress={back} accessibilityRole="button" accessibilityLabel="Delete last digit" style={({ pressed }) => [styles.blank, { alignItems: 'center', justifyContent: 'center' }, pressed && { opacity: 0.7 }, disabled && { opacity: 0.4 }]}>
+            <Ionicons name="backspace-outline" size={26} color={color.textSecondary} />
           </Pressable>
         </View>
       </View>
@@ -74,10 +75,11 @@ export function PinPad({ length = 6, value: valueProp, onChange: onChangeProp, o
 
 const styles = StyleSheet.create({
   wrap: { alignItems: 'center', gap: space.md },
-  dots: { flexDirection: 'row', gap: space.md },
-  dot: { width: 16, height: 16, borderRadius: 8, borderWidth: 2 },
+  dots: { flexDirection: 'row', gap: 14, paddingVertical: space.sm },
+  dot: { width: 12, height: 12, borderRadius: 6 },
   grid: { gap: space.md },
-  gridRow: { flexDirection: 'row', gap: space.md },
-  key: { width: 72, height: 72, borderRadius: radius.pill, backgroundColor: color.surfaceRaised, alignItems: 'center', justifyContent: 'center' },
+  gridRow: { flexDirection: 'row', gap: space.lg },
+  key: { width: 72, height: 72, borderRadius: radius.pill, backgroundColor: color.surface, alignItems: 'center', justifyContent: 'center' },
+  digit: { fontSize: 28, lineHeight: 34, fontWeight: '400', color: color.text },
   blank: { width: 72, height: 72 },
 });

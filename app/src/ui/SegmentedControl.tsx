@@ -1,11 +1,12 @@
 import { Pressable, StyleSheet, Text, View } from 'react-native';
-import { color, radius, space, type } from './theme';
+import { color, radius } from './theme';
 
 export interface Segment<T extends string> {
   value: T;
   label: string;
 }
 
+/** iOS-style: surface track, raised thumb, 36px tall, no borders. */
 export function SegmentedControl<T extends string>({ segments, options, value, onChange }: { segments?: Segment<T>[]; options?: { value: string; label: string }[]; value: string; onChange: (v: any) => void }) {
   return (
     <View style={styles.wrap} accessibilityRole="tablist">
@@ -18,9 +19,11 @@ export function SegmentedControl<T extends string>({ segments, options, value, o
             accessibilityRole="tab"
             accessibilityState={{ selected: sel }}
             accessibilityLabel={s.label}
-            style={[styles.seg, sel && styles.selected]}
+            style={({ pressed }) => [styles.seg, sel && styles.selected, pressed && !sel && { opacity: 0.7 }]}
           >
-            <Text style={[type.bodyStrong, { color: sel ? color.text : color.textMuted }]}>{s.label}</Text>
+            <Text style={[styles.text, sel ? styles.textSel : null]} numberOfLines={1} maxFontSizeMultiplier={1.3}>
+              {s.label}
+            </Text>
           </Pressable>
         );
       })}
@@ -29,7 +32,9 @@ export function SegmentedControl<T extends string>({ segments, options, value, o
 }
 
 const styles = StyleSheet.create({
-  wrap: { flexDirection: 'row', backgroundColor: color.surface, borderRadius: radius.lg, padding: space.xs, borderWidth: 1, borderColor: color.border },
-  seg: { flex: 1, minHeight: 48, alignItems: 'center', justifyContent: 'center', borderRadius: radius.lg, borderWidth: 2, borderColor: 'transparent' },
-  selected: { backgroundColor: color.surfaceRaised, borderColor: color.text },
+  wrap: { flexDirection: 'row', backgroundColor: color.surface, borderRadius: radius.sm, padding: 2, height: 36 },
+  seg: { flex: 1, alignItems: 'center', justifyContent: 'center', borderRadius: 8, paddingHorizontal: 8 },
+  selected: { backgroundColor: color.control },
+  text: { fontSize: 13, fontWeight: '500', color: color.textSecondary },
+  textSel: { color: color.text, fontWeight: '600' },
 });

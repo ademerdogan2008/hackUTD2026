@@ -1,18 +1,16 @@
 import { StyleSheet, Text, View } from 'react-native';
 import { Button } from './Button';
-import { color, space, type } from './theme';
+import { space, type } from './theme';
 
-export function EmptyState({ title, body, glyph = '○', actionLabel, onAction }: { title: string; body?: string; glyph?: string; actionLabel?: string; onAction?: () => void }) {
+/** One line + muted subline, centered. `glyph` is accepted for compatibility but not drawn (no illustrations). */
+export function EmptyState({ title, body, actionLabel, onAction }: { title: string; body?: string; glyph?: string; actionLabel?: string; onAction?: () => void }) {
   return (
     <View style={styles.wrap}>
-      <Text style={{ fontSize: 48, color: color.textMuted }} accessibilityElementsHidden>
-        {glyph}
-      </Text>
-      <Text style={[type.heading, { textAlign: 'center' }]}>{title}</Text>
-      {body ? <Text style={[type.body, { color: color.textMuted, textAlign: 'center' }]}>{body}</Text> : null}
-      {actionLabel && onAction ? <Button title={actionLabel} onPress={onAction} variant="ghost" fullWidth={false} /> : null}
+      <Text style={[type.bodyStrong, { textAlign: 'center' }]}>{title}</Text>
+      {body ? <Text style={[type.callout, { textAlign: 'center' }]}>{body}</Text> : null}
+      {actionLabel && onAction ? <Button title={actionLabel} onPress={onAction} variant="ghost" fullWidth={false} style={{ alignSelf: 'center' }} /> : null}
     </View>
   );
 }
 
-const styles = StyleSheet.create({ wrap: { alignItems: 'center', gap: space.sm, padding: space.xl } });
+const styles = StyleSheet.create({ wrap: { alignItems: 'center', gap: space.xs, paddingVertical: space.xl, paddingHorizontal: space.md } });

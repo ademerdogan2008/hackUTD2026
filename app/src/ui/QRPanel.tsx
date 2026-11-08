@@ -12,7 +12,7 @@ export function QRPanel({ value, expired, label, size: sizeProp }: { value: stri
       accessibilityLabel={label ?? 'Invite QR code. Show it to the person joining.'}
     >
       {expired ? (
-        <Text style={type.heading}>Invite expired</Text>
+        <Text style={type.callout}>Invite expired</Text>
       ) : (
         <QRCode value={value} size={inner} ecl="M" backgroundColor={color.qrLight} color={color.qrDark} />
       )}
@@ -21,6 +21,6 @@ export function QRPanel({ value, expired, label, size: sizeProp }: { value: stri
 }
 
 const styles = StyleSheet.create({
-  panel: { alignSelf: 'center', alignItems: 'center', justifyContent: 'center', backgroundColor: color.qrLight, borderRadius: radius.lg, padding: space.md },
-  expired: { backgroundColor: color.surface, borderWidth: 1, borderColor: color.border },
+  panel: { alignSelf: 'center', alignItems: 'center', justifyContent: 'center', backgroundColor: color.qrLight, borderRadius: radius.md, padding: space.md },
+  expired: { backgroundColor: color.surface },
 });

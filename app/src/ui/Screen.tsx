@@ -12,18 +12,21 @@ export interface ScreenProps {
   children?: React.ReactNode;
 }
 
+/** Large left-aligned title, optional right accessory, content, optional pinned footer action. */
 export function Screen({ title, scroll = true, footer, banner, headerRight: hr, right, children }: ScreenProps) {
   const headerRight = right ?? hr;
+  const header =
+    title || headerRight ? (
+      <View style={styles.header}>
+        <Text style={[type.largeTitle, { flex: 1 }]} accessibilityRole="header" numberOfLines={1} maxFontSizeMultiplier={1.3}>
+          {title}
+        </Text>
+        {headerRight ? <View style={styles.right}>{headerRight}</View> : null}
+      </View>
+    ) : null;
   return (
     <SafeAreaView style={styles.root} edges={['top', 'left', 'right']}>
-      {title || headerRight ? (
-        <View style={styles.header}>
-          <Text style={[type.heading, { flex: 1 }]} accessibilityRole="header" maxFontSizeMultiplier={1.5}>
-            {title}
-          </Text>
-          {headerRight}
-        </View>
-      ) : null}
+      {header}
       {banner ? <View style={styles.gutter}>{banner}</View> : null}
       {scroll ? (
         <ScrollView style={{ flex: 1 }} contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
@@ -39,8 +42,9 @@ export function Screen({ title, scroll = true, footer, banner, headerRight: hr, 
 
 const styles = StyleSheet.create({
   root: { flex: 1, backgroundColor: color.bg },
-  header: { flexDirection: 'row', alignItems: 'center', gap: space.sm, paddingHorizontal: space.md, paddingTop: space.md, paddingBottom: space.sm },
-  gutter: { paddingHorizontal: space.md, paddingBottom: space.sm },
-  content: { padding: space.md, gap: space.lg },
-  actionBar: { backgroundColor: color.surface, borderTopWidth: 1, borderTopColor: color.border, padding: space.md, gap: space.sm },
+  header: { flexDirection: 'row', alignItems: 'center', gap: space.md, paddingHorizontal: space.screen, paddingTop: space.md, paddingBottom: space.sm },
+  right: { flexShrink: 0, alignItems: 'flex-end' },
+  gutter: { paddingHorizontal: space.screen, paddingBottom: space.sm },
+  content: { paddingHorizontal: space.screen, paddingTop: space.sm, paddingBottom: space.screen, gap: space.section },
+  actionBar: { backgroundColor: color.bg, paddingHorizontal: space.screen, paddingTop: space.sm, paddingBottom: space.md, gap: space.sm },
 });

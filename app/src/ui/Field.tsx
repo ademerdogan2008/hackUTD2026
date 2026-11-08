@@ -6,10 +6,10 @@ export function Field({ label, error, ...rest }: TextInputProps & { label: strin
   const [focus, setFocus] = useState(false);
   return (
     <View style={{ gap: space.xs }}>
-      <Text style={type.label}>{label}</Text>
+      <Text style={[type.caption, { paddingHorizontal: 4 }]}>{label}</Text>
       <TextInput
         accessibilityLabel={label}
-        placeholderTextColor={color.textMuted}
+        placeholderTextColor={color.textTertiary}
         autoCorrect={false}
         {...rest}
         onFocus={(e) => {
@@ -20,13 +20,13 @@ export function Field({ label, error, ...rest }: TextInputProps & { label: strin
           setFocus(false);
           rest.onBlur?.(e);
         }}
-        style={[styles.input, { borderColor: error ? color.dangerText : focus ? color.info : color.border, borderWidth: focus ? 2 : 1 }, rest.style]}
+        style={[styles.input, { borderColor: error ? color.dangerText : focus ? 'rgba(255,255,255,0.24)' : 'transparent' }, rest.style]}
       />
-      {error ? <Text style={[type.label, { color: color.dangerText }]}>{error}</Text> : null}
+      {error ? <Text style={[type.caption, { color: color.dangerText, paddingHorizontal: 4 }]}>{error}</Text> : null}
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  input: { minHeight: 56, backgroundColor: color.surfaceRaised, borderRadius: radius.sm, paddingHorizontal: space.md, ...type.body },
+  input: { minHeight: 52, backgroundColor: color.surface, borderRadius: radius.button, borderWidth: 1, paddingHorizontal: space.md, ...type.body },
 });

@@ -1,11 +1,14 @@
+import { Ionicons } from '@expo/vector-icons';
 import { Tabs } from 'expo-router';
-import { Text } from 'react-native';
+import { StyleSheet } from 'react-native';
 import { GlobalAlarm } from '../../features/incident/GlobalAlarm';
-import { color, type } from '../../ui';
+import { color } from '../../ui';
 
-const glyph = (g: string) =>
-  function TabIcon({ color: c }: { color: unknown }) {
-    return <Text style={{ fontSize: 22, color: c as string }}>{g}</Text>;
+type IconName = React.ComponentProps<typeof Ionicons>['name'];
+
+const icon = (outline: IconName, filled: IconName) =>
+  function TabIcon({ color: c, focused }: { color: unknown; focused: boolean }) {
+    return <Ionicons name={focused ? filled : outline} size={22} color={c as string} />;
   };
 
 export default function TabsLayout() {
@@ -16,17 +19,17 @@ export default function TabsLayout() {
       screenOptions={{
         headerShown: false,
         tabBarActiveTintColor: color.text,
-        tabBarInactiveTintColor: color.textMuted,
-        tabBarStyle: { backgroundColor: color.surface, borderTopColor: color.border, borderTopWidth: 1, minHeight: 64 },
-        tabBarLabelStyle: { ...type.label, color: undefined },
+        tabBarInactiveTintColor: color.textTertiary,
+        tabBarStyle: { backgroundColor: color.bg, borderTopColor: color.hairline, borderTopWidth: StyleSheet.hairlineWidth, elevation: 0, shadowOpacity: 0 },
+        tabBarLabelStyle: { fontSize: 11, fontWeight: '500' },
         sceneStyle: { backgroundColor: color.bg },
       }}
     >
-      <Tabs.Screen name="home" options={{ title: 'Home', tabBarIcon: glyph('⌂') }} />
-      <Tabs.Screen name="tasks" options={{ title: 'Tasks', tabBarIcon: glyph('✓') }} />
-      <Tabs.Screen name="board" options={{ title: 'Board', tabBarIcon: glyph('▦') }} />
-      <Tabs.Screen name="chat" options={{ title: 'Chat', tabBarIcon: glyph('✉') }} />
-      <Tabs.Screen name="team" options={{ title: 'Team', tabBarIcon: glyph('☺') }} />
+      <Tabs.Screen name="home" options={{ title: 'Home', tabBarIcon: icon('home-outline', 'home') }} />
+      <Tabs.Screen name="tasks" options={{ title: 'Tasks', tabBarIcon: icon('checkmark-circle-outline', 'checkmark-circle') }} />
+      <Tabs.Screen name="board" options={{ title: 'Board', tabBarIcon: icon('grid-outline', 'grid') }} />
+      <Tabs.Screen name="chat" options={{ title: 'Chat', tabBarIcon: icon('chatbubble-outline', 'chatbubble') }} />
+      <Tabs.Screen name="team" options={{ title: 'Team', tabBarIcon: icon('people-outline', 'people') }} />
     </Tabs>
     </>
   );

@@ -1,13 +1,20 @@
 import { StyleSheet, Text, View, type StyleProp, type ViewStyle } from 'react-native';
-import { color, radius, space, type } from './theme';
+import { color, radius, space, type, variantColor, variantTint } from './theme';
 
-export function Card({ title, footer, children, style, tone = 'default' }: { tone?: 'default' | 'danger' | 'warning' | 'success'; title?: string; footer?: React.ReactNode; children?: React.ReactNode; style?: StyleProp<ViewStyle> }) {
+type CardTone = 'default' | 'danger' | 'warning' | 'success';
+
+/** Flat surface. Tone = faint tint plus a status dot beside the title; never a border. */
+export function Card({ title, footer, children, style, tone = 'default' }: { tone?: CardTone; title?: string; footer?: React.ReactNode; children?: React.ReactNode; style?: StyleProp<ViewStyle> }) {
+  const toned = tone !== 'default';
   return (
-    <View style={[styles.card, tone !== 'default' && { borderColor: tone === 'danger' ? color.danger : tone === 'warning' ? color.warning : color.success, borderWidth: 2 }, style]}>
+    <View style={[styles.card, toned && { backgroundColor: variantTint[tone] }, style]}>
       {title ? (
-        <Text style={type.heading} accessibilityRole="header" maxFontSizeMultiplier={1.5}>
-          {title}
-        </Text>
+        <View style={styles.head}>
+          {toned ? <View style={[styles.dot, { backgroundColor: variantColor[tone] }]} /> : null}
+          <Text style={[type.bodyStrong, { flex: 1 }]} accessibilityRole="header" maxFontSizeMultiplier={1.5}>
+            {title}
+          </Text>
+        </View>
       ) : null}
       {children}
       {footer}
@@ -16,5 +23,7 @@ export function Card({ title, footer, children, style, tone = 'default' }: { ton
 }
 
 const styles = StyleSheet.create({
-  card: { backgroundColor: color.surface, borderRadius: radius.md, borderWidth: 1, borderColor: color.border, padding: space.lg, gap: space.sm },
+  card: { backgroundColor: color.surface, borderRadius: radius.md, padding: space.md, gap: space.sm },
+  head: { flexDirection: 'row', alignItems: 'center', gap: space.sm },
+  dot: { width: 8, height: 8, borderRadius: 4 },
 });

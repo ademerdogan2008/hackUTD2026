@@ -1,5 +1,5 @@
 import { ActivityIndicator, Pressable, StyleSheet, Text, View, type StyleProp, type ViewStyle } from 'react-native';
-import { color, radius, space, type } from './theme';
+import { color, radius, space } from './theme';
 
 export type ButtonVariant = 'primary' | 'secondary' | 'danger' | 'ghost';
 
@@ -24,6 +24,13 @@ const fg: Record<ButtonVariant, string> = {
   ghost: color.text,
 };
 
+const bg: Record<ButtonVariant, string> = {
+  primary: color.primary,
+  secondary: color.surfaceRaised,
+  danger: color.danger,
+  ghost: 'transparent',
+};
+
 export function Button({ title, label: labelProp, accessibilityLabel, onPress, variant = 'primary', loading, disabled, icon, fullWidth = true, testID, style }: ButtonProps) {
   const label = title ?? labelProp ?? '';
   const off = disabled || loading;
@@ -38,11 +45,9 @@ export function Button({ title, label: labelProp, accessibilityLabel, onPress, v
       accessibilityState={{ disabled: !!off, busy: !!loading }}
       style={({ pressed }) => [
         styles.base,
-        variant === 'primary' && { backgroundColor: color.primary },
-        variant === 'secondary' && { borderWidth: 2, borderColor: color.border },
-        variant === 'danger' && { backgroundColor: color.danger },
-        variant === 'ghost' && { minHeight: 48 },
-        pressed && { opacity: 0.85 },
+        { backgroundColor: bg[variant] },
+        variant === 'ghost' && styles.ghost,
+        pressed && !off && { opacity: 0.7 },
         disabled && { opacity: 0.4 },
         fullWidth ? { alignSelf: 'stretch' } : { alignSelf: 'flex-start' },
         style,
@@ -50,13 +55,17 @@ export function Button({ title, label: labelProp, accessibilityLabel, onPress, v
     >
       <View style={styles.row}>
         {loading ? <ActivityIndicator color={fg[variant]} /> : icon}
-        <Text style={[type.bodyStrong, { color: fg[variant] }]}>{label}</Text>
+        <Text style={[styles.text, { color: fg[variant] }]} maxFontSizeMultiplier={1.4}>
+          {label}
+        </Text>
       </View>
     </Pressable>
   );
 }
 
 const styles = StyleSheet.create({
-  base: { minHeight: 56, borderRadius: radius.lg, paddingHorizontal: space.lg, justifyContent: 'center', alignItems: 'center' },
+  base: { minHeight: 52, borderRadius: radius.button, paddingHorizontal: space.screen, justifyContent: 'center', alignItems: 'center' },
+  ghost: { minHeight: 44, paddingHorizontal: space.sm },
   row: { flexDirection: 'row', alignItems: 'center', gap: space.sm },
+  text: { fontSize: 17, lineHeight: 22, fontWeight: '600' },
 });

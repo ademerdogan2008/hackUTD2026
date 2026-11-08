@@ -1,23 +1,34 @@
 import { StyleSheet, Text, View } from 'react-native';
 import { ROLE_LABEL_FALLBACK } from './roles';
-import { color, radius, space, type, variantColor, type Variant } from './theme';
+import { color, radius, type, variantColor, type Variant } from './theme';
 
+/** Status = 8px dot + caption. Neutral without `dot` renders as a subtle filled tag. */
 export function Badge({ label, variant: v, tone, dot }: { label: string; variant?: Variant; tone?: Variant; dot?: boolean }) {
   const variant: Variant = v ?? tone ?? 'neutral';
-  const c = variant === 'neutral' ? color.text : variantColor[variant];
+  if (variant === 'neutral' && !dot) return <Tag label={label} />;
   return (
-    <View style={[styles.pill, { borderColor: variant === 'neutral' ? color.border : c }]} accessibilityLabel={label}>
-      {dot ? <View style={[styles.dot, { backgroundColor: c }]} /> : null}
-      <Text style={[type.label, { color: c }]} maxFontSizeMultiplier={1.5}>
+    <View style={styles.status} accessibilityLabel={label}>
+      <View style={[styles.dot, { backgroundColor: variantColor[variant] }]} />
+      <Text style={[type.caption, variant === 'danger' && { color: color.dangerText }]} maxFontSizeMultiplier={1.5}>
         {label}
       </Text>
     </View>
   );
 }
 
-/** Role badge: neutral outline, admin uses info. */
+function Tag({ label, strong }: { label: string; strong?: boolean }) {
+  return (
+    <View style={styles.tag} accessibilityLabel={label}>
+      <Text style={[type.caption, strong && { color: color.text }]} maxFontSizeMultiplier={1.5}>
+        {label}
+      </Text>
+    </View>
+  );
+}
+
+/** Role badge: subtle filled pill. */
 export function RoleBadge({ role }: { role: string }) {
-  return <Badge label={ROLE_LABEL_FALLBACK[role] ?? role} variant={role === 'admin' ? 'info' : 'neutral'} />;
+  return <Tag label={ROLE_LABEL_FALLBACK[role] ?? role} strong={role === 'admin'} />;
 }
 
 export function StatusPill({ live, labels = ['Live', 'Reconnecting'] }: { live: boolean; labels?: [string, string] }) {
@@ -25,6 +36,7 @@ export function StatusPill({ live, labels = ['Live', 'Reconnecting'] }: { live: 
 }
 
 const styles = StyleSheet.create({
-  pill: { flexDirection: 'row', alignItems: 'center', gap: space.xs, paddingVertical: space.xs, paddingHorizontal: space.sm, borderRadius: radius.pill, borderWidth: 1, alignSelf: 'flex-start' },
+  status: { flexDirection: 'row', alignItems: 'center', gap: 6, alignSelf: 'flex-start' },
   dot: { width: 8, height: 8, borderRadius: 4 },
+  tag: { paddingVertical: 3, paddingHorizontal: 10, borderRadius: radius.pill, backgroundColor: color.surfaceRaised, alignSelf: 'flex-start' },
 });
