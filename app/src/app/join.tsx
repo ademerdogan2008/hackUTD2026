@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from 'react';
 import { Platform, StyleSheet, View } from 'react-native';
 import { useReducer, useSpacetimeDB } from 'spacetimedb/react';
 import { sha256Hex, signJoin } from '@redphone/shared';
+import { SPACETIME_DB } from '../config';
 import { getOrCreateDeviceKey } from '../device';
 import { reducers } from '../module_bindings';
 import { useMe } from '../state/hooks';
@@ -94,6 +95,7 @@ export default function JoinScreen() {
   return (
     <Screen title="Join Red Phone">
       <T tone="muted">Scan the QR code from your incident lead, or paste the invite code.</T>
+      <T variant="caption" tone="muted">Database: {SPACETIME_DB}</T>
       {error ? <Banner variant="danger" text={error} /> : null}
 
       {canCamera ? (

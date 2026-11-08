@@ -26,3 +26,6 @@ export const SPACETIME_DB: string = webDbOverride() ?? extra?.db ?? 'red-phone-6
 if (!SPACETIME_HOST.startsWith('wss://')) {
   throw new Error('SPACETIME_HOST must use wss:// (TLS only)');
 }
+
+// Visible in Metro / browser console so test runs can confirm which database they hit.
+console.log(`[config] SPACETIME_DB=${SPACETIME_DB}`);
