@@ -1,5 +1,6 @@
 import { SenderError } from 'spacetimedb/server';
 import spacetimedb from './schema';
+import { ensureSeed } from './seed';
 import { appendAudit, requireMember } from './util';
 
 export const resetDemo = spacetimedb.reducer((ctx) => {
@@ -14,5 +15,6 @@ export const resetDemo = spacetimedb.reducer((ctx) => {
   for (const a of [...ctx.db.asset.iter()]) {
     ctx.db.asset.id.update({ ...a, status: 'unknown', setBy: '', updatedAt: ctx.timestamp });
   }
+  ensureSeed(ctx);
   appendAudit(ctx, 'demo.reset');
 });

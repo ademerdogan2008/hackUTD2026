@@ -80,7 +80,7 @@ export default function BoardScreen() {
       {!counsel ? (
         <T tone="muted">Legal clocks are visible to Counsel and the Incident Lead.</T>
       ) : myClocks.length === 0 ? (
-        <T tone="muted">No clocks running. Marking a PII system Stolen starts them.</T>
+        <T tone="muted">No clocks running. Marking a system with sensitive data Stolen (or Locked, for EU data) starts them.</T>
       ) : (
         <Card>{myClocks.map(clockRow)}</Card>
       )}
@@ -102,7 +102,7 @@ export default function BoardScreen() {
                 <T style={{ flex: 1, fontWeight: '600' }}>{a.name}</T>
                 <Badge label={s.label} variant={s.variant} />
               </View>
-              {a.hasPii ? <View style={{ flexDirection: 'row' }}><Badge label={`PII${a.regions ? ` · ${a.regions}` : ''}`} variant="info" /></View> : null}
+              {a.hasPii ? <View style={{ flexDirection: 'row' }}><Badge label={`Sensitive data${a.regions ? ` · ${a.regions}` : ''}`} variant="info" /></View> : null}
             </Card>
           </Pressable>
         );

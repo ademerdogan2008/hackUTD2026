@@ -37,7 +37,7 @@ function world() {
 describe('seed', () => {
   it('bootstrap seeds playbook and assets', () => {
     const { test } = world();
-    expect(test.db.playbookStep.count()).toBe(10n);
+    expect(test.db.playbookStep.count()).toBe(14n);
     expect(test.db.asset.count()).toBe(5n);
     expect(test.db.member.count()).toBe(4n);
   });
@@ -105,18 +105,21 @@ describe('incident flow', () => {
     test.withReducerTx(L, (ctx) => m.confirmAlert(ctx, {}));
     test.withReducerTx(L, (ctx) => m.setAttackType(ctx, { attackType: 'ransomware' }));
     const tasks = [...test.db.task.iter()];
-    expect(tasks.length).toBe(10);
+    expect(tasks.length).toBe(14);
     const itTasks = tasks.filter((x) => x.role === 'it');
     expect(itTasks.every((x) => x.assignedName === 'it3')).toBe(true);
     expect(tasks.find((x) => x.role === 'counsel')!.assignedName).toBe('counsel4');
     const first = itTasks.find((x) => x.status === 'open')!;
-    expect(itTasks.filter((x) => x.status === 'locked').length).toBe(2);
+    expect(itTasks.filter((x) => x.status === 'locked').length).toBe(3);
     expect(() => test.withReducerTx(CO, (ctx) => m.completeTask(ctx, { taskId: first.id }))).toThrow();
     test.withReducerTx(IT, (ctx) => m.acceptTask(ctx, { taskId: first.id }));
     test.withReducerTx(IT, (ctx) => m.completeTask(ctx, { taskId: first.id }));
-    expect([...test.db.task.iter()].filter((x) => x.role === 'it' && x.status === 'open').length).toBe(2);
+    expect([...test.db.task.iter()].filter((x) => x.role === 'it' && x.status === 'open').length).toBe(3);
 
     const billing = [...test.db.asset.iter()].find((a) => a.name === 'Billing DB')!;
+    // Encryption (Locked) of EU data starts only the GDPR clock; theft (Stolen) adds the Texas clocks.
+    test.withReducerTx(IT, (ctx) => m.setAssetStatus(ctx, { assetId: billing.id, status: 'locked' }));
+    expect([...test.db.clock.iter()].map((c) => c.name)).toEqual(['GDPR supervisory authority (72 hours)']);
     test.withReducerTx(IT, (ctx) => m.setAssetStatus(ctx, { assetId: billing.id, status: 'stolen' }));
     expect([...test.db.clock.iter()].map((c) => c.name).sort()).toEqual([
       'GDPR supervisory authority (72 hours)',

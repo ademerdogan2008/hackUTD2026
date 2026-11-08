@@ -1,5 +1,6 @@
 import { SenderError, t } from 'spacetimedb/server';
 import spacetimedb from './schema';
+import { ensureSeed } from './seed';
 import { appendAudit, currentIncident, isStaff, requireMember, requireStaff, setIncidentStatus, type Ctx } from './util';
 
 export const setAttackType = spacetimedb.reducer({ attackType: t.string() }, (ctx, { attackType }) => {
@@ -7,6 +8,7 @@ export const setAttackType = spacetimedb.reducer({ attackType: t.string() }, (ct
   const inc = currentIncident(ctx);
   if (!inc || inc.status !== 'active') throw new SenderError('incident must be active');
   if (inc.attackType) throw new SenderError('attack type already set');
+  ensureSeed(ctx); // picks up playbook revisions on already-seeded databases
   const steps = [...ctx.db.playbookStep.iter()]
     .filter((s) => s.attackType === attackType)
     .sort((a, b) => a.order - b.order);
