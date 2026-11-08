@@ -39,6 +39,16 @@ export function requireMember(ctx: Ctx) {
 
 export const isStaff = (role: string) => role === 'lead' || role === 'admin';
 
+/** A new member picks up the current incident's unassigned tasks for their role. */
+export function claimUnassignedTasks(ctx: Ctx, member: { identity: { toHexString(): string }; name: string; role: string }) {
+  const inc = currentIncident(ctx);
+  if (!inc) return;
+  for (const tk of [...ctx.db.task.incidentId.filter(inc.id)]) {
+    if (tk.assignedTo || tk.role !== member.role || tk.status === 'done') continue;
+    ctx.db.task.id.update({ ...tk, assignedTo: member.identity.toHexString(), assignedName: member.name, updatedAt: ctx.timestamp });
+  }
+}
+
 export function requireStaff(ctx: Ctx) {
   const m = requireMember(ctx);
   if (!isStaff(m.role)) throw new SenderError('lead or admin only');

@@ -3,7 +3,7 @@ import { useMemo } from 'react';
 import { useTable } from 'spacetimedb/react';
 import { severityOf, type Severity } from '@redphone/shared';
 import { tables } from '../module_bindings';
-import { useCurrentIncident, useMe } from './hooks';
+import { isLeadOrAdmin, useCurrentIncident, useMe } from './hooks';
 
 const STATUS_RANK: Record<string, number> = { accepted: 0, open: 1, locked: 2, done: 3 };
 
@@ -24,7 +24,7 @@ export type RankedTask = {
 /** All tasks for the current incident, most important first (severity band, then playbook order). */
 export function useRankedTasks() {
   const { incident } = useCurrentIncident();
-  const { identityHex } = useMe();
+  const { identityHex, me } = useMe();
   const [tasks] = useTable(tables.task);
   const [steps] = useTable(tables.playbookStep);
 
@@ -35,7 +35,8 @@ export function useRankedTasks() {
       .filter((t) => incident && t.incidentId === incident.id)
       .map((t) => {
         const step = stepById.get(t.stepId);
-        const order = step?.order ?? 999;
+        // Jev's pre-filled tasks (stepId 0) have no playbook step; treat them as critical.
+        const order = step?.order ?? (t.stepId === 0n ? 100 : 999);
         return {
           id: t.id,
           title: t.title,
@@ -51,12 +52,14 @@ export function useRankedTasks() {
         };
       })
       .sort((a, b) => a.order - b.order);
-    const mine = ranked.filter((t) => t.assignedTo === identityHex);
+    // Tasks for a role nobody holds yet are unassigned; leads and admins see them so they can act.
+    const staff = isLeadOrAdmin(me?.role);
+    const mine = ranked.filter((t) => t.assignedTo === identityHex || (staff && !t.assignedTo));
     // Next step: in-progress first, then the most severe open task.
     const next = [...mine]
       .filter((t) => t.status === 'open' || t.status === 'accepted')
       .sort((a, b) => STATUS_RANK[a.status] - STATUS_RANK[b.status] || a.order - b.order)[0];
     const doneCount = mine.filter((t) => t.status === 'done').length;
     return { all: ranked, mine, next, doneCount, total: mine.length, hasPlaybook: !!incident?.attackType };
-  }, [tasks, steps, incident, identityHex]);
+  }, [tasks, steps, incident, identityHex, me?.role]);
 }

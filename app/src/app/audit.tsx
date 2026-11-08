@@ -16,7 +16,7 @@ export default function AuditScreen() {
   const newest = useMemo(() => [...rows].sort((a, b) => (a.seq < b.seq ? 1 : -1)), [rows]);
 
   return (
-    <Screen title="Audit" headerRight={<Button label="Back" variant="ghost" fullWidth={false} onPress={() => router.back()} />}>
+    <Screen title="Audit" headerRight={<Button label="Back" variant="ghost" fullWidth={false} onPress={() => (router.canGoBack() ? router.back() : router.replace('/team' as never))} />}>
       <View style={{ flexDirection: 'row' }}>
         {result.ok ? (
           <Badge variant="success" label={`Chain verified · ${rows.length} entries`} />

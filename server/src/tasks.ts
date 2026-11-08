@@ -1,7 +1,8 @@
 import { SenderError, t } from 'spacetimedb/server';
 import spacetimedb from './schema';
 import { ensureSeed } from './seed';
-import { appendAudit, currentIncident, isStaff, requireMember, requireStaff, setIncidentStatus, type Ctx } from './util';
+import { appendAudit, currentIncident, requireMember, requireStaff, setIncidentStatus } from './util';
+import { finishTask, loadTask } from './task-helpers';
 
 export const setAttackType = spacetimedb.reducer({ attackType: t.string() }, (ctx, { attackType }) => {
   const me = requireStaff(ctx);
@@ -29,13 +30,6 @@ export const setAttackType = spacetimedb.reducer({ attackType: t.string() }, (ct
   appendAudit(ctx, 'incident.attack_type', { incidentId: inc.id, attackType });
 });
 
-function loadTask(ctx: Ctx, taskId: bigint) {
-  const me = requireMember(ctx);
-  const tk = ctx.db.task.id.find(taskId);
-  if (!tk) throw new SenderError('no such task');
-  if (tk.assignedTo !== ctx.sender.toHexString() && !isStaff(me.role)) throw new SenderError('not your task');
-  return tk;
-}
 
 export const acceptTask = spacetimedb.reducer({ taskId: t.u64() }, (ctx, { taskId }) => {
   const tk = loadTask(ctx, taskId);
@@ -47,13 +41,18 @@ export const acceptTask = spacetimedb.reducer({ taskId: t.u64() }, (ctx, { taskI
 export const completeTask = spacetimedb.reducer({ taskId: t.u64() }, (ctx, { taskId }) => {
   const tk = loadTask(ctx, taskId);
   if (tk.status !== 'open' && tk.status !== 'accepted') throw new SenderError('task not actionable');
-  ctx.db.task.id.update({ ...tk, status: 'done', updatedAt: ctx.timestamp });
-  for (const other of [...ctx.db.task.incidentId.filter(tk.incidentId)]) {
-    if (other.status !== 'locked') continue;
-    const step = ctx.db.playbookStep.id.find(other.stepId);
-    if (step && step.dependsOn === tk.stepId) {
-      ctx.db.task.id.update({ ...other, status: 'open', updatedAt: ctx.timestamp });
-    }
-  }
+  finishTask(ctx, tk);
   appendAudit(ctx, 'task.complete', { taskId });
+});
+
+/** "I'm stuck": posts a help request to the all-hands chat so IT or the lead can step in. */
+export const askForHelp = spacetimedb.reducer({ taskId: t.u64() }, (ctx, { taskId }) => {
+  const tk = loadTask(ctx, taskId);
+  if (tk.status === 'done') throw new SenderError('task already done');
+  const me = requireMember(ctx);
+  ctx.db.message.insert({
+    id: 0n, incidentId: tk.incidentId, channel: 'all', author: ctx.sender, authorName: me.name,
+    body: `I'm stuck on "${tk.title}" and need help. Can someone call me?`, at: ctx.timestamp,
+  });
+  appendAudit(ctx, 'task.help', { taskId });
 });

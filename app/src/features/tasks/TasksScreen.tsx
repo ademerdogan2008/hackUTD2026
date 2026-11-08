@@ -1,9 +1,11 @@
 import { useMemo, useState } from 'react';
 import { Pressable, StyleSheet, Text, View, type TextStyle } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { useReducer } from 'spacetimedb/react';
+import { useReducer, useTable } from 'spacetimedb/react';
 import { SEVERITY_LABEL, type Severity } from '@redphone/shared';
-import { reducers } from '../../module_bindings';
+import { reducers, tables } from '../../module_bindings';
+import { AutomationCard } from './AutomationCard';
+import { parseSteps, splitEvidence } from '../jev/format';
 import { ConnectionBadge } from '../../components/ConnectionBadge';
 import { isLeadOrAdmin, ROLE_LABEL, useCurrentIncident, useMe } from '../../state/hooks';
 import { useRankedTasks, type RankedTask } from '../../state/tasks';
@@ -54,7 +56,13 @@ export default function TasksScreen() {
   const { all, mine, next, doneCount, total } = useRankedTasks();
   const accept = useReducer(reducers.acceptTask);
   const complete = useReducer(reducers.completeTask);
+  const askForHelp = useReducer(reducers.askForHelp);
+  const runAutomation = useReducer(reducers.runAutomation);
+  const [runs] = useTable(tables.automationRun);
+  // The run whose result card is on screen (kept until the user taps "Next step").
+  const [showing, setShowing] = useState<{ taskId: bigint; title: string } | null>(null);
   const [busy, setBusy] = useState(false);
+  const [helpSent, setHelpSent] = useState<bigint | null>(null);
   const [err, setErr] = useState('');
   const [view, setView] = useState<View_>('mine');
   const [showDone, setShowDone] = useState(false);
@@ -83,6 +91,34 @@ export default function TasksScreen() {
     }
   };
 
+  const stuck = async (t: RankedTask) => {
+    setErr('');
+    try {
+      await askForHelp({ taskId: t.id });
+      setHelpSent(t.id);
+      haptics.success();
+    } catch (e) {
+      haptics.error();
+      setErr(e instanceof Error ? e.message : String(e));
+    }
+  };
+
+  const automate = async (t: RankedTask) => {
+    setBusy(true);
+    setErr('');
+    try {
+      await runAutomation({ taskId: t.id });
+      setShowing({ taskId: t.id, title: t.title });
+    } catch (e) {
+      haptics.error();
+      setErr(e instanceof Error ? e.message : String(e));
+    } finally {
+      setBusy(false);
+    }
+  };
+  const runFor = (id: bigint) => runs.find((r) => r.taskId === id);
+  const shownRun = showing ? runFor(showing.taskId) : undefined;
+
   const header = { title: 'Tasks', headerRight: <ConnectionBadge /> };
   if (!ready || !me) return <Screen {...header}><EmptyState title="Loading" /></Screen>;
   if (!incident) return <Screen {...header}><EmptyState title="No active incident" body="Tasks appear once an incident is active." /></Screen>;
@@ -108,6 +144,9 @@ export default function TasksScreen() {
             </Text>
             <Badge label={s.label} variant={s.variant} />
           </View>
+          {t.stepId === 0n && !isDone ? <TaskDetail detail={t.detail} jev small /> : null}
+          {!isDone && runFor(t.id)?.status === 'ready' ? <T variant="caption" style={{ color: color.success }}>⚡ Can run automatically</T> : null}
+          {runFor(t.id)?.status === 'succeeded' ? <T variant="caption" tone="tertiary">{`Automated by ${runFor(t.id)!.ranBy}`}</T> : null}
           {view === 'team' ? (
             <T variant="caption">
               {t.assignedName || 'Unassigned'} · {ROLE_LABEL[t.role] ?? t.role}
@@ -121,13 +160,35 @@ export default function TasksScreen() {
 
   return (
     <Screen {...header}>
-      {next ? (
+      {showing && shownRun?.status === 'succeeded' ? (
+        <AutomationCard key={showing.taskId.toString()} title={showing.title} log={shownRun.log} onNext={() => setShowing(null)} />
+      ) : next ? (
         <Card title="Your next step" tone="warning">
           <Badge label={SEVERITY_LABEL[next.severity]} variant={SEV_VARIANT[next.severity]} dot />
+          {next.stepId === 0n ? <Badge label="From Jev · machine evidence" variant="danger" dot /> : null}
           <T variant="heading">{next.title}</T>
-          <T tone="muted">{next.detail}</T>
+          {!next.assignedTo ? (
+            <T variant="caption" tone="muted">{`No ${ROLE_LABEL[next.role] ?? next.role} member has joined yet, so this is yours for now.`}</T>
+          ) : null}
+          {runFor(next.id)?.status === 'ready' ? (
+            <View style={{ gap: space.xs }}>
+              <Button label="Run automatically" icon={<Ionicons name="flash" size={18} color={color.onPrimary} />} loading={busy} onPress={() => void automate(next)} />
+              <T variant="caption" tone="muted">Red Phone does these steps for you. Or follow them by hand below.</T>
+            </View>
+          ) : null}
+          <TaskDetail key={next.id.toString()} detail={next.detail} jev={next.stepId === 0n} checklist />
           {err ? <T tone="danger">{err}</T> : null}
-          <Button label={next.status === 'open' ? 'Accept' : 'Done'} loading={busy} onPress={() => act(next)} />
+          <Button
+            label={next.status === 'open' ? 'Accept' : 'Done'}
+            variant={runFor(next.id)?.status === 'ready' ? 'secondary' : 'primary'}
+            loading={busy}
+            onPress={() => act(next)}
+          />
+          {helpSent === next.id ? (
+            <T variant="caption" tone="muted">Help request sent to the team chat. Someone will reach out.</T>
+          ) : (
+            <Button label="I'm stuck" variant="secondary" onPress={() => void stuck(next)} />
+          )}
         </Card>
       ) : (
         <Card tone={total ? 'success' : 'default'}>
@@ -179,6 +240,55 @@ export default function TasksScreen() {
   );
 }
 
+/**
+ * Task detail. Jev tasks put their cited evidence on its own line; "- " lines are plain-language
+ * substeps, shown as a tappable checklist on the next-step card and as a count in the list.
+ */
+function TaskDetail({ detail, jev, small, checklist }: { detail: string; jev?: boolean; small?: boolean; checklist?: boolean }) {
+  const [checked, setChecked] = useState<Set<number>>(() => new Set());
+  if (!detail) return null;
+  const variant = small ? 'caption' : 'body';
+  if (!jev) return <T variant={variant} tone="muted">{detail}</T>;
+  const { action, evidence } = splitEvidence(detail);
+  const { why, steps } = parseSteps(action);
+  const toggle = (i: number) =>
+    setChecked((prev) => {
+      const next = new Set(prev);
+      if (next.has(i)) next.delete(i);
+      else next.add(i);
+      return next;
+    });
+  return (
+    <View style={{ gap: checklist ? space.sm : 2 }}>
+      {why ? <T variant={variant} tone="muted">{why}</T> : null}
+      {checklist && steps.length ? (
+        <View style={{ gap: space.xs }}>
+          {steps.map((st, i) => {
+            const on = checked.has(i);
+            return (
+              <Pressable
+                key={i}
+                onPress={() => toggle(i)}
+                accessibilityRole="checkbox"
+                accessibilityState={{ checked: on }}
+                style={({ pressed }) => [styles.step, pressed && { opacity: 0.7 }]}
+              >
+                <Ionicons name={on ? 'checkmark-circle' : 'ellipse-outline'} size={26} color={on ? color.success : color.textSecondary} />
+                <Text style={[type.body, { color: color.text, flex: 1 }, on && { color: color.textTertiary, textDecorationLine: 'line-through' }]}>
+                  {`${i + 1}. ${st}`}
+                </Text>
+              </Pressable>
+            );
+          })}
+          <T variant="caption" tone="tertiary">{`${checked.size} of ${steps.length} done · tap a step to tick it off`}</T>
+        </View>
+      ) : null}
+      {!checklist && steps.length ? <T variant="caption" tone="tertiary">{`${steps.length} steps`}</T> : null}
+      {evidence ? <T variant={variant} style={{ color: color.dangerText }}>{`Evidence: ${evidence}`}</T> : null}
+    </View>
+  );
+}
+
 const styles = StyleSheet.create({
   group: { backgroundColor: color.surface, borderRadius: radius.md, paddingHorizontal: space.md, overflow: 'hidden' },
   row: { flexDirection: 'row', gap: space.sm + 4 },
@@ -187,4 +297,5 @@ const styles = StyleSheet.create({
   accent: { width: 3, borderRadius: 2, alignSelf: 'stretch' },
   sectionHead: { flexDirection: 'row', alignItems: 'center', gap: space.sm },
   dot: { width: 8, height: 8, borderRadius: 4 },
+  step: { flexDirection: 'row', alignItems: 'flex-start', gap: space.sm, paddingVertical: 6, minHeight: 44 },
 });

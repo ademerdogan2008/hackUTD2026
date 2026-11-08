@@ -6,3 +6,5 @@ export * from './tasks';
 export * from './board';
 export * from './chat';
 export * from './admin';
+export * from './tripwire';
+export * from './automation';

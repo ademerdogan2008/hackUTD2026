@@ -9,6 +9,7 @@ import { Badge, Button, Card, color, haptics, radius, Screen, space, T, type Var
 
 const STATUSES: { key: string; label: string; variant: Variant }[] = [
   { key: 'unknown', label: 'Unknown', variant: 'neutral' },
+  { key: 'attacker_active', label: 'Attacker active', variant: 'danger' },
   { key: 'locked', label: 'Locked', variant: 'danger' },
   { key: 'stolen', label: 'Stolen', variant: 'danger' },
   { key: 'contained', label: 'Contained', variant: 'warning' },
@@ -54,7 +55,8 @@ export default function BoardScreen() {
     }
   };
 
-  const sortedAssets = [...assets].sort((a, b) => (a.id < b.id ? -1 : 1));
+  const hot = (a: Asset) => (a.status === 'attacker_active' ? 0 : 1);
+  const sortedAssets = [...assets].sort((a, b) => hot(a) - hot(b) || (a.id < b.id ? -1 : 1));
   const myClocks = incident ? clocks.filter((c) => c.incidentId === incident.id).sort((a, b) => (a.id < b.id ? -1 : 1)) : [];
   const counsel = canSeeCounsel(me?.role);
 
@@ -97,10 +99,16 @@ export default function BoardScreen() {
         const s = statusOf(a.status);
         return (
           <Pressable key={a.id.toString()} onPress={() => setPicking(a)} accessibilityRole="button" accessibilityLabel={`${a.name}, ${s.label}. Change status`}>
-            <Card>
+            <Card tone={a.status === 'attacker_active' ? 'danger' : 'default'}>
               <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', gap: space.sm }}>
                 <T style={{ flex: 1, fontWeight: '600' }}>{a.name}</T>
-                <Badge label={s.label} variant={s.variant} />
+                {a.status === 'attacker_active' ? (
+                  <View style={{ backgroundColor: color.danger, borderRadius: radius.pill, paddingVertical: 3, paddingHorizontal: 10 }}>
+                    <T variant="caption" style={{ color: color.onDanger, fontWeight: '700' }}>{s.label}</T>
+                  </View>
+                ) : (
+                  <Badge label={s.label} variant={s.variant} />
+                )}
               </View>
               {a.hasPii ? <View style={{ flexDirection: 'row' }}><Badge label={`Sensitive data${a.regions ? ` · ${a.regions}` : ''}`} variant="info" /></View> : null}
             </Card>

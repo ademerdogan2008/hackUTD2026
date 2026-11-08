@@ -36,16 +36,25 @@ import {
 // Import all reducer arg schemas
 import AcceptTaskReducer from "./accept_task_reducer";
 import AdvanceIncidentReducer from "./advance_incident_reducer";
+import AskForHelpReducer from "./ask_for_help_reducer";
 import BootstrapAdminReducer from "./bootstrap_admin_reducer";
 import CheckInReducer from "./check_in_reducer";
 import CompleteTaskReducer from "./complete_task_reducer";
 import ConfirmAlertReducer from "./confirm_alert_reducer";
+import ConfirmTriageReducer from "./confirm_triage_reducer";
 import CreateInviteReducer from "./create_invite_reducer";
+import DemoJoinAdminReducer from "./demo_join_admin_reducer";
 import DismissAlertReducer from "./dismiss_alert_reducer";
+import DismissTriageReducer from "./dismiss_triage_reducer";
 import MarkClockFiledReducer from "./mark_clock_filed_reducer";
+import PlantTripwireReducer from "./plant_tripwire_reducer";
 import RaiseAlertReducer from "./raise_alert_reducer";
+import RecordHitReducer from "./record_hit_reducer";
 import RedeemInviteReducer from "./redeem_invite_reducer";
+import RegisterRelayReducer from "./register_relay_reducer";
 import ResetDemoReducer from "./reset_demo_reducer";
+import ResetTripwireDemoReducer from "./reset_tripwire_demo_reducer";
+import RunAutomationReducer from "./run_automation_reducer";
 import SendMessageReducer from "./send_message_reducer";
 import SetAssetStatusReducer from "./set_asset_status_reducer";
 import SetAttackTypeReducer from "./set_attack_type_reducer";
@@ -57,14 +66,17 @@ import AlertReportRow from "./alert_report_table";
 import AllMessagesRow from "./all_messages_table";
 import AssetRow from "./asset_table";
 import AuditLogRow from "./audit_log_table";
+import AutomationRunRow from "./automation_run_table";
 import CheckinRow from "./checkin_table";
 import ClockRow from "./clock_table";
 import CounselMessagesRow from "./counsel_messages_table";
 import IncidentRow from "./incident_table";
 import InviteRow from "./invite_table";
+import JevTriageRow from "./jev_triage_table";
 import MemberRow from "./member_table";
 import PlaybookStepRow from "./playbook_step_table";
 import TaskRow from "./task_table";
+import TripwireHitRow from "./tripwire_hit_table";
 
 /** Type-only namespace exports for generated type groups. */
 
@@ -106,6 +118,24 @@ const tablesSchema = __schema({
       { name: 'audit_log_seq_key', constraint: 'unique', columns: ['seq'] },
     ],
   }, AuditLogRow),
+  automationRun: __table({
+    name: 'automation_run',
+    indexes: [
+      { accessor: 'id', name: 'automation_run_id_idx_btree', algorithm: 'btree', columns: [
+        'id',
+      ] },
+      { accessor: 'incidentId', name: 'automation_run_incident_id_idx_btree', algorithm: 'btree', columns: [
+        'incidentId',
+      ] },
+      { accessor: 'taskId', name: 'automation_run_task_id_idx_btree', algorithm: 'btree', columns: [
+        'taskId',
+      ] },
+    ],
+    constraints: [
+      { name: 'automation_run_id_key', constraint: 'unique', columns: ['id'] },
+      { name: 'automation_run_task_id_key', constraint: 'unique', columns: ['taskId'] },
+    ],
+  }, AutomationRunRow),
   checkin: __table({
     name: 'checkin',
     indexes: [
@@ -160,6 +190,17 @@ const tablesSchema = __schema({
       { name: 'invite_secret_hash_key', constraint: 'unique', columns: ['secretHash'] },
     ],
   }, InviteRow),
+  jevTriage: __table({
+    name: 'jev_triage',
+    indexes: [
+      { accessor: 'id', name: 'jev_triage_id_idx_btree', algorithm: 'btree', columns: [
+        'id',
+      ] },
+    ],
+    constraints: [
+      { name: 'jev_triage_id_key', constraint: 'unique', columns: ['id'] },
+    ],
+  }, JevTriageRow),
   member: __table({
     name: 'member',
     indexes: [
@@ -196,6 +237,17 @@ const tablesSchema = __schema({
       { name: 'task_id_key', constraint: 'unique', columns: ['id'] },
     ],
   }, TaskRow),
+  tripwireHit: __table({
+    name: 'tripwire_hit',
+    indexes: [
+      { accessor: 'id', name: 'tripwire_hit_id_idx_btree', algorithm: 'btree', columns: [
+        'id',
+      ] },
+    ],
+    constraints: [
+      { name: 'tripwire_hit_id_key', constraint: 'unique', columns: ['id'] },
+    ],
+  }, TripwireHitRow),
   allMessages: __table({
     name: 'all_messages',
     indexes: [
@@ -216,16 +268,25 @@ const tablesSchema = __schema({
 const reducersSchema = __reducers(
   __reducerSchema("accept_task", AcceptTaskReducer),
   __reducerSchema("advance_incident", AdvanceIncidentReducer),
+  __reducerSchema("ask_for_help", AskForHelpReducer),
   __reducerSchema("bootstrap_admin", BootstrapAdminReducer),
   __reducerSchema("check_in", CheckInReducer),
   __reducerSchema("complete_task", CompleteTaskReducer),
   __reducerSchema("confirm_alert", ConfirmAlertReducer),
+  __reducerSchema("confirm_triage", ConfirmTriageReducer),
   __reducerSchema("create_invite", CreateInviteReducer),
+  __reducerSchema("demo_join_admin", DemoJoinAdminReducer),
   __reducerSchema("dismiss_alert", DismissAlertReducer),
+  __reducerSchema("dismiss_triage", DismissTriageReducer),
   __reducerSchema("mark_clock_filed", MarkClockFiledReducer),
+  __reducerSchema("plant_tripwire", PlantTripwireReducer),
   __reducerSchema("raise_alert", RaiseAlertReducer),
+  __reducerSchema("record_hit", RecordHitReducer),
   __reducerSchema("redeem_invite", RedeemInviteReducer),
+  __reducerSchema("register_relay", RegisterRelayReducer),
   __reducerSchema("reset_demo", ResetDemoReducer),
+  __reducerSchema("reset_tripwire_demo", ResetTripwireDemoReducer),
+  __reducerSchema("run_automation", RunAutomationReducer),
   __reducerSchema("send_message", SendMessageReducer),
   __reducerSchema("set_asset_status", SetAssetStatusReducer),
   __reducerSchema("set_attack_type", SetAttackTypeReducer),

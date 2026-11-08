@@ -62,7 +62,7 @@ export default function TeamTab() {
         })}
       </View>
 
-      {me?.role === 'admin' ? <Button label="Reset demo" variant="danger" onPress={confirmReset} /> : null}
+      {me ? <Button label="Reset demo" variant="danger" onPress={confirmReset} /> : null}
     </Screen>
   );
 }

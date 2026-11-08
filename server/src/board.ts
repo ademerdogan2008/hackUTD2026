@@ -2,7 +2,7 @@ import { SenderError, t } from 'spacetimedb/server';
 import spacetimedb from './schema';
 import { appendAudit, currentIncident, DAY, HOUR, plus, requireMember, type Ctx } from './util';
 
-const ASSET_STATUSES = ['unknown', 'locked', 'stolen', 'contained', 'restored', 'safe'];
+const ASSET_STATUSES = ['unknown', 'locked', 'stolen', 'contained', 'restored', 'safe', 'attacker_active'];
 const NOTE = 'Possible obligation — confirm with counsel.';
 
 // Texas §521.053 covers sensitive personal information and runs from the breach determination (data acquired = Stolen).

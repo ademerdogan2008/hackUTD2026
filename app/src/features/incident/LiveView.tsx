@@ -8,6 +8,8 @@ import { useRankedTasks } from '../../state/tasks';
 import { Button, color, font, haptics } from '../../ui';
 import type { Run } from './IdleView';
 import type { Incident } from './PossibleView';
+import { attackTypeLabel } from '../jev/format';
+import { EvidenceSection } from '../jev/EvidenceSection';
 import { Dot, initialsOf, Inset, Row, Section, StatusText, Tag, tertiary, tx } from './parts';
 
 const CHECKINS = [
@@ -34,7 +36,7 @@ const OTHER_TYPES = ['Account takeover / phishing', 'Data theft', 'Wire fraud', 
 const MAX_AVATARS = 8;
 const SEVERITY_TONE: Record<Severity, string> = { critical: color.danger, high: color.warning, normal: color.textTertiary };
 
-const typeLabel = (t: string) => (t ? t.charAt(0).toUpperCase() + t.slice(1).replace(/_/g, ' ') : 'Type pending');
+const typeLabel = attackTypeLabel;
 
 /** Active / contained / recovered: status, roster, your check-in, Lead controls. */
 export function LiveView({ run, incident, myRole, myHex }: { run: Run; incident: Incident; myRole?: string; myHex?: string }) {
@@ -83,6 +85,8 @@ export function LiveView({ run, incident, myRole, myHex }: { run: Run; incident:
           <Text style={tx.callout}>Waiting for the Lead to choose the attack type</Text>
         )
       ) : null}
+
+      <EvidenceSection incidentId={incident.id} />
 
       <Section title="Your status">
         <View style={s.segment}>

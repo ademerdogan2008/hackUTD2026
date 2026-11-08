@@ -1,7 +1,7 @@
 import { SenderError, t } from 'spacetimedb/server';
 import { canInvite, fingerprint, isRole, joinMessage, sha256Hex, verifyJoin, type Role } from '@redphone/shared';
 import spacetimedb from './schema';
-import { appendAudit, MIN, plus, requireMember } from './util';
+import { appendAudit, claimUnassignedTasks, MIN, plus, requireMember } from './util';
 import { ensureSeed } from './seed';
 
 const HEX64 = /^[0-9a-f]{64}$/;
@@ -22,10 +22,11 @@ export const bootstrapAdmin = spacetimedb.reducer(
   (ctx, { name, pubkeyHex }) => {
     if (ctx.db.member.count() > 0n) throw new SenderError('already bootstrapped');
     if (!HEX64.test(pubkeyHex)) throw new SenderError('bad pubkey');
-    ctx.db.member.insert({
+    const joined = ctx.db.member.insert({
       identity: ctx.sender, name: cleanName(name), role: 'admin', pubkeyHex,
       fingerprint: fingerprint(pubkeyHex), invitedBy: '', joinedAt: ctx.timestamp,
     });
+    claimUnassignedTasks(ctx, joined);
     ensureSeed(ctx);
     appendAudit(ctx, 'member.bootstrap', { pubkeyHex });
   },
@@ -66,10 +67,30 @@ export const redeemInvite = spacetimedb.reducer(
       throw new SenderError('bad signature');
     }
     ctx.db.invite.id.update({ ...inv, used: true });
-    ctx.db.member.insert({
+    const joined = ctx.db.member.insert({
       identity: ctx.sender, name: inv.name, role: inv.role, pubkeyHex,
       fingerprint: fingerprint(pubkeyHex), invitedBy: inv.createdBy.toHexString(), joinedAt: ctx.timestamp,
     });
+    claimUnassignedTasks(ctx, joined);
     appendAudit(ctx, 'member.join', { role: inv.role, inviteId: inv.id, pubkeyHex });
+  },
+);
+
+/**
+ * DEMO ONLY: anyone who opens /invite and is not yet a member joins as admin.
+ * Removes the invite step for hackathon demos. Never ship this to production.
+ */
+export const demoJoinAdmin = spacetimedb.reducer(
+  { name: t.string(), pubkeyHex: t.string() },
+  (ctx, { name, pubkeyHex }) => {
+    if (ctx.db.member.identity.find(ctx.sender)) throw new SenderError('already a member');
+    if (!HEX64.test(pubkeyHex)) throw new SenderError('bad pubkey');
+    const joined = ctx.db.member.insert({
+      identity: ctx.sender, name: cleanName(name), role: 'admin', pubkeyHex,
+      fingerprint: fingerprint(pubkeyHex), invitedBy: 'demo', joinedAt: ctx.timestamp,
+    });
+    claimUnassignedTasks(ctx, joined);
+    ensureSeed(ctx);
+    appendAudit(ctx, 'member.demo_admin', { pubkeyHex });
   },
 );

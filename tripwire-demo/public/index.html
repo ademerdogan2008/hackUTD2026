@@ -1,0 +1,355 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Halvorsen &amp; Pike Intranet</title>
+<style>
+:root{--bg:#f4f6f9;--panel:#fff;--line:#dde3ea;--ink:#1f2933;--muted:#65758b;--brand:#1d3a5f;--accent:#2f6fb0;--tw:#b45309;--twbg:#fff7e6;--ok:#15803d}
+*{box-sizing:border-box}
+body{margin:0;font:14px/1.45 "Segoe UI",system-ui,-apple-system,Arial,sans-serif;background:var(--bg);color:var(--ink)}
+header{background:var(--brand);color:#fff;display:flex;align-items:center;gap:16px;padding:10px 20px}
+header h1{font-size:16px;font-weight:600;margin:0}
+header h1 span{opacity:.7;font-weight:400}
+.spacer{flex:1}
+.toggle{display:flex;background:rgba(255,255,255,.12);border-radius:6px;padding:2px}
+.toggle button{background:none;border:0;color:#dbe6f3;padding:5px 12px;border-radius:5px;cursor:pointer;font:inherit;font-size:13px}
+.toggle button.on{background:#fff;color:var(--brand);font-weight:600}
+.viewing{font-size:12px;color:#ffd7a8;display:none}
+body.attacker .viewing{display:inline}
+main{display:grid;grid-template-columns:240px 1fr 420px;gap:16px;padding:16px 20px;min-height:calc(100vh - 52px)}
+nav,.files,.preview,.tw{background:var(--panel);border:1px solid var(--line);border-radius:8px}
+nav{padding:8px 0;align-self:start}
+nav .h{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);padding:6px 16px}
+nav a{display:flex;align-items:center;gap:8px;padding:8px 16px;color:var(--ink);text-decoration:none;cursor:pointer}
+nav a:hover{background:#f0f4f8}
+nav a.on{background:#e8f0fa;color:var(--accent);font-weight:600;border-left:3px solid var(--accent);padding-left:13px}
+nav .cnt{margin-left:auto;font-size:11px;background:var(--twbg);color:var(--tw);border:1px solid #f3d19c;border-radius:10px;padding:0 7px}
+body.attacker .cnt,body.attacker .badge,body.attacker #twPanel{display:none!important}
+.col{display:flex;flex-direction:column;gap:16px;min-width:0}
+.files .top{padding:12px 16px;border-bottom:1px solid var(--line);display:flex;align-items:baseline;gap:8px}
+.files .top b{font-size:15px}
+.files .top small{color:var(--muted)}
+table{width:100%;border-collapse:collapse}
+th{font-size:12px;text-align:left;color:var(--muted);font-weight:500;padding:8px 16px;border-bottom:1px solid var(--line)}
+td{padding:9px 16px;border-bottom:1px solid #eef1f5}
+tr.f{cursor:pointer}
+tr.f:hover td{background:#f6f9fc}
+tr.f.sel td{background:#eaf2fb}
+tr.flash td{animation:flash 2.2s ease-out}
+@keyframes flash{0%{background:#ffe4b0}100%{background:transparent}}
+.ico{display:inline-block;width:18px;height:18px;border-radius:3px;vertical-align:-4px;margin-right:8px;font-size:9px;font-weight:700;color:#fff;text-align:center;line-height:18px}
+.i-sheet{background:#217346}.i-doc{background:#2b579a}.i-pdf{background:#c43e1c}.i-text{background:#6b7785}
+.badge{font-size:10px;font-weight:600;background:var(--twbg);color:var(--tw);border:1px solid #f3d19c;border-radius:4px;padding:1px 5px;margin-left:8px;vertical-align:1px}
+.muted{color:var(--muted)}
+.tw{padding:14px 16px}
+.tw h2{font-size:14px;margin:0 0 4px}
+.tw p{margin:0 0 10px;color:var(--muted);font-size:13px}
+.tw .row{display:flex;gap:8px}
+.tw input{flex:1;padding:7px 9px;border:1px solid var(--line);border-radius:5px;font:inherit}
+.btn{background:var(--brand);color:#fff;border:0;border-radius:5px;padding:7px 14px;font:inherit;cursor:pointer}
+.btn:disabled{opacity:.5;cursor:default}
+.btn.ghost{background:#fff;color:var(--brand);border:1px solid var(--line)}
+#steps{list-style:none;margin:12px 0 0;padding:0;font-size:13px}
+#steps li{padding:3px 0;color:var(--muted)}
+#steps li.ok{color:var(--ok)}
+#steps li.warn{color:var(--tw)}
+#steps li.done{color:var(--ink);font-weight:600}
+.sim{margin-top:14px;border-top:1px solid var(--line);padding-top:10px}
+.sim h3{font-size:12px;margin:0 0 6px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.04em}
+.sim .grid{display:flex;flex-wrap:wrap;gap:6px}
+.sim .btn{padding:5px 10px;font-size:12px}
+#simOut{margin-top:6px;font-size:12px;color:var(--muted);min-height:16px}
+#simOut.ok{color:var(--ok)}
+#simOut.warn{color:var(--tw)}
+.preview{display:flex;flex-direction:column;min-height:420px;overflow:hidden}
+.preview .top{padding:12px 16px;border-bottom:1px solid var(--line);font-weight:600;word-break:break-all}
+.preview .body{flex:1;padding:16px;overflow:auto}
+.preview iframe{border:0;width:100%;height:100%;min-height:380px;display:block}
+.preview pre{white-space:pre-wrap;word-break:break-word;font:12.5px/1.5 Consolas,Menlo,monospace;margin:0}
+.preview pre a{color:var(--accent)}
+.meta{display:grid;grid-template-columns:110px 1fr;gap:6px 10px;font-size:13px}
+.note{background:var(--twbg);border:1px solid #f3d19c;color:#7c3a06;border-radius:6px;padding:10px 12px;font-size:13px;margin-top:12px}
+@media (max-width:1000px){main{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header>
+  <h1>Halvorsen &amp; Pike Intranet <span>· Company network</span></h1>
+  <span class="spacer"></span>
+  <span class="viewing">Viewing as the attacker</span>
+  <div class="toggle"><button id="vIt" class="on">IT view</button><button id="vAtk">Attacker view</button></div>
+</header>
+<main>
+  <nav id="nav"><div class="h">Systems</div></nav>
+  <div class="col">
+    <section class="files">
+      <div class="top"><b id="sysName"></b><small id="sysPath"></small></div>
+      <table><thead><tr><th>Name</th><th style="width:140px">Modified</th><th style="width:80px">Size</th></tr></thead>
+      <tbody id="rows"></tbody></table>
+    </section>
+    <section class="tw" id="twPanel">
+      <h2>Tripwires · IT only</h2>
+      <p>Plant decoy files that alert Red Phone the moment someone opens or uses them.</p>
+      <div class="row">
+        <input id="key" type="password" placeholder="Demo key" autocomplete="off">
+        <button class="btn" id="arm">Plant tripwires</button>
+      </div>
+      <ul id="steps"></ul>
+      <div class="sim">
+        <h3>Simulate</h3>
+        <div class="grid">
+          <button class="btn ghost" data-profile="attacker">Attacker opens decoy (high)</button>
+          <button class="btn ghost" data-profile="it_staff">IT staff opens decoy (mid)</button>
+          <button class="btn ghost" data-profile="indexer">Indexer touches decoy (low)</button>
+          <button class="btn ghost" id="resetDemo">Reset demo</button>
+        </div>
+        <div id="simOut"></div>
+      </div>
+    </section>
+  </div>
+  <section class="preview">
+    <div class="top" id="pvTitle">Preview</div>
+    <div class="body" id="pvBody"><span class="muted">Select a file to preview it.</span></div>
+  </section>
+</main>
+<script>
+(function () {
+  'use strict';
+  var SYSTEMS = [
+    { id: 'a_shares', name: 'Shared drives', path: '\\\\hp-fs01\\shared' },
+    { id: 'a_docs', name: 'Document management', path: 'DMS · Matters workspace' },
+    { id: 'a_email', name: 'Email and calendar', path: 'IT Operations mailbox · Attachments' },
+    { id: 'a_billing', name: 'Billing and trust accounting', path: 'Finance Systems · Config' },
+    { id: 'a_hr', name: 'HR and payroll', path: 'People Ops · Restricted' }
+  ];
+  var FILLERS = {
+    a_shares: [
+      { name: 'Office_Move_Floor14_Plan.pdf', modified: 'Oct 21, 2026', size: '1.2 MB', type: 'pdf', preview: 'Floor 14 move plan. Phase 1 (Nov 16): Litigation support relocates to 14W. Phase 2 (Dec 7): Records room consolidation. Contact Facilities with questions.' },
+      { name: 'Holiday_Schedule_2026.docx', modified: 'Sep 12, 2026', size: '36 KB', type: 'doc', preview: 'Firm holidays 2026: Thanksgiving (Nov 26-27), Winter break (Dec 24-25, Dec 31-Jan 1). Offices close at 3 pm on Dec 23.' },
+      { name: 'Conference_Room_Booking_Guide.pdf', modified: 'Jul 03, 2026', size: '412 KB', type: 'pdf', preview: 'Book rooms through Outlook. Large rooms (14A, 14B) need Office Services approval for client events.' }
+    ],
+    a_docs: [
+      { name: 'Engagement_Letter_Template_v7.docx', modified: 'Oct 02, 2026', size: '58 KB', type: 'doc', preview: 'Standard engagement letter. Replace bracketed fields. Fee schedule appendix must match the approved rate card.' },
+      { name: 'Conflicts_Check_Procedure.pdf', modified: 'Aug 27, 2026', size: '290 KB', type: 'pdf', preview: 'All new matters require a conflicts search before intake. Results go to the General Counsel office within 24 hours.' },
+      { name: 'Matter_Intake_Form.docx', modified: 'Jun 18, 2026', size: '44 KB', type: 'doc', preview: 'Client name, matter description, responsible partner, billing arrangement, conflicts reference number.' }
+    ],
+    a_email: [
+      { name: 'Mailbox_Retention_Policy.pdf', modified: 'Oct 09, 2026', size: '188 KB', type: 'pdf', preview: 'Mail older than 7 years is archived. Litigation holds override retention. Contact Records for hold requests.' },
+      { name: 'Outlook_Signature_Standards.docx', modified: 'May 22, 2026', size: '27 KB', type: 'doc', preview: 'Signature: name, title, direct line, firm address. No quotes, images, or social links.' }
+    ],
+    a_billing: [
+      { name: 'Rate_Card_FY2026.xlsx', modified: 'Jan 15, 2026', size: '64 KB', type: 'sheet', preview: 'Partner rates $780-$1,150/hr. Associates $395-$690/hr. Paralegals $210-$265/hr. Effective Jan 1, 2026.' },
+      { name: 'Trust_Reconciliation_Sept.xlsx', modified: 'Oct 06, 2026', size: '212 KB', type: 'sheet', preview: 'Three-way reconciliation for IOLTA account, September 2026. Reconciled and approved by Controller.' },
+      { name: 'Invoice_Approval_Workflow.pdf', modified: 'Mar 30, 2026', size: '156 KB', type: 'pdf', preview: 'Pre-bills route to the responsible partner, then Billing, then client delivery. Write-downs over 10% need practice-group chair sign-off.' }
+    ],
+    a_hr: [
+      { name: 'Benefits_Open_Enrollment_2027.pdf', modified: 'Oct 30, 2026', size: '1.8 MB', type: 'pdf', preview: 'Open enrollment runs Nov 2 - Nov 20. Medical premiums increase 4.1%. New: dependent care FSA match.' },
+      { name: 'Payroll_Calendar_2026.xlsx', modified: 'Dec 18, 2025', size: '22 KB', type: 'sheet', preview: 'Semi-monthly payroll. Pay dates on the 15th and last business day of each month.' },
+      { name: 'Remote_Work_Policy.docx', modified: 'Apr 08, 2026', size: '41 KB', type: 'doc', preview: 'Hybrid schedule: three in-office days per week. Client data must stay on firm devices.' }
+    ]
+  };
+  var ICON = { sheet: 'X', doc: 'W', pdf: 'P', text: 'T' };
+
+  var params = new URLSearchParams(location.search);
+  var keyInput = document.getElementById('key');
+  keyInput.value = params.get('key') || '';
+  var view = params.get('view') === 'attacker' ? 'attacker' : 'it';
+  var current = 'a_shares';
+  var decoys = []; // file entries from the relay
+  var flashName = null;
+  var es = null;
+
+  function esc(s) {
+    return String(s).replace(/[&<>"']/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+    });
+  }
+  function filesFor(sys) {
+    var list = FILLERS[sys].slice();
+    decoys.forEach(function (d) { if (d.system === sys) list.push(d); });
+    return list.sort(function (a, b) { return a.name.localeCompare(b.name); });
+  }
+  function key() { return keyInput.value.trim(); }
+
+  function renderNav() {
+    var nav = document.getElementById('nav');
+    nav.innerHTML = '<div class="h">Systems</div>';
+    SYSTEMS.forEach(function (s) {
+      var a = document.createElement('a');
+      if (s.id === current) a.className = 'on';
+      var n = decoys.filter(function (d) { return d.system === s.id && d.tripwire; }).length;
+      a.innerHTML = esc(s.name) + (n ? '<span class="cnt" title="Tripwires">' + n + '</span>' : '');
+      a.onclick = function () { current = s.id; renderAll(); clearPreview(); };
+      nav.appendChild(a);
+    });
+  }
+
+  function renderFiles() {
+    var sys = SYSTEMS.filter(function (s) { return s.id === current; })[0];
+    document.getElementById('sysName').textContent = sys.name;
+    document.getElementById('sysPath').textContent = sys.path;
+    var tb = document.getElementById('rows');
+    tb.innerHTML = '';
+    filesFor(current).forEach(function (f) {
+      var tr = document.createElement('tr');
+      tr.className = 'f' + (flashName === f.name ? ' flash' : '');
+      tr.innerHTML = '<td><span class="ico i-' + f.type + '">' + ICON[f.type] + '</span>' + esc(f.name) +
+        (f.tripwire ? '<span class="badge">Tripwire</span>' : '') + '</td><td class="muted">' + esc(f.modified) +
+        '</td><td class="muted">' + esc(f.size) + '</td>';
+      tr.onclick = function () {
+        Array.prototype.forEach.call(tb.children, function (r) { r.classList.remove('sel'); });
+        tr.classList.add('sel');
+        openFile(f);
+      };
+      tb.appendChild(tr);
+    });
+  }
+  function renderAll() { renderNav(); renderFiles(); }
+
+  function clearPreview() {
+    document.getElementById('pvTitle').textContent = 'Preview';
+    document.getElementById('pvBody').innerHTML = '<span class="muted">Select a file to preview it.</span>';
+  }
+
+  function linkify(text) {
+    return esc(text).replace(/https?:\/\/[^\s"'<>]+/g, function (u) {
+      return '<a href="' + u + '" target="_blank" rel="noopener">' + u + '</a>';
+    });
+  }
+
+  function openFile(f) {
+    var title = document.getElementById('pvTitle');
+    var body = document.getElementById('pvBody');
+    title.textContent = f.name;
+    body.style.padding = '16px';
+    if (!f.url) {
+      body.innerHTML = '<div class="meta"><span class="muted">Modified</span><span>' + esc(f.modified) +
+        '</span><span class="muted">Size</span><span>' + esc(f.size) + '</span></div><p>' + esc(f.preview) + '</p>';
+      return;
+    }
+    // In IT view, opening a decoy would fire it. Show its details instead.
+    if (view === 'it' && f.tripwire) {
+      body.innerHTML = '<div class="meta"><span class="muted">Tripwire</span><span>' + esc(f.label) +
+        '</span><span class="muted">Fires on</span><span>' + esc(f.hitKind) +
+        '</span><span class="muted">Armed</span><span>' + esc(new Date(f.armedAt).toLocaleString()) +
+        '</span></div><div class="note">Decoy file. Switch to Attacker view to open it as an intruder would.</div>';
+      return;
+    }
+    if (f.type === 'sheet') {
+      body.style.padding = '0';
+      body.innerHTML = '<iframe title="' + esc(f.name) + '"></iframe>';
+      body.firstChild.src = f.url;
+      return;
+    }
+    body.innerHTML = '<span class="muted">Loading…</span>';
+    fetch(f.url).then(function (r) { return r.ok ? r.text() : Promise.reject(r.status); })
+      .then(function (t) { body.innerHTML = '<pre>' + linkify(t) + '</pre>'; })
+      .catch(function () { body.innerHTML = '<span class="muted">File not available.</span>'; });
+  }
+
+  function loadDecoys() {
+    var url = view === 'it' && key() ? '/api/files?key=' + encodeURIComponent(key()) : '/api/decoys';
+    return fetch(url).then(function (r) { return r.ok ? r.json() : fetch('/api/decoys').then(function (x) { return x.json(); }); })
+      .then(function (j) { decoys = j.files || []; renderAll(); })
+      .catch(function () { renderAll(); });
+  }
+
+  function step(text, cls) {
+    var li = document.createElement('li');
+    li.textContent = text;
+    if (cls) li.className = cls;
+    document.getElementById('steps').appendChild(li);
+  }
+
+  function openEvents() {
+    if (es) es.close();
+    es = new EventSource('/api/events?key=' + encodeURIComponent(key()));
+    es.onmessage = function (m) {
+      var e; try { e = JSON.parse(m.data); } catch (x) { return; }
+      if (e.type === 'start') { document.getElementById('steps').innerHTML = ''; decoys = []; renderAll(); }
+      else if (e.type === 'step') step(e.text);
+      else if (e.type === 'armed') {
+        step(e.text, e.registered ? 'ok' : 'warn');
+        decoys.push(e.file);
+        current = e.file.system;
+        flashName = e.file.name;
+        renderAll();
+        flashName = null;
+      } else if (e.type === 'done') step(e.text, 'done');
+      else if (e.type === 'reset') { decoys = []; renderAll(); clearPreview(); }
+    };
+  }
+
+  document.getElementById('arm').onclick = function () {
+    var btn = this;
+    if (!key()) { keyInput.focus(); return; }
+    btn.disabled = true;
+    document.getElementById('steps').innerHTML = '';
+    openEvents();
+    // give the event stream a moment to connect before arming
+    setTimeout(function () {
+      fetch('/api/arm?key=' + encodeURIComponent(key()), { method: 'POST' })
+        .then(function (r) {
+          if (r.status === 401) step('Wrong demo key.', 'warn');
+          else if (!r.ok) step('Arming failed (' + r.status + ').', 'warn');
+          return r.ok ? r.json() : null;
+        })
+        .then(function (j) { if (j) { decoys = j.decoys; renderAll(); } })
+        .catch(function () { step('Relay unreachable.', 'warn'); })
+        .then(function () { btn.disabled = false; });
+    }, 300);
+  };
+
+  function simOut(text, cls) {
+    var el = document.getElementById('simOut');
+    el.textContent = text;
+    el.className = cls || '';
+  }
+  function simResult(r, okText) {
+    if (r.status === 401) return simOut('Wrong demo key.', 'warn');
+    if (r.status === 404) return simOut('Plant tripwires first.', 'warn');
+    return r.json().then(function (j) {
+      if (!r.ok || !j.ok) simOut('Red Phone call failed (' + r.status + '). See relay log.', 'warn');
+      else if (j.mode === 'spacetime') simOut(okText, 'ok');
+      else simOut('Logged (mock mode) \u2713', 'ok');
+    }, function () { simOut('Failed (' + r.status + ').', 'warn'); });
+  }
+  Array.prototype.forEach.call(document.querySelectorAll('.sim [data-profile]'), function (b) {
+    b.onclick = function () {
+      if (!key()) { keyInput.focus(); return; }
+      simOut('Sending\u2026');
+      fetch('/api/fire?key=' + encodeURIComponent(key()), {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id: 'tw_partner_comp', profile: b.getAttribute('data-profile') })
+      }).then(function (r) { return simResult(r, 'Sent to Red Phone \u2713'); }).catch(function () { simOut('Relay unreachable.', 'warn'); });
+    };
+  });
+  document.getElementById('resetDemo').onclick = function () {
+    if (!key()) { keyInput.focus(); return; }
+    simOut('Resetting\u2026');
+    fetch('/api/reset?key=' + encodeURIComponent(key()), { method: 'POST' })
+      .then(function (r) {
+        if (r.ok) { document.getElementById('steps').innerHTML = ''; decoys = []; renderAll(); clearPreview(); }
+        return simResult(r, 'Demo reset in Red Phone \u2713');
+      })
+      .catch(function () { simOut('Relay unreachable.', 'warn'); });
+  };
+
+  function setView(v) {
+    view = v;
+    document.body.classList.toggle('attacker', v === 'attacker');
+    document.getElementById('vIt').classList.toggle('on', v === 'it');
+    document.getElementById('vAtk').classList.toggle('on', v === 'attacker');
+    clearPreview();
+    loadDecoys();
+  }
+  document.getElementById('vIt').onclick = function () { setView('it'); };
+  document.getElementById('vAtk').onclick = function () { setView('attacker'); };
+
+  setView(view);
+})();
+</script>
+</body>
+</html>

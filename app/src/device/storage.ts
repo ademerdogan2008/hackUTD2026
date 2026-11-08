@@ -24,9 +24,17 @@ function webSlot(): string {
 const SLOT = webSlot();
 const k = (key: string) => (SLOT ? `${key}.${SLOT}` : key);
 
+/**
+ * Web storage. Unslotted keys use sessionStorage so each browser tab is its own person: its own
+ * Spacetime identity (token), device key and PIN. With shared localStorage, every new localhost tab
+ * reused the first tab's identity and landed in the app as that member (e.g. the admin) instead of
+ * seeing Join. sessionStorage survives reloads of the same tab, and iframes share it with their tab,
+ * so `?as=<slot>` panels in demo.html stay distinct via their slot suffix.
+ */
 function ls(): Storage | null {
   try {
-    return typeof localStorage !== 'undefined' ? localStorage : null;
+    if (typeof window === 'undefined') return null;
+    return SLOT ? window.localStorage : window.sessionStorage;
   } catch {
     return null;
   }

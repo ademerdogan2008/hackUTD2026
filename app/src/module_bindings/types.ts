@@ -50,6 +50,19 @@ export const AuditLog = __t.object("AuditLog", {
 });
 export type AuditLog = __Infer<typeof AuditLog>;
 
+export const AutomationRun = __t.object("AutomationRun", {
+  id: __t.u64(),
+  taskId: __t.u64(),
+  incidentId: __t.u64(),
+  kind: __t.string(),
+  params: __t.string(),
+  status: __t.string(),
+  log: __t.string(),
+  ranBy: __t.string(),
+  at: __t.timestamp(),
+});
+export type AutomationRun = __Infer<typeof AutomationRun>;
+
 export const Checkin = __t.object("Checkin", {
   id: __t.u64(),
   incidentId: __t.u64(),
@@ -95,6 +108,23 @@ export const Invite = __t.object("Invite", {
   used: __t.bool(),
 });
 export type Invite = __Infer<typeof Invite>;
+
+export const JevTriage = __t.object("JevTriage", {
+  id: __t.u64(),
+  hitId: __t.u64(),
+  incidentId: __t.u64(),
+  probability: __t.u32(),
+  incidentType: __t.string(),
+  scope: __t.string(),
+  page: __t.string(),
+  tier: __t.string(),
+  evidence: __t.string(),
+  decision: __t.string(),
+  reviewer: __t.string(),
+  decidedBy: __t.string(),
+  at: __t.timestamp(),
+});
+export type JevTriage = __Infer<typeof JevTriage>;
 
 export const Member = __t.object("Member", {
   identity: __t.identity(),
@@ -142,4 +172,37 @@ export const Task = __t.object("Task", {
   updatedAt: __t.timestamp(),
 });
 export type Task = __Infer<typeof Task>;
+
+export const Tripwire = __t.object("Tripwire", {
+  id: __t.string(),
+  label: __t.string(),
+  kind: __t.string(),
+  assetId: __t.string(),
+  fileName: __t.string(),
+  tokenHash: __t.string(),
+  active: __t.bool(),
+  plantedAt: __t.timestamp(),
+});
+export type Tripwire = __Infer<typeof Tripwire>;
+
+export const TripwireConfig = __t.object("TripwireConfig", {
+  id: __t.u32(),
+  relayHex: __t.string(),
+});
+export type TripwireConfig = __Infer<typeof TripwireConfig>;
+
+export const TripwireHit = __t.object("TripwireHit", {
+  id: __t.u64(),
+  tripwireId: __t.string(),
+  label: __t.string(),
+  fileName: __t.string(),
+  assetId: __t.string(),
+  systemName: __t.string(),
+  hitKind: __t.string(),
+  sourceIp: __t.string(),
+  userAgent: __t.string(),
+  at: __t.timestamp(),
+  triageId: __t.u64(),
+});
+export type TripwireHit = __Infer<typeof TripwireHit>;
 

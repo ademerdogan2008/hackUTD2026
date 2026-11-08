@@ -3,6 +3,7 @@ import { useReducer, useTable } from 'spacetimedb/react';
 import { reducers, tables } from '../../module_bindings';
 import { useCurrentIncident, useMe } from '../../state/hooks';
 import { AlarmOverlay } from '../../ui';
+import { useJevOwnsIncident } from '../jev/state';
 
 // Shared across instances so mounting in home AND app-wide never double-shows.
 const acked = new Set<string>();
@@ -47,7 +48,9 @@ export function GlobalAlarm() {
   const id = incident?.id;
   const mine = id !== undefined && me ? checkins.some((c) => c.incidentId === id && c.member.isEqual(me.identity)) : false;
   const isOwner = mounted[0] === token;
-  const visible = !!incident && !!me && ready && isOwner && incident.status === 'active' && !mine && !acked.has(incident.id.toString());
+  // A fresh Jev takeover announces this incident itself; don't double-alarm.
+  const jevOwns = useJevOwnsIncident(incident?.id);
+  const visible = !!incident && !!me && ready && isOwner && incident.status === 'active' && !mine && !jevOwns && !acked.has(incident.id.toString());
 
   const onAction = () => {
     if (!incident) return;

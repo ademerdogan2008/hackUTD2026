@@ -3,6 +3,7 @@ import { Tabs } from 'expo-router';
 import { StyleSheet } from 'react-native';
 import { ChatUnreadProvider, useChatUnread } from '../../features/chat/unread';
 import { GlobalAlarm } from '../../features/incident/GlobalAlarm';
+import { JevAlarm } from '../../features/jev/JevAlarm';
 import { color, font } from '../../ui';
 
 type IconName = React.ComponentProps<typeof Ionicons>['name'];
@@ -16,6 +17,7 @@ export default function TabsLayout() {
   return (
     <ChatUnreadProvider>
       <GlobalAlarm />
+      <JevAlarm />
       <TabsNav />
     </ChatUnreadProvider>
   );
