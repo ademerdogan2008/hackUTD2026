@@ -3,6 +3,7 @@ export * from './haptics';
 export * from './Button';
 export * from './Badge';
 export * from './Lamp';
+export * from './Logo';
 export * from './Card';
 export * from './ListRow';
 export * from './PinPad';

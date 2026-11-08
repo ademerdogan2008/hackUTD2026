@@ -36,7 +36,7 @@ export function notifyOnce(key: string, body = 'Open app') {
   try {
     const N = (globalThis as { Notification?: { permission: string; requestPermission?: () => Promise<string>; new (t: string, o?: { body?: string; tag?: string }): unknown } }).Notification;
     if (!N) return;
-    const show = () => new N('Red Phone', { body, tag: key });
+    const show = () => new N('Flare', { body, tag: key });
     if (N.permission === 'granted') show();
     else if (N.permission !== 'denied' && N.requestPermission) N.requestPermission().then((p) => p === 'granted' && show()).catch(() => {});
   } catch {

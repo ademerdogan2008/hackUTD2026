@@ -259,7 +259,7 @@ export function jevTasks(incidentType: IncidentType, o: JevTaskInput): JevTask[]
         ...itTasks(incidentType, o),
         review,
         { role: 'counsel', title: `Assess exposure of ${o.label}`, detail: 'Decide whether real client or firm data near the decoy may have been read or copied.' },
-        { role: 'comms', title: `Tell staff to stay off ${sys}`, detail: 'Post through Red Phone, not email: nobody opens or copies files from this system until IT clears it.' },
+        { role: 'comms', title: `Tell staff to stay off ${sys}`, detail: 'Post through Flare, not email: nobody opens or copies files from this system until IT clears it.' },
       ];
       break;
     case 'credential_theft':
@@ -281,7 +281,7 @@ export function jevTasks(incidentType: IncidentType, o: JevTaskInput): JevTask[]
         { role: 'executive', title: 'Do not contact the attacker or pay', detail: 'No one replies to the attacker. Any payment needs counsel, insurer consent and an OFAC check.' },
         { role: 'finance', title: 'Hold and verify all outgoing wires', detail: 'Pause trust-account and wire transfers. Confirm payment instructions by phone using a known number.' },
         { role: 'counsel', title: `Assess exposure across ${sys}`, detail: 'Decide which client matters and personal data these systems hold and what notice duties may follow.' },
-        { role: 'comms', title: 'Tell staff through Red Phone, not email', detail: 'Email may be watched. Tell staff: no email or chat about this, keep computers on.' },
+        { role: 'comms', title: 'Tell staff through Flare, not email', detail: 'Email may be watched. Tell staff: no email or chat about this, keep computers on.' },
       ];
       break;
     default:

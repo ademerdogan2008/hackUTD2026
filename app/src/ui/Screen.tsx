@@ -4,6 +4,8 @@ import { color, space, type } from './theme';
 
 export interface ScreenProps {
   title?: string;
+  /** Replaces the text title (e.g. the Flare wordmark on Home). */
+  brand?: React.ReactNode;
   scroll?: boolean;
   footer?: React.ReactNode;
   banner?: React.ReactNode;
@@ -15,14 +17,18 @@ export interface ScreenProps {
 }
 
 /** Large left-aligned title, optional right accessory, content, optional pinned footer action. */
-export function Screen({ title, scroll = true, footer, banner, headerRight: hr, right, strip, children }: ScreenProps) {
+export function Screen({ title, brand, scroll = true, footer, banner, headerRight: hr, right, strip, children }: ScreenProps) {
   const headerRight = right ?? hr;
   const header =
-    title || headerRight ? (
+    title || brand || headerRight ? (
       <View style={styles.header}>
-        <Text style={[type.largeTitle, { flex: 1 }]} accessibilityRole="header" numberOfLines={1} maxFontSizeMultiplier={1.3}>
-          {title}
-        </Text>
+        {brand ? (
+          <View style={{ flex: 1 }}>{brand}</View>
+        ) : (
+          <Text style={[type.largeTitle, { flex: 1 }]} accessibilityRole="header" numberOfLines={1} maxFontSizeMultiplier={1.3}>
+            {title}
+          </Text>
+        )}
         {headerRight ? <View style={styles.right}>{headerRight}</View> : null}
       </View>
     ) : null;

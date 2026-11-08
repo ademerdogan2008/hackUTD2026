@@ -1,4 +1,4 @@
-# Red Phone — Notes
+# Flare — Notes
 
 ## Run automatically (IT containment)
 

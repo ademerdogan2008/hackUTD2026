@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="640" height="160" viewBox="0 0 640 160">
+  <defs>
+    <linearGradient id="streak" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#EC3B30" stop-opacity="0.25"/>
+      <stop offset="0.5" stop-color="#EC3B30" stop-opacity="0.85"/>
+      <stop offset="1" stop-color="#EC3B30" stop-opacity="1"/>
+    </linearGradient>
+  </defs>
+  <rect width="640" height="160" fill="#0A0D10"/>
+  <text x="40" y="112" font-family="'Barlow Condensed', 'Arial Narrow', 'Helvetica Neue', sans-serif" font-weight="700" font-size="104" letter-spacing="2" fill="#E6EBF0">FLARE</text>
+  <g transform="translate(300 66)">
+    <path d="M0 10 L130 2.8 A11.2 11.2 0 0 1 130 25.2 L0 18 Z" fill="url(#streak)"/>
+    <circle cx="130" cy="14" r="4.5" fill="#FFD9D4"/>
+  </g>
+</svg>

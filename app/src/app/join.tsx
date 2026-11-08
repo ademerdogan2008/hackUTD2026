@@ -12,7 +12,7 @@ import { Banner, Button, Card, Field, radius, Screen, space, T } from '../ui';
 
 
 function parseSecret(raw: string): string | null {
-  const s = raw.trim().replace(/^redphone:/i, '').trim();
+  const s = raw.trim().replace(/^(flare|redphone):/i, '').trim();
   return /^[0-9a-f]{16,}$/i.test(s) ? s.toLowerCase() : null;
 }
 
@@ -48,7 +48,7 @@ export default function JoinScreen() {
   const redeem = async (raw: string) => {
     const secretHex = parseSecret(raw);
     if (!secretHex) {
-      setError('That does not look like a Red Phone invite code.');
+      setError('That does not look like a Flare invite code.');
       locked.current = false;
       return;
     }
@@ -93,7 +93,7 @@ export default function JoinScreen() {
   const canCamera = Platform.OS !== 'web';
 
   return (
-    <Screen title="Join Red Phone">
+    <Screen title="Join Flare">
       <T tone="muted">Scan the QR code from your incident lead, or paste the invite code.</T>
       <T variant="caption" tone="muted">Database: {SPACETIME_DB}</T>
       {error ? <Banner variant="danger" text={error} /> : null}
@@ -133,7 +133,7 @@ export default function JoinScreen() {
       ) : null}
 
       <Card>
-        <Field label="Invite code" value={text} onChangeText={setText} autoCapitalize="none" placeholder="redphone:..." editable={!busy} />
+        <Field label="Invite code" value={text} onChangeText={setText} autoCapitalize="none" placeholder="flare:..." editable={!busy} />
         <Button title="Join" loading={busy} disabled={!text.trim()} onPress={() => void redeem(text)} />
       </Card>
 

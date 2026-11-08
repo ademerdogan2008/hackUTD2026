@@ -177,7 +177,7 @@ export default function TasksScreen() {
           {runFor(next.id)?.status === 'ready' ? (
             <View style={{ gap: space.xs }}>
               <Button label="Run automatically" icon={<Ionicons name="flash" size={18} color={color.onPrimary} />} loading={busy} onPress={() => void automate(next)} />
-              <T variant="caption" tone="muted">Red Phone does these steps for you. Or follow them by hand below.</T>
+              <T variant="caption" tone="muted">Flare does these steps for you. Or follow them by hand below.</T>
             </View>
           ) : null}
           <TaskDetail key={next.id.toString()} detail={next.detail} jev={next.stepId === 0n} checklist />

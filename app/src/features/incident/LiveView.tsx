@@ -50,6 +50,8 @@ export function LiveView({ run, incident, myRole, myHex }: { run: Run; incident:
   const setType = useReducer(reducers.setAttackType);
   const advance = useReducer(reducers.advanceIncident);
   const staff = isLeadOrAdmin(myRole);
+  // IT works the incident hands-on, so it sees the same overview as the Lead (read-only: no status controls).
+  const overview = staff || myRole === 'it';
   const byMember = new Map(checkins.filter((c) => c.incidentId === incident.id).map((c) => [c.member.toHexString(), c.state]));
   const mine = byMember.get(myHex ?? '');
   const next = NEXT[incident.status];
@@ -135,14 +137,14 @@ export function LiveView({ run, incident, myRole, myHex }: { run: Run; incident:
         </View>
       </View>
 
-      {staff ? (
-        <Section title="Lead">
+      {overview ? (
+        <Section title={staff ? 'Lead' : 'Incident overview'}>
           <View style={s.leadStack}>
             <Inset>
               <Row title="Attack type" trailing={<Text style={tx.callout}>{typeLabel(incident.attackType)}</Text>} />
             </Inset>
 
-            {next ? <Button variant="primary" label={next.label} onPress={() => run(advance({ status: next.status }))} /> : null}
+            {staff && next ? <Button variant="primary" label={next.label} onPress={() => run(advance({ status: next.status }))} /> : null}
 
             <Inset>
               {members.map((m) => {
@@ -254,7 +256,7 @@ function NextStep({ run }: { run: Run }) {
       {canAutomate ? (
         <View style={{ gap: 6 }}>
           <Button variant="primary" label="Run automatically" icon={<Ionicons name="flash" size={18} color={color.onPrimary} />} onPress={automate} />
-          <Text style={tx.caption} maxFontSizeMultiplier={1.5}>Red Phone does these steps for you. Or follow them by hand below.</Text>
+          <Text style={tx.caption} maxFontSizeMultiplier={1.5}>Flare does these steps for you. Or follow them by hand below.</Text>
         </View>
       ) : null}
       <TaskDetail key={next.id.toString()} detail={next.detail} jev={next.stepId === 0n} checklist />

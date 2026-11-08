@@ -7,7 +7,7 @@ const step = async (name, fn) => {
 };
 let B;
 const A = await openPage(9401, 'http://localhost:8081');
-await A.waitText('Join Red Phone|All clear|Possible attack|Enter your PIN', 20000);
+await A.waitText('Join Flare|All clear|Possible attack|Enter your PIN', 20000);
 
 await step('A: create first admin', async () => {
   await A.waitText('Create admin'); await A.sleep(500);
@@ -35,8 +35,8 @@ await step('A: create Lead invite', async () => {
 });
 B = await openPage(9402, 'http://localhost:8081');
 await step('B: join with invite code', async () => {
-  await B.waitText('Join Red Phone', 20000);
-  await B.type('redphone:' + code, 0);
+  await B.waitText('Join Flare', 20000);
+  await B.type('flare:' + code, 0);
   await B.click('Join');
   await B.waitText('fingerprint|PIN', 15000);
   await B.pin('654321'); await B.sleep(800); await B.pin('654321');

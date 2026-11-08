@@ -90,7 +90,7 @@ tr.flash td{animation:flash 2.2s ease-out}
     </section>
     <section class="tw" id="twPanel">
       <h2>Tripwires · IT only</h2>
-      <p>Plant decoy files that alert Red Phone the moment someone opens or uses them.</p>
+      <p>Plant decoy files that alert Flare the moment someone opens or uses them.</p>
       <div class="row">
         <input id="key" type="password" placeholder="Demo key" autocomplete="off">
         <button class="btn" id="arm">Plant tripwires</button>
@@ -310,7 +310,7 @@ tr.flash td{animation:flash 2.2s ease-out}
     if (r.status === 401) return simOut('Wrong demo key.', 'warn');
     if (r.status === 404) return simOut('Plant tripwires first.', 'warn');
     return r.json().then(function (j) {
-      if (!r.ok || !j.ok) simOut('Red Phone call failed (' + r.status + '). See relay log.', 'warn');
+      if (!r.ok || !j.ok) simOut('Flare call failed (' + r.status + '). See relay log.', 'warn');
       else if (j.mode === 'spacetime') simOut(okText, 'ok');
       else simOut('Logged (mock mode) \u2713', 'ok');
     }, function () { simOut('Failed (' + r.status + ').', 'warn'); });
@@ -323,7 +323,7 @@ tr.flash td{animation:flash 2.2s ease-out}
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ id: 'tw_partner_comp', profile: b.getAttribute('data-profile') })
-      }).then(function (r) { return simResult(r, 'Sent to Red Phone \u2713'); }).catch(function () { simOut('Relay unreachable.', 'warn'); });
+      }).then(function (r) { return simResult(r, 'Sent to Flare \u2713'); }).catch(function () { simOut('Relay unreachable.', 'warn'); });
     };
   });
   document.getElementById('resetDemo').onclick = function () {
@@ -332,7 +332,7 @@ tr.flash td{animation:flash 2.2s ease-out}
     fetch('/api/reset?key=' + encodeURIComponent(key()), { method: 'POST' })
       .then(function (r) {
         if (r.ok) { document.getElementById('steps').innerHTML = ''; decoys = []; renderAll(); clearPreview(); }
-        return simResult(r, 'Demo reset in Red Phone \u2713');
+        return simResult(r, 'Demo reset in Flare \u2713');
       })
       .catch(function () { simOut('Relay unreachable.', 'warn'); });
   };

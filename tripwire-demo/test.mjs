@@ -110,7 +110,7 @@ try {
   const texts = sse.events.map((e) => e.text).filter(Boolean);
   check('SSE: generating tokens step', texts[0] === 'Generating secret tokens…');
   check('SSE: planting steps x3', texts.filter((t) => t.startsWith('Planting ')).length === 3);
-  check('SSE: armed steps x3', texts.filter((t) => t.startsWith('✓ ') && t.includes('registered in Red Phone')).length === 3);
+  check('SSE: armed steps x3', texts.filter((t) => t.startsWith('✓ ') && t.includes('registered in Flare')).length === 3);
   check('SSE: final step', texts.at(-1) === 'All 3 tripwires armed. Only the token hashes are stored.');
   check('SSE: planting text format', texts.includes('Planting Partner_Compensation_2026.xlsx in Shared drives…'));
 

@@ -54,7 +54,7 @@ export function AlarmOverlay({ visible, title = 'Incident active', subtitle: sub
       <View style={styles.meta}>
         <View style={styles.metaLamp} />
         <Text style={styles.metaText} maxFontSizeMultiplier={1.2}>
-          Red Phone
+          Flare
         </Text>
         <Text style={styles.metaClock} maxFontSizeMultiplier={1.2}>
           {stamp}

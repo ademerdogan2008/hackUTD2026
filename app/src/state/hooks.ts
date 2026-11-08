@@ -1,4 +1,4 @@
-// Shared data hooks for Red Phone screens. All live data comes from Spacetime
+// Shared data hooks for Flare screens. All live data comes from Spacetime
 // subscriptions via generated bindings; screens should use these instead of
 // re-deriving "who am I" / "current incident" themselves.
 import { useMemo } from 'react';

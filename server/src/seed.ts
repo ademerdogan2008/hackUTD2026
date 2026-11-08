@@ -10,7 +10,7 @@ const STEPS: [string, string, string, string, string, Severity][] = [
   ['backups', 'it', 'Protect backups from the attacker', 'Take backups offline now and check they were not deleted or encrypted. Do not restore until forensics clears it.', '', 'critical'],
   ['insurer', 'lead', 'Call the cyber insurance hotline', 'Report the claim now. Policies often require approved lawyers and vendors, and written consent before costs or payments.', '', 'critical'],
   ['nopay', 'executive', 'Do not contact the attacker or pay', 'No one replies to the attacker. Any payment needs counsel, insurer consent and an OFAC sanctions check first.', '', 'critical'],
-  ['staff', 'comms', 'Tell staff through Red Phone, not email', 'Email may be watched. Tell staff: no email or chat about this, keep computers on, report anything suspicious.', '', 'high'],
+  ['staff', 'comms', 'Tell staff through Flare, not email', 'Email may be watched. Tell staff: no email or chat about this, keep computers on, report anything suspicious.', '', 'high'],
   ['wires', 'finance', 'Hold and verify all outgoing wires', 'Pause trust-account and wire transfers. Confirm any payment instruction by phone using a known number, never email.', '', 'critical'],
   ['accounts', 'it', 'Lock down accounts and remote access', 'Disable suspicious or new admin accounts, VPN and remote access. Full password resets come after systems are cleaned.', 'isolate', 'critical'],
   ['evidence', 'it', 'Preserve logs and evidence', 'Save firewall, VPN, email and security logs and the ransom note. Do not wipe or reimage any machine.', 'isolate', 'high'],

@@ -53,7 +53,7 @@ function DemoJoinAdmin() {
       title="Join as admin"
       footer={<Button label="Join as admin" onPress={() => void go()} loading={busy} disabled={!name.trim()} />}
     >
-      <T tone="muted">Demo mode: this device joins Red Phone as an admin.</T>
+      <T tone="muted">Demo mode: this device joins Flare as an admin.</T>
       <T variant="caption" tone="muted">Database: {SPACETIME_DB}</T>
       <Field label="Your name" value={name} onChangeText={setName} placeholder="Your name" autoCapitalize="words" />
       {err ? <T tone="danger">{err}</T> : null}
@@ -106,7 +106,7 @@ function CreateInvite() {
     }
   };
 
-  const code = created ? `redphone:${created.secretHex}` : '';
+  const code = created ? `flare:${created.secretHex}` : '';
   if (!created) {
     return (
       <Screen

@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// Red Phone tripwire relay.
+// Flare tripwire relay.
 // Serves the fake "Halvorsen & Pike LLP" intranet, plants decoy files with
 // secret tokens, detects decoy use, and reports hits to SpacetimeDB.
 //
@@ -300,8 +300,8 @@ async function armAll() {
       emit({
         type: 'armed', id: tw.id, file: entry, registered,
         text: registered
-          ? `✓ ${tw.fileName} armed in ${where} · registered in Red Phone`
-          : `⚠ ${tw.fileName} armed in ${where} · Red Phone registration failed (see relay log)`,
+          ? `✓ ${tw.fileName} armed in ${where} · registered in Flare`
+          : `⚠ ${tw.fileName} armed in ${where} · Flare registration failed (see relay log)`,
       });
       console.log(`[arm] ${tw.id} armed (${tw.fileName} in ${where}) hash=${tw.hash.slice(0, 12)}…`);
     }

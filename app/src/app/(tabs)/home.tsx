@@ -5,7 +5,7 @@ import { IdleView } from '../../features/incident/IdleView';
 import { LiveView } from '../../features/incident/LiveView';
 import { PossibleView } from '../../features/incident/PossibleView';
 import { useCurrentIncident, useMe } from '../../state/hooks';
-import { Banner, haptics, Screen } from '../../ui';
+import { Banner, haptics, Logo, Screen } from '../../ui';
 
 export default function HomeTab() {
   const { me, ready: meReady } = useMe();
@@ -29,7 +29,7 @@ export default function HomeTab() {
 
   return (
     <Screen
-      title="Red Phone"
+      brand={<Logo />}
       strip={<StatusStrip />}
       scroll={!fixed}
       banner={error ? <Banner variant="danger" text={error} actionLabel="Dismiss" onAction={() => setError(null)} /> : undefined}

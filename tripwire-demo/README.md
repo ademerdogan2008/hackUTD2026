@@ -2,7 +2,7 @@
 
 A fake intranet for the victim firm **Halvorsen & Pike LLP** plus a small Node relay.
 IT plants three decoy files. When an attacker opens or uses one, the relay reports
-the hit to Red Phone (SpacetimeDB), and responders' phones show "Attacker active".
+the hit to Flare (SpacetimeDB), and responders' phones show "Attacker active".
 
 No npm dependencies and no build step. Needs Node 18+ (tested on Node 24).
 
@@ -40,7 +40,7 @@ with `Authorization: Bearer <token>` and a JSON array of arguments:
 - Reset: `reset_tripwire_demo []`.
 
 Every call is logged as `[stdb] OK ...` or `[stdb] FAIL ... <status> <response>`.
-If plant fails, the arming step shows a warning instead of "registered in Red Phone".
+If plant fails, the arming step shows a warning instead of "registered in Flare".
 Mock mode makes no calls and prints each hit:
 
 ```
@@ -73,7 +73,7 @@ Set `TRUST_PROXY=1` only behind a trusted proxy, so the source IP comes from `X-
    - **Indexer touches decoy (low)**: source `10.0.0.40`, `HP-IndexBot/2.1`. Jev logs a false positive.
    - **Reset demo**: disarms the decoys and calls `reset_tripwire_demo`.
 
-   The panel shows "Sent to Red Phone ✓" or the error.
+   The panel shows "Sent to Flare ✓" or the error.
 
 Optional: open `service_accounts_README.txt` and submit the console login, or click the
 curl URL in `billing_api_keys.txt`.

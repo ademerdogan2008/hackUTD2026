@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "Red Phone",
+    "name": "Flare",
     "slug": "red-phone",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -36,7 +36,7 @@
       [
         "expo-camera",
         {
-          "cameraPermission": "Red Phone uses the camera to scan invite QR codes."
+          "cameraPermission": "Flare uses the camera to scan invite QR codes."
         }
       ]
     ],
