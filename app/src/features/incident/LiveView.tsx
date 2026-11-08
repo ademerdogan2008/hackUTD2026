@@ -2,7 +2,7 @@ import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { useReducer, useTable } from 'spacetimedb/react';
 import { reducers, tables } from '../../module_bindings';
 import { isLeadOrAdmin, ROLE_LABEL, useMe } from '../../state/hooks';
-import { Button, color, haptics } from '../../ui';
+import { Button, color, font, haptics } from '../../ui';
 import type { Run } from './IdleView';
 import type { Incident } from './PossibleView';
 import { Dot, initialsOf, Inset, Row, Section, StatusText, Tag, tertiary, tx } from './parts';
@@ -93,7 +93,7 @@ export function LiveView({ run, incident, myRole, myHex }: { run: Run; incident:
                 }}
                 style={({ pressed }) => [s.option, on && { backgroundColor: c.tone }, pressed && !on && { backgroundColor: color.surfaceRaised }]}
               >
-                <Text style={[s.optionText, on && { color: color.bg }]} maxFontSizeMultiplier={1.3}>
+                <Text style={[s.optionText, on && { color: c.state === 'device_affected' ? color.onDanger : color.onPrimary }]} maxFontSizeMultiplier={1.3}>
                   {c.label}
                 </Text>
               </Pressable>
@@ -154,9 +154,9 @@ const s = StyleSheet.create({
   roster: { gap: 12 },
   avatars: { flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', gap: 6 },
   avatar: { width: 32, height: 32, borderRadius: 16, backgroundColor: color.surfaceRaised, borderWidth: 2, borderColor: 'transparent', alignItems: 'center', justifyContent: 'center' },
-  avatarText: { fontSize: 12, fontWeight: '600', color: color.text },
+  avatarText: { fontSize: 12, fontFamily: font.semibold, color: color.text },
   segment: { flexDirection: 'row', backgroundColor: color.surface, borderRadius: 14, padding: 4, gap: 4 },
   option: { flex: 1, minHeight: 52, borderRadius: 11, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 6, paddingVertical: 8 },
-  optionText: { fontSize: 15, lineHeight: 19, fontWeight: '600', color: color.text, textAlign: 'center' },
+  optionText: { fontSize: 15, lineHeight: 19, fontFamily: font.display, color: color.text, textAlign: 'center' },
   leadStack: { gap: 12 },
 });

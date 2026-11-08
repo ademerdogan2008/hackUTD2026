@@ -1,6 +1,6 @@
 import { Ionicons } from '@expo/vector-icons';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
-import { color, radius, space, type, variantColor } from './theme';
+import { color, font, radius, space, type, variantColor } from './theme';
 
 export type BannerVariant = 'info' | 'success' | 'warning' | 'danger';
 
@@ -27,7 +27,7 @@ export function Banner({ text, variant: v, tone, actionLabel, onAction }: { text
       </Text>
       {actionLabel && onAction ? (
         <Pressable onPress={onAction} accessibilityRole="button" accessibilityLabel={actionLabel} hitSlop={8} style={({ pressed }) => pressed && { opacity: 0.7 }}>
-          <Text style={[type.callout, { color: c, fontWeight: '600' }]}>{actionLabel}</Text>
+          <Text style={[type.callout, { color: c, fontFamily: font.semibold }]}>{actionLabel}</Text>
         </Pressable>
       ) : null}
     </View>

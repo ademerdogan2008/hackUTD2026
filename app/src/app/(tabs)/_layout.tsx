@@ -2,7 +2,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { Tabs } from 'expo-router';
 import { StyleSheet } from 'react-native';
 import { GlobalAlarm } from '../../features/incident/GlobalAlarm';
-import { color } from '../../ui';
+import { color, font } from '../../ui';
 
 type IconName = React.ComponentProps<typeof Ionicons>['name'];
 
@@ -20,8 +20,8 @@ export default function TabsLayout() {
         headerShown: false,
         tabBarActiveTintColor: color.text,
         tabBarInactiveTintColor: color.textTertiary,
-        tabBarStyle: { backgroundColor: color.bg, borderTopColor: color.hairline, borderTopWidth: StyleSheet.hairlineWidth, elevation: 0, shadowOpacity: 0 },
-        tabBarLabelStyle: { fontSize: 11, fontWeight: '500' },
+        tabBarStyle: { backgroundColor: color.surface, borderTopColor: color.hairline, borderTopWidth: StyleSheet.hairlineWidth, elevation: 0, shadowOpacity: 0 },
+        tabBarLabelStyle: { fontSize: 11, fontFamily: font.display },
         sceneStyle: { backgroundColor: color.bg },
       }}
     >

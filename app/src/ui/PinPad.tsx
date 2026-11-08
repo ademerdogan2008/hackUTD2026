@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Ionicons } from '@expo/vector-icons';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { haptics } from './haptics';
-import { color, radius, space, type } from './theme';
+import { color, font, radius, space, type } from './theme';
 
 export interface PinPadProps {
   length?: number;
@@ -80,6 +80,6 @@ const styles = StyleSheet.create({
   grid: { gap: space.md },
   gridRow: { flexDirection: 'row', gap: space.lg },
   key: { width: 72, height: 72, borderRadius: radius.pill, backgroundColor: color.surface, alignItems: 'center', justifyContent: 'center' },
-  digit: { fontSize: 28, lineHeight: 34, fontWeight: '400', color: color.text },
+  digit: { fontSize: 28, lineHeight: 34, fontFamily: font.displaySemi, color: color.text },
   blank: { width: 72, height: 72 },
 });

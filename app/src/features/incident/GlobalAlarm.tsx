@@ -57,7 +57,7 @@ export function GlobalAlarm() {
   return (
     <AlarmOverlay
       visible={visible}
-      title="RED PHONE — ATTACK CONFIRMED"
+      title="Attack confirmed"
       subtitle={incident?.isDrill ? 'This is a drill. Check in now.' : 'Check in now. Your team needs to know you are here.'}
       actionLabel="I'm here"
       onAction={onAction}

@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Pressable, StyleSheet, Switch, Text, View } from 'react-native';
 import { useReducer } from 'spacetimedb/react';
 import { reducers } from '../../module_bindings';
-import { color, haptics } from '../../ui';
+import { color, font, haptics } from '../../ui';
 import { StatusText, tx } from './parts';
 
 export type Run = (p: Promise<unknown>) => Promise<void>;
@@ -63,6 +63,6 @@ const s = StyleSheet.create({
   bottom: { gap: 12, paddingBottom: 8 },
   drillRow: { flexDirection: 'row', alignItems: 'center', gap: 12, paddingHorizontal: 4, minHeight: 48 },
   big: { height: 64, borderRadius: 18, backgroundColor: color.danger, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 10 },
-  bigText: { fontSize: 17, lineHeight: 22, fontWeight: '600', color: color.onDanger },
-  bigTag: { fontSize: 13, lineHeight: 18, fontWeight: '500', color: color.onDanger, opacity: 0.75 },
+  bigText: { fontSize: 18, lineHeight: 22, fontFamily: font.display, letterSpacing: -0.2, color: color.onDanger },
+  bigTag: { fontSize: 13, lineHeight: 18, fontFamily: font.medium, color: color.onDanger, opacity: 0.75 },
 });

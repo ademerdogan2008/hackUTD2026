@@ -1,18 +1,18 @@
 // Small presentational pieces for the Home incident views (DESIGN.md v2).
 import { Children, Fragment, isValidElement } from 'react';
 import { Pressable, StyleSheet, Text, View, type StyleProp, type TextStyle, type ViewStyle } from 'react-native';
-import { color } from '../../ui';
+import { color, font } from '../../ui';
 
-export const hairline = 'rgba(255,255,255,0.08)';
-export const tertiary = '#5E5E66';
+export const hairline = color.hairline;
+export const tertiary = color.textTertiary;
 
 export const tx = StyleSheet.create({
-  status: { fontSize: 28, lineHeight: 34, fontWeight: '600', letterSpacing: -0.4, color: color.text },
-  title: { fontSize: 20, lineHeight: 25, fontWeight: '600', color: color.text },
-  body: { fontSize: 17, lineHeight: 22, fontWeight: '400', color: color.text },
-  bodyStrong: { fontSize: 17, lineHeight: 22, fontWeight: '600', color: color.text },
-  callout: { fontSize: 15, lineHeight: 20, fontWeight: '400', color: color.textMuted },
-  caption: { fontSize: 13, lineHeight: 18, fontWeight: '500', color: color.textMuted },
+  status: { fontSize: 28, lineHeight: 34, fontFamily: font.display, letterSpacing: -0.5, color: color.text },
+  title: { fontSize: 20, lineHeight: 26, fontFamily: font.display, letterSpacing: -0.3, color: color.text },
+  body: { fontSize: 17, lineHeight: 22, fontFamily: font.regular, color: color.text },
+  bodyStrong: { fontSize: 17, lineHeight: 22, fontFamily: font.semibold, color: color.text },
+  callout: { fontSize: 15, lineHeight: 20, fontFamily: font.regular, color: color.textMuted },
+  caption: { fontSize: 13, lineHeight: 18, fontFamily: font.medium, color: color.textMuted },
 });
 
 export function Dot({ tone, size = 8 }: { tone: string; size?: number }) {

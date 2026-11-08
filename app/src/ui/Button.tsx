@@ -1,5 +1,5 @@
 import { ActivityIndicator, Pressable, StyleSheet, Text, View, type StyleProp, type ViewStyle } from 'react-native';
-import { color, radius, space } from './theme';
+import { color, radius, space, type } from './theme';
 
 export type ButtonVariant = 'primary' | 'secondary' | 'danger' | 'ghost';
 
@@ -21,7 +21,7 @@ const fg: Record<ButtonVariant, string> = {
   primary: color.onPrimary,
   secondary: color.text,
   danger: color.onDanger,
-  ghost: color.text,
+  ghost: color.textSecondary,
 };
 
 const bg: Record<ButtonVariant, string> = {
@@ -64,8 +64,8 @@ export function Button({ title, label: labelProp, accessibilityLabel, onPress, v
 }
 
 const styles = StyleSheet.create({
-  base: { minHeight: 52, borderRadius: radius.button, paddingHorizontal: space.screen, justifyContent: 'center', alignItems: 'center' },
+  base: { minHeight: 54, borderRadius: radius.button, paddingHorizontal: space.screen, justifyContent: 'center', alignItems: 'center' },
   ghost: { minHeight: 44, paddingHorizontal: space.sm },
   row: { flexDirection: 'row', alignItems: 'center', gap: space.sm },
-  text: { fontSize: 17, lineHeight: 22, fontWeight: '600' },
+  text: { ...type.button },
 });

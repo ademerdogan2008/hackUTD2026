@@ -4,7 +4,7 @@ import { Animated, Modal, Platform, StyleSheet, Text, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Button } from './Button';
 import { haptics } from './haptics';
-import { color, space, type } from './theme';
+import { color, font, space, type } from './theme';
 
 export interface AlarmOverlayProps {
   visible: boolean;
@@ -47,7 +47,10 @@ export function AlarmOverlay({ visible, title = 'INCIDENT ACTIVE', subtitle: sub
         <Animated.View style={[StyleSheet.absoluteFill, { backgroundColor: '#000000', opacity: pulse.interpolate({ inputRange: [0.55, 1], outputRange: [0.18, 0] }) }]} />
         <SafeAreaView style={styles.safe} edges={['top', 'bottom', 'left', 'right']}>
           <View style={styles.center}>
-            <Ionicons name="warning" size={72} color={color.onDanger} accessibilityElementsHidden />
+            <Ionicons name="warning" size={64} color={color.onDanger} accessibilityElementsHidden />
+            <Text style={styles.kicker} maxFontSizeMultiplier={1.3}>
+              RED PHONE
+            </Text>
             <Text style={styles.big} maxFontSizeMultiplier={1.3}>
               {title}
             </Text>
@@ -65,9 +68,10 @@ export function AlarmOverlay({ visible, title = 'INCIDENT ACTIVE', subtitle: sub
 }
 
 const styles = StyleSheet.create({
-  root: { flex: 1, backgroundColor: color.danger },
+  root: { flex: 1, backgroundColor: color.alarm },
   safe: { flex: 1, paddingHorizontal: space.screen, paddingBottom: space.lg },
   center: { flex: 1, alignItems: 'center', justifyContent: 'center', gap: space.md },
-  big: { ...type.largeTitle, color: color.onDanger, textAlign: 'center', letterSpacing: 0.5, marginTop: space.sm },
-  sub: { ...type.body, color: color.onDanger, opacity: 0.85, textAlign: 'center', maxWidth: 320 },
+  kicker: { fontFamily: font.display, fontSize: 13, lineHeight: 16, letterSpacing: 3, color: color.onDanger, opacity: 0.8, marginTop: space.sm },
+  big: { fontFamily: font.display, fontSize: 40, lineHeight: 44, letterSpacing: -0.8, color: color.onDanger, textAlign: 'center' },
+  sub: { ...type.body, color: color.onDanger, opacity: 0.9, textAlign: 'center', maxWidth: 320 },
 });

@@ -1,5 +1,5 @@
 import { Pressable, StyleSheet, Text, View } from 'react-native';
-import { color, radius } from './theme';
+import { color, font, radius } from './theme';
 
 export interface Segment<T extends string> {
   value: T;
@@ -35,6 +35,6 @@ const styles = StyleSheet.create({
   wrap: { flexDirection: 'row', backgroundColor: color.surface, borderRadius: radius.sm, padding: 2, height: 36 },
   seg: { flex: 1, alignItems: 'center', justifyContent: 'center', borderRadius: 8, paddingHorizontal: 8 },
   selected: { backgroundColor: color.control },
-  text: { fontSize: 13, fontWeight: '500', color: color.textSecondary },
-  textSel: { color: color.text, fontWeight: '600' },
+  text: { fontSize: 13, fontFamily: font.medium, color: color.textSecondary },
+  textSel: { color: color.text, fontFamily: font.semibold },
 });
