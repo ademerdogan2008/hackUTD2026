@@ -4,6 +4,7 @@
   "main": "expo-router/entry",
   "dependencies": {
     "@expo/ui": "~58.0.27",
+    "@expo/vector-icons": "^15.0.2",
     "@noble/curves": "2.4.0",
     "@noble/hashes": "2.4.0",
     "@redphone/shared": "*",
