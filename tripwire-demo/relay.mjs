@@ -368,8 +368,16 @@ async function recordHit(tw, req, { force = false, profile = null } = {}) {
   };
   hits.push(hit);
   console.log(`🚨 TRIPWIRE HIT ${hit.tripwireId} ${hit.kind} from ${hit.sourceIp}${note} at ${hit.time} ua="${hit.userAgent}"`);
-  if (MODE !== 'spacetime') return null;
-  return callReducer('record_hit', [tw.hash, hit.kind, hit.sourceIp, hit.userAgent], STDB_TOKEN, 'relay');
+  const sent = MODE !== 'spacetime'
+    ? null
+    : await callReducer('record_hit', [tw.hash, hit.kind, hit.sourceIp, hit.userAgent], STDB_TOKEN, 'relay');
+  // Live feed for the IT view (the event stream requires the demo key, so the attacker never sees it).
+  emit({
+    type: 'hit', id: tw.id, label: tw.label, fileName: tw.fileName, system: tw.system, kind: hit.kind,
+    sourceIp: hit.sourceIp, time: hit.time, simulated: req ? null : (profile || 'attacker'),
+    sent: sent === true ? 'ok' : sent === false ? 'failed' : 'mock',
+  });
+  return sent;
 }
 
 function lookup(token, kind) {

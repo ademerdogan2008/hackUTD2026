@@ -5,109 +5,175 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Halvorsen &amp; Pike Intranet</title>
 <style>
-:root{--bg:#f4f6f9;--panel:#fff;--line:#dde3ea;--ink:#1f2933;--muted:#65758b;--brand:#1d3a5f;--accent:#2f6fb0;--tw:#b45309;--twbg:#fff7e6;--ok:#15803d}
+:root{
+  --bg:#f3f5f8;--panel:#fff;--line:#dfe4eb;--line2:#eef1f5;--ink:#18212b;--muted:#5f6e82;--faint:#8a97a8;
+  --brand:#1d3a5f;--accent:#2f6fb0;
+  --tw:#a14a06;--twbg:#fff6e8;--twline:#f1cf9a;
+  --hit:#b42318;--hitbg:#fdecea;--hitline:#f3b7b0;
+  --ok:#157f3d;--okbg:#e9f7ee;
+  --atk:#3b0d0d;
+}
 *{box-sizing:border-box}
 body{margin:0;font:14px/1.45 "Segoe UI",system-ui,-apple-system,Arial,sans-serif;background:var(--bg);color:var(--ink)}
-header{background:var(--brand);color:#fff;display:flex;align-items:center;gap:16px;padding:10px 20px}
+button{font:inherit;cursor:pointer}
+button:disabled{opacity:.55;cursor:default}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+/* Header */
+header{background:var(--brand);color:#fff;display:flex;align-items:center;gap:16px;padding:12px 20px;transition:background .25s}
 header h1{font-size:16px;font-weight:600;margin:0}
-header h1 span{opacity:.7;font-weight:400}
+header h1 span{opacity:.65;font-weight:400}
 .spacer{flex:1}
-.toggle{display:flex;background:rgba(255,255,255,.12);border-radius:6px;padding:2px}
-.toggle button{background:none;border:0;color:#dbe6f3;padding:5px 12px;border-radius:5px;cursor:pointer;font:inherit;font-size:13px}
+.who{font-size:13px;color:#ffd2c9;display:none}
+body.attacker header{background:var(--atk)}
+body.attacker .who{display:inline}
+.toggle{display:flex;background:rgba(255,255,255,.12);border-radius:8px;padding:3px}
+.toggle button{background:none;border:0;color:#dbe6f3;padding:6px 14px;border-radius:6px;font-size:13px}
 .toggle button.on{background:#fff;color:var(--brand);font-weight:600}
-.viewing{font-size:12px;color:#ffd7a8;display:none}
-body.attacker .viewing{display:inline}
-main{display:grid;grid-template-columns:240px 1fr 420px;gap:16px;padding:16px 20px;min-height:calc(100vh - 52px)}
-nav,.files,.preview,.tw{background:var(--panel);border:1px solid var(--line);border-radius:8px}
+body.attacker .toggle button.on{color:var(--atk)}
+
+/* Flow strip: what is happening, in three steps (IT view only) */
+.flow{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;padding:16px 20px 0}
+body.attacker .flow{display:none}
+.stage{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:14px 16px;display:flex;flex-direction:column;gap:10px;min-height:150px;transition:border-color .2s,background .2s}
+.stage .head{display:flex;align-items:center;gap:10px}
+.num{width:24px;height:24px;border-radius:50%;display:grid;place-items:center;font-size:12px;font-weight:700;background:var(--line2);color:var(--muted);flex:none}
+.stage h2{font-size:14px;margin:0;font-weight:600}
+.stage .state{margin-left:auto;font-size:12px;font-weight:600;color:var(--faint)}
+.stage p{margin:0;color:var(--muted);font-size:13px}
+.stage.done{border-color:#b9e2c7}
+.stage.done .num{background:var(--ok);color:#fff}
+.stage.done .state{color:var(--ok)}
+.stage.live{border-color:var(--twline);background:var(--twbg)}
+.stage.live .num{background:var(--tw);color:#fff}
+.stage.live .state{color:var(--tw)}
+.stage.fired{border-color:var(--hitline);background:var(--hitbg);animation:pulse 1.2s ease-out 2}
+.stage.fired .num{background:var(--hit);color:#fff}
+.stage.fired .state{color:var(--hit)}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(180,35,24,.45)}100%{box-shadow:0 0 0 14px rgba(180,35,24,0)}}
+.btn{background:var(--brand);color:#fff;border:0;border-radius:7px;padding:9px 14px;font-weight:600;align-self:flex-start}
+.btn.danger{background:var(--hit)}
+.btn.small{padding:6px 10px;font-size:12px;font-weight:500}
+.btn.ghost{background:#fff;color:var(--brand);border:1px solid var(--line)}
+.link{background:none;border:0;padding:0;color:var(--accent);font-size:13px;text-decoration:underline;text-underline-offset:2px}
+.keyrow{display:flex;gap:8px}
+.keyrow[hidden]{display:none}
+.keyrow input{flex:1;min-width:0;padding:8px 10px;border:1px solid var(--line);border-radius:7px;font:inherit}
+.progress{font-size:13px;color:var(--muted);min-height:18px}
+.progress.ok{color:var(--ok)}
+.progress.warn{color:var(--tw)}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{display:inline-flex;align-items:center;gap:6px;font-size:12px;background:#fff;border:1px solid var(--twline);color:var(--tw);border-radius:999px;padding:3px 10px}
+.chip:hover{background:var(--twbg)}
+.chip.fired{border-color:var(--hitline);color:var(--hit)}
+.dot{width:7px;height:7px;border-radius:50%;background:currentColor;flex:none}
+details.more summary{font-size:12px;color:var(--muted);cursor:pointer;list-style:none}
+details.more summary::-webkit-details-marker{display:none}
+details.more summary::before{content:'▸ ';}
+details.more[open] summary::before{content:'▾ ';}
+details.more .opts{display:flex;flex-direction:column;gap:6px;margin-top:8px}
+.opt{display:flex;justify-content:space-between;gap:8px;align-items:center;font-size:12px;color:var(--muted)}
+.alert{display:flex;flex-direction:column;gap:4px}
+.alert .big{font-size:15px;font-weight:700;color:var(--hit)}
+.alert .line{font-size:13px}
+.alert .sent{font-size:13px;font-weight:600}
+.alert .sent.ok{color:var(--ok)}
+.alert .sent.failed{color:var(--hit)}
+.footer{display:flex;justify-content:flex-end;padding:8px 20px 0}
+body.attacker .footer{display:none}
+
+/* Workspace */
+main{display:grid;grid-template-columns:230px 1fr 400px;gap:16px;padding:16px 20px 20px;min-height:calc(100vh - 260px)}
+nav,.files,.preview{background:var(--panel);border:1px solid var(--line);border-radius:10px}
 nav{padding:8px 0;align-self:start}
 nav .h{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);padding:6px 16px}
-nav a{display:flex;align-items:center;gap:8px;padding:8px 16px;color:var(--ink);text-decoration:none;cursor:pointer}
+nav a{display:flex;align-items:center;gap:8px;padding:9px 16px;color:var(--ink);text-decoration:none;cursor:pointer}
 nav a:hover{background:#f0f4f8}
-nav a.on{background:#e8f0fa;color:var(--accent);font-weight:600;border-left:3px solid var(--accent);padding-left:13px}
-nav .cnt{margin-left:auto;font-size:11px;background:var(--twbg);color:var(--tw);border:1px solid #f3d19c;border-radius:10px;padding:0 7px}
-body.attacker .cnt,body.attacker .badge,body.attacker #twPanel{display:none!important}
-.col{display:flex;flex-direction:column;gap:16px;min-width:0}
-.files .top{padding:12px 16px;border-bottom:1px solid var(--line);display:flex;align-items:baseline;gap:8px}
+nav a.on{background:#e8f0fa;color:var(--accent);font-weight:600;box-shadow:inset 3px 0 var(--accent)}
+nav .cnt{margin-left:auto;font-size:11px;font-weight:600;background:var(--twbg);color:var(--tw);border:1px solid var(--twline);border-radius:10px;padding:0 7px}
+nav .cnt.fired{background:var(--hitbg);color:var(--hit);border-color:var(--hitline)}
+body.attacker .cnt,body.attacker .tag{display:none!important}
+.files .top,.preview .top{padding:12px 16px;border-bottom:1px solid var(--line);display:flex;align-items:baseline;gap:8px}
 .files .top b{font-size:15px}
 .files .top small{color:var(--muted)}
 table{width:100%;border-collapse:collapse}
 th{font-size:12px;text-align:left;color:var(--muted);font-weight:500;padding:8px 16px;border-bottom:1px solid var(--line)}
-td{padding:9px 16px;border-bottom:1px solid #eef1f5}
+td{padding:10px 16px;border-bottom:1px solid var(--line2)}
 tr.f{cursor:pointer}
 tr.f:hover td{background:#f6f9fc}
 tr.f.sel td{background:#eaf2fb}
+body:not(.attacker) tr.decoy td{background:var(--twbg)}
+body:not(.attacker) tr.decoy td:first-child{box-shadow:inset 3px 0 var(--tw)}
+body:not(.attacker) tr.decoy.fired td{background:var(--hitbg)}
+body:not(.attacker) tr.decoy.fired td:first-child{box-shadow:inset 3px 0 var(--hit)}
 tr.flash td{animation:flash 2.2s ease-out}
-@keyframes flash{0%{background:#ffe4b0}100%{background:transparent}}
+@keyframes flash{0%{background:#ffe0a6}100%{}}
 .ico{display:inline-block;width:18px;height:18px;border-radius:3px;vertical-align:-4px;margin-right:8px;font-size:9px;font-weight:700;color:#fff;text-align:center;line-height:18px}
 .i-sheet{background:#217346}.i-doc{background:#2b579a}.i-pdf{background:#c43e1c}.i-text{background:#6b7785}
-.badge{font-size:10px;font-weight:600;background:var(--twbg);color:var(--tw);border:1px solid #f3d19c;border-radius:4px;padding:1px 5px;margin-left:8px;vertical-align:1px}
+.tag{font-size:10px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;background:#fff;color:var(--tw);border:1px solid var(--twline);border-radius:4px;padding:1px 6px;margin-left:8px;vertical-align:1px}
+.tag.fired{color:var(--hit);border-color:var(--hitline)}
 .muted{color:var(--muted)}
-.tw{padding:14px 16px}
-.tw h2{font-size:14px;margin:0 0 4px}
-.tw p{margin:0 0 10px;color:var(--muted);font-size:13px}
-.tw .row{display:flex;gap:8px}
-.tw input{flex:1;padding:7px 9px;border:1px solid var(--line);border-radius:5px;font:inherit}
-.btn{background:var(--brand);color:#fff;border:0;border-radius:5px;padding:7px 14px;font:inherit;cursor:pointer}
-.btn:disabled{opacity:.5;cursor:default}
-.btn.ghost{background:#fff;color:var(--brand);border:1px solid var(--line)}
-#steps{list-style:none;margin:12px 0 0;padding:0;font-size:13px}
-#steps li{padding:3px 0;color:var(--muted)}
-#steps li.ok{color:var(--ok)}
-#steps li.warn{color:var(--tw)}
-#steps li.done{color:var(--ink);font-weight:600}
-.sim{margin-top:14px;border-top:1px solid var(--line);padding-top:10px}
-.sim h3{font-size:12px;margin:0 0 6px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.04em}
-.sim .grid{display:flex;flex-wrap:wrap;gap:6px}
-.sim .btn{padding:5px 10px;font-size:12px}
-#simOut{margin-top:6px;font-size:12px;color:var(--muted);min-height:16px}
-#simOut.ok{color:var(--ok)}
-#simOut.warn{color:var(--tw)}
 .preview{display:flex;flex-direction:column;min-height:420px;overflow:hidden}
-.preview .top{padding:12px 16px;border-bottom:1px solid var(--line);font-weight:600;word-break:break-all}
+.preview .top{font-weight:600;word-break:break-all}
 .preview .body{flex:1;padding:16px;overflow:auto}
 .preview iframe{border:0;width:100%;height:100%;min-height:380px;display:block}
 .preview pre{white-space:pre-wrap;word-break:break-word;font:12.5px/1.5 Consolas,Menlo,monospace;margin:0}
 .preview pre a{color:var(--accent)}
-.meta{display:grid;grid-template-columns:110px 1fr;gap:6px 10px;font-size:13px}
-.note{background:var(--twbg);border:1px solid #f3d19c;color:#7c3a06;border-radius:6px;padding:10px 12px;font-size:13px;margin-top:12px}
-@media (max-width:1000px){main{grid-template-columns:1fr}}
+.meta{display:grid;grid-template-columns:100px 1fr;gap:6px 10px;font-size:13px}
+.note{background:var(--twbg);border:1px solid var(--twline);color:#7c3a06;border-radius:8px;padding:10px 12px;font-size:13px;margin-top:12px}
+@media (max-width:1100px){.flow{grid-template-columns:1fr}.stage{min-height:0}main{grid-template-columns:1fr}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>
 <body>
 <header>
-  <h1>Halvorsen &amp; Pike Intranet <span>· Company network</span></h1>
+  <h1>Halvorsen &amp; Pike <span>· Intranet</span></h1>
   <span class="spacer"></span>
-  <span class="viewing">Viewing as the attacker</span>
-  <div class="toggle"><button id="vIt" class="on">IT view</button><button id="vAtk">Attacker view</button></div>
-</header>
-<main>
-  <nav id="nav"><div class="h">Systems</div></nav>
-  <div class="col">
-    <section class="files">
-      <div class="top"><b id="sysName"></b><small id="sysPath"></small></div>
-      <table><thead><tr><th>Name</th><th style="width:140px">Modified</th><th style="width:80px">Size</th></tr></thead>
-      <tbody id="rows"></tbody></table>
-    </section>
-    <section class="tw" id="twPanel">
-      <h2>Tripwires · IT only</h2>
-      <p>Plant decoy files that alert Flare the moment someone opens or uses them.</p>
-      <div class="row">
-        <input id="key" type="password" placeholder="Demo key" autocomplete="off">
-        <button class="btn" id="arm">Plant tripwires</button>
-      </div>
-      <ul id="steps"></ul>
-      <div class="sim">
-        <h3>Simulate</h3>
-        <div class="grid">
-          <button class="btn ghost" data-profile="attacker">Attacker opens decoy (high)</button>
-          <button class="btn ghost" data-profile="it_staff">IT staff opens decoy (mid)</button>
-          <button class="btn ghost" data-profile="indexer">Indexer touches decoy (low)</button>
-          <button class="btn ghost" id="resetDemo">Reset demo</button>
-        </div>
-        <div id="simOut"></div>
-      </div>
-    </section>
+  <span class="who">You are the attacker. Decoys look like ordinary files.</span>
+  <div class="toggle" role="group" aria-label="View as">
+    <button id="vIt" class="on" aria-pressed="true">IT (defender)</button>
+    <button id="vAtk" aria-pressed="false">Attacker</button>
   </div>
+</header>
+
+<section class="flow" aria-label="Tripwire demo steps">
+  <div class="stage" id="s1">
+    <div class="head"><span class="num">1</span><h2>Plant decoy files</h2><span class="state" id="s1State">Not armed</span></div>
+    <p id="s1Text">Three fake files that no real employee uses. Touching one is a strong attack signal.</p>
+    <div class="keyrow" id="keyRow"><input id="key" type="password" placeholder="Demo key" autocomplete="off" aria-label="Demo key"></div>
+    <div class="chips" id="chips"></div>
+    <button class="btn" id="arm">Plant 3 tripwires</button>
+    <div class="progress" id="progress" aria-live="polite"></div>
+  </div>
+
+  <div class="stage" id="s2">
+    <div class="head"><span class="num">2</span><h2>Attacker touches a decoy</h2><span class="state" id="s2State">Waiting</span></div>
+    <p>Switch to <b>Attacker</b> and open <b>Partner_Compensation_2026.xlsx</b> in Shared drives, or simulate it:</p>
+    <button class="btn danger" data-profile="attacker">Simulate attacker opening it</button>
+    <details class="more">
+      <summary>Other scenarios (how Jev rates them)</summary>
+      <div class="opts">
+        <div class="opt"><span>IT staff opens it: medium, a lead confirms</span><button class="btn ghost small" data-profile="it_staff">Run</button></div>
+        <div class="opt"><span>Search indexer touches it: low, logged only</span><button class="btn ghost small" data-profile="indexer">Run</button></div>
+      </div>
+    </details>
+    <div class="progress" id="simOut" aria-live="polite"></div>
+  </div>
+
+  <div class="stage" id="s3">
+    <div class="head"><span class="num">3</span><h2>Flare alerts responders</h2><span class="state" id="s3State">Quiet</span></div>
+    <div id="alertBody" aria-live="assertive"><p>When a decoy fires, the hit goes to Flare and every responder's phone alerts.</p></div>
+  </div>
+</section>
+<div class="footer"><button class="link" id="resetDemo">Reset demo</button></div>
+
+<main>
+  <nav id="nav" aria-label="Systems"><div class="h">Systems</div></nav>
+  <section class="files">
+    <div class="top"><b id="sysName"></b><small id="sysPath"></small></div>
+    <table><thead><tr><th>Name</th><th style="width:130px">Modified</th><th style="width:80px">Size</th></tr></thead>
+    <tbody id="rows"></tbody></table>
+  </section>
   <section class="preview">
     <div class="top" id="pvTitle">Preview</div>
     <div class="body" id="pvBody"><span class="muted">Select a file to preview it.</span></div>
@@ -150,36 +216,98 @@ tr.flash td{animation:flash 2.2s ease-out}
     ]
   };
   var ICON = { sheet: 'X', doc: 'W', pdf: 'P', text: 'T' };
+  var KIND_TEXT = { document_opened: 'opened', login_attempt: 'used to sign in', key_used: 'used to call the API' };
 
   var params = new URLSearchParams(location.search);
   var keyInput = document.getElementById('key');
   keyInput.value = params.get('key') || '';
+  if (keyInput.value) document.getElementById('keyRow').hidden = true; // key came in the URL: no need to show it
   var view = params.get('view') === 'attacker' ? 'attacker' : 'it';
   var current = 'a_shares';
-  var decoys = []; // file entries from the relay
+  var decoys = [];       // file entries from the relay
+  var fired = {};        // tripwireId -> true once it has fired
+  var lastHit = null;
+  var hitCount = 0;
+  var arming = false;
   var flashName = null;
   var es = null;
 
+  function $(id) { return document.getElementById(id); }
   function esc(s) {
     return String(s).replace(/[&<>"']/g, function (c) {
       return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
     });
   }
+  function sysName(id) { var s = SYSTEMS.filter(function (x) { return x.id === id; })[0]; return s ? s.name : id; }
+  function key() { return keyInput.value.trim(); }
   function filesFor(sys) {
     var list = FILLERS[sys].slice();
     decoys.forEach(function (d) { if (d.system === sys) list.push(d); });
     return list.sort(function (a, b) { return a.name.localeCompare(b.name); });
   }
-  function key() { return keyInput.value.trim(); }
+  function armedDecoys() { return decoys.filter(function (d) { return d.tripwire; }); }
 
+  // ---------- flow strip (the story of the demo)
+  function setStage(id, cls, state) {
+    var el = $(id);
+    el.className = 'stage' + (cls ? ' ' + cls : '');
+    $(id + 'State').textContent = state;
+  }
+  function renderFlow() {
+    var n = armedDecoys().length;
+    if (arming) setStage('s1', 'live', 'Planting…');
+    else if (n) setStage('s1', 'done', n + ' armed ✓');
+    else setStage('s1', '', 'Not armed');
+    $('arm').textContent = n ? 'Re-plant tripwires' : 'Plant 3 tripwires';
+    $('arm').className = n ? 'btn ghost small' : 'btn';
+    $('s1Text').textContent = n
+      ? 'Decoys are in place. Only IT can see the orange tags; to anyone else they look like normal files.'
+      : 'Three fake files that no real employee uses. Touching one is a strong attack signal.';
+
+    var chips = $('chips');
+    chips.innerHTML = '';
+    armedDecoys().forEach(function (d) {
+      var b = document.createElement('button');
+      b.className = 'chip' + (fired[d.tripwireId] ? ' fired' : '');
+      b.innerHTML = '<span class="dot"></span>' + esc(d.name) + ' · ' + esc(sysName(d.system));
+      b.title = 'Show in ' + sysName(d.system);
+      b.onclick = function () { current = d.system; renderAll(); clearPreview(); };
+      chips.appendChild(b);
+    });
+
+    if (lastHit) setStage('s2', 'done', 'Decoy touched ✓');
+    else if (n) setStage('s2', 'live', 'Waiting for a touch');
+    else setStage('s2', '', 'Plant decoys first');
+    Array.prototype.forEach.call(document.querySelectorAll('[data-profile]'), function (b) { b.disabled = !n; });
+
+    var body = $('alertBody');
+    if (!lastHit) {
+      setStage('s3', '', 'Quiet');
+      body.innerHTML = '<p>When a decoy fires, the hit goes to Flare and every responder\'s phone alerts.</p>';
+      return;
+    }
+    var h = lastHit;
+    var t = new Date(h.time).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit', second: '2-digit' });
+    var sent = h.sent === 'ok' ? '<div class="sent ok">✓ Sent to Flare: responders\' phones are alerting</div>'
+      : h.sent === 'failed' ? '<div class="sent failed">Flare call failed. Check the relay log.</div>'
+      : '<div class="sent ok">✓ Logged (mock mode, Flare not called)</div>';
+    setStage('s3', h.sent === 'failed' ? 'fired' : 'fired', 'Tripwire fired');
+    body.innerHTML = '<div class="alert"><div class="big">Tripwire fired at ' + esc(t) + '</div>' +
+      '<div class="line"><b>' + esc(h.fileName) + '</b> in ' + esc(sysName(h.system)) + ' was ' + esc(KIND_TEXT[h.kind] || h.kind) + '</div>' +
+      '<div class="line muted">From ' + esc(h.sourceIp) + (h.simulated ? ' · simulated ' + esc(h.simulated.replace('_', ' ')) : '') + '</div>' +
+      sent + (hitCount > 1 ? '<div class="line muted">' + hitCount + ' hits this session</div>' : '') + '</div>';
+  }
+
+  // ---------- workspace
   function renderNav() {
-    var nav = document.getElementById('nav');
+    var nav = $('nav');
     nav.innerHTML = '<div class="h">Systems</div>';
     SYSTEMS.forEach(function (s) {
       var a = document.createElement('a');
       if (s.id === current) a.className = 'on';
-      var n = decoys.filter(function (d) { return d.system === s.id && d.tripwire; }).length;
-      a.innerHTML = esc(s.name) + (n ? '<span class="cnt" title="Tripwires">' + n + '</span>' : '');
+      var here = armedDecoys().filter(function (d) { return d.system === s.id; });
+      var hot = here.some(function (d) { return fired[d.tripwireId]; });
+      a.innerHTML = esc(s.name) + (here.length ? '<span class="cnt' + (hot ? ' fired' : '') + '" title="Tripwires">' + here.length + '</span>' : '');
       a.onclick = function () { current = s.id; renderAll(); clearPreview(); };
       nav.appendChild(a);
     });
@@ -187,16 +315,17 @@ tr.flash td{animation:flash 2.2s ease-out}
 
   function renderFiles() {
     var sys = SYSTEMS.filter(function (s) { return s.id === current; })[0];
-    document.getElementById('sysName').textContent = sys.name;
-    document.getElementById('sysPath').textContent = sys.path;
-    var tb = document.getElementById('rows');
+    $('sysName').textContent = sys.name;
+    $('sysPath').textContent = sys.path;
+    var tb = $('rows');
     tb.innerHTML = '';
     filesFor(current).forEach(function (f) {
       var tr = document.createElement('tr');
-      tr.className = 'f' + (flashName === f.name ? ' flash' : '');
+      var hot = f.tripwire && fired[f.tripwireId];
+      tr.className = 'f' + (f.tripwire ? ' decoy' : '') + (hot ? ' fired' : '') + (flashName === f.name ? ' flash' : '');
       tr.innerHTML = '<td><span class="ico i-' + f.type + '">' + ICON[f.type] + '</span>' + esc(f.name) +
-        (f.tripwire ? '<span class="badge">Tripwire</span>' : '') + '</td><td class="muted">' + esc(f.modified) +
-        '</td><td class="muted">' + esc(f.size) + '</td>';
+        (f.tripwire ? '<span class="tag' + (hot ? ' fired' : '') + '">' + (hot ? 'Fired' : 'Tripwire') + '</span>' : '') +
+        '</td><td class="muted">' + esc(f.modified) + '</td><td class="muted">' + esc(f.size) + '</td>';
       tr.onclick = function () {
         Array.prototype.forEach.call(tb.children, function (r) { r.classList.remove('sel'); });
         tr.classList.add('sel');
@@ -205,11 +334,11 @@ tr.flash td{animation:flash 2.2s ease-out}
       tb.appendChild(tr);
     });
   }
-  function renderAll() { renderNav(); renderFiles(); }
+  function renderAll() { renderFlow(); renderNav(); renderFiles(); }
 
   function clearPreview() {
-    document.getElementById('pvTitle').textContent = 'Preview';
-    document.getElementById('pvBody').innerHTML = '<span class="muted">Select a file to preview it.</span>';
+    $('pvTitle').textContent = 'Preview';
+    $('pvBody').innerHTML = '<span class="muted">Select a file to preview it.</span>';
   }
 
   function linkify(text) {
@@ -219,9 +348,8 @@ tr.flash td{animation:flash 2.2s ease-out}
   }
 
   function openFile(f) {
-    var title = document.getElementById('pvTitle');
-    var body = document.getElementById('pvBody');
-    title.textContent = f.name;
+    var body = $('pvBody');
+    $('pvTitle').textContent = f.name;
     body.style.padding = '16px';
     if (!f.url) {
       body.innerHTML = '<div class="meta"><span class="muted">Modified</span><span>' + esc(f.modified) +
@@ -231,9 +359,9 @@ tr.flash td{animation:flash 2.2s ease-out}
     // In IT view, opening a decoy would fire it. Show its details instead.
     if (view === 'it' && f.tripwire) {
       body.innerHTML = '<div class="meta"><span class="muted">Tripwire</span><span>' + esc(f.label) +
-        '</span><span class="muted">Fires on</span><span>' + esc(f.hitKind) +
+        '</span><span class="muted">Fires when</span><span>it is ' + esc(KIND_TEXT[f.hitKind] || f.hitKind) +
         '</span><span class="muted">Armed</span><span>' + esc(new Date(f.armedAt).toLocaleString()) +
-        '</span></div><div class="note">Decoy file. Switch to Attacker view to open it as an intruder would.</div>';
+        '</span></div><div class="note">This is a decoy. To trigger it as an intruder would, switch to <b>Attacker</b> and open it.</div>';
       return;
     }
     if (f.type === 'sheet') {
@@ -255,99 +383,111 @@ tr.flash td{animation:flash 2.2s ease-out}
       .catch(function () { renderAll(); });
   }
 
-  function step(text, cls) {
-    var li = document.createElement('li');
-    li.textContent = text;
-    if (cls) li.className = cls;
-    document.getElementById('steps').appendChild(li);
+  // ---------- live events from the relay (IT only: the stream needs the demo key)
+  function progress(text, cls) {
+    var el = $('progress');
+    el.textContent = text;
+    el.className = 'progress' + (cls ? ' ' + cls : '');
   }
-
   function openEvents() {
-    if (es) es.close();
+    if (es || !key()) return;
     es = new EventSource('/api/events?key=' + encodeURIComponent(key()));
     es.onmessage = function (m) {
       var e; try { e = JSON.parse(m.data); } catch (x) { return; }
-      if (e.type === 'start') { document.getElementById('steps').innerHTML = ''; decoys = []; renderAll(); }
-      else if (e.type === 'step') step(e.text);
+      if (e.type === 'start') { arming = true; decoys = []; fired = {}; lastHit = null; hitCount = 0; renderAll(); }
+      else if (e.type === 'step') progress(e.text);
       else if (e.type === 'armed') {
-        step(e.text, e.registered ? 'ok' : 'warn');
+        progress(e.text, e.registered ? 'ok' : 'warn');
         decoys.push(e.file);
         current = e.file.system;
         flashName = e.file.name;
         renderAll();
         flashName = null;
-      } else if (e.type === 'done') step(e.text, 'done');
-      else if (e.type === 'reset') { decoys = []; renderAll(); clearPreview(); }
+      } else if (e.type === 'done') { arming = false; progress(e.text, 'ok'); renderAll(); }
+      else if (e.type === 'hit') {
+        fired[e.id] = true;
+        lastHit = e;
+        if (view === 'it') current = e.system; // show the red, fired row
+        hitCount++;
+        renderAll();
+      } else if (e.type === 'reset') { decoys = []; fired = {}; lastHit = null; hitCount = 0; progress(''); renderAll(); clearPreview(); }
     };
+    es.onerror = function () { /* EventSource reconnects on its own */ };
   }
+  keyInput.addEventListener('change', function () { if (es) { es.close(); es = null; } openEvents(); loadDecoys(); });
 
-  document.getElementById('arm').onclick = function () {
+  $('arm').onclick = function () {
     var btn = this;
-    if (!key()) { keyInput.focus(); return; }
+    if (!key()) { $('keyRow').hidden = false; keyInput.focus(); return; }
     btn.disabled = true;
-    document.getElementById('steps').innerHTML = '';
     openEvents();
     // give the event stream a moment to connect before arming
     setTimeout(function () {
       fetch('/api/arm?key=' + encodeURIComponent(key()), { method: 'POST' })
         .then(function (r) {
-          if (r.status === 401) step('Wrong demo key.', 'warn');
-          else if (!r.ok) step('Arming failed (' + r.status + ').', 'warn');
+          if (r.status === 401) progress('Wrong demo key.', 'warn');
+          else if (!r.ok) progress('Arming failed (' + r.status + ').', 'warn');
           return r.ok ? r.json() : null;
         })
-        .then(function (j) { if (j) { decoys = j.decoys; renderAll(); } })
-        .catch(function () { step('Relay unreachable.', 'warn'); })
+        .then(function (j) { if (j) { decoys = j.decoys; } arming = false; renderAll(); })
+        .catch(function () { arming = false; progress('Relay unreachable.', 'warn'); renderAll(); })
         .then(function () { btn.disabled = false; });
     }, 300);
   };
 
   function simOut(text, cls) {
-    var el = document.getElementById('simOut');
+    var el = $('simOut');
     el.textContent = text;
-    el.className = cls || '';
+    el.className = 'progress' + (cls ? ' ' + cls : '');
   }
   function simResult(r, okText) {
     if (r.status === 401) return simOut('Wrong demo key.', 'warn');
     if (r.status === 404) return simOut('Plant tripwires first.', 'warn');
     return r.json().then(function (j) {
       if (!r.ok || !j.ok) simOut('Flare call failed (' + r.status + '). See relay log.', 'warn');
-      else if (j.mode === 'spacetime') simOut(okText, 'ok');
-      else simOut('Logged (mock mode) \u2713', 'ok');
+      else simOut(j.mode === 'spacetime' ? okText : 'Logged (mock mode) ✓', 'ok');
     }, function () { simOut('Failed (' + r.status + ').', 'warn'); });
   }
-  Array.prototype.forEach.call(document.querySelectorAll('.sim [data-profile]'), function (b) {
+  Array.prototype.forEach.call(document.querySelectorAll('[data-profile]'), function (b) {
     b.onclick = function () {
-      if (!key()) { keyInput.focus(); return; }
-      simOut('Sending\u2026');
+      if (!key()) { $('keyRow').hidden = false; keyInput.focus(); return; }
+      openEvents();
+      simOut('Sending…');
       fetch('/api/fire?key=' + encodeURIComponent(key()), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ id: 'tw_partner_comp', profile: b.getAttribute('data-profile') })
-      }).then(function (r) { return simResult(r, 'Sent to Flare \u2713'); }).catch(function () { simOut('Relay unreachable.', 'warn'); });
+      }).then(function (r) { return simResult(r, 'Sent to Flare ✓'); }).catch(function () { simOut('Relay unreachable.', 'warn'); });
     };
   });
-  document.getElementById('resetDemo').onclick = function () {
-    if (!key()) { keyInput.focus(); return; }
-    simOut('Resetting\u2026');
+  $('resetDemo').onclick = function () {
+    if (!key()) { $('keyRow').hidden = false; keyInput.focus(); return; }
+    simOut('');
+    progress('Resetting…');
     fetch('/api/reset?key=' + encodeURIComponent(key()), { method: 'POST' })
       .then(function (r) {
-        if (r.ok) { document.getElementById('steps').innerHTML = ''; decoys = []; renderAll(); clearPreview(); }
-        return simResult(r, 'Demo reset in Flare \u2713');
+        if (r.ok) { decoys = []; fired = {}; lastHit = null; hitCount = 0; renderAll(); clearPreview(); }
+        return r.json().then(function (j) {
+          progress(r.ok && j.ok !== false ? 'Demo reset ✓' : 'Reset failed (' + r.status + ').', r.ok ? 'ok' : 'warn');
+        }, function () { progress(r.ok ? 'Demo reset ✓' : 'Reset failed.', r.ok ? 'ok' : 'warn'); });
       })
-      .catch(function () { simOut('Relay unreachable.', 'warn'); });
+      .catch(function () { progress('Relay unreachable.', 'warn'); });
   };
 
   function setView(v) {
     view = v;
     document.body.classList.toggle('attacker', v === 'attacker');
-    document.getElementById('vIt').classList.toggle('on', v === 'it');
-    document.getElementById('vAtk').classList.toggle('on', v === 'attacker');
+    $('vIt').classList.toggle('on', v === 'it');
+    $('vAtk').classList.toggle('on', v === 'attacker');
+    $('vIt').setAttribute('aria-pressed', String(v === 'it'));
+    $('vAtk').setAttribute('aria-pressed', String(v === 'attacker'));
     clearPreview();
     loadDecoys();
   }
-  document.getElementById('vIt').onclick = function () { setView('it'); };
-  document.getElementById('vAtk').onclick = function () { setView('attacker'); };
+  $('vIt').onclick = function () { setView('it'); };
+  $('vAtk').onclick = function () { setView('attacker'); };
 
+  openEvents(); // listen for hits right away so the alert shows even if the attacker acts in another window
   setView(view);
 })();
 </script>
